@@ -7,12 +7,11 @@
     <q-btn v-else v-on:click=clock() round color="negative" label="Clock Out" id="clockinBtn"/>
   </div>
 
-  <p>Last Clock In : {{ new Date (Date.now())}}</p>
+  <p>Last Clock In : {{ startDateTime }}</p>
 
   <div>
     <p>Time Clocked In:
       <span>{{time_clockedIn.days}}</span>:<span>{{time_clockedIn.hours}}</span>:<span>{{time_clockedIn.minutes}}</span>:<span>{{time_clockedIn.seconds}}</span>
-
     </p>
   </div>
 </template>
@@ -35,6 +34,7 @@ export default {
   name: "ClockWork",
   data() {
     return{
+      startDateTime: new Date (Date.now()),
       time_clockedIn: stopwatch,
       clockIn: true, //intialiser avec la valeur du status
     }
@@ -42,13 +42,17 @@ export default {
   methods: {
     clock(){
       this.clockIn = !this.clockIn;
-      if(!this.clockIn) this.time_clockedIn.start();
-      else this.time_clockedIn.pause();
+      if(!this.clockIn) {
+        this.time_clockedIn.start();
+        this.startDateTime = new Date (Date.now());
+      }
+      else {
+        this.time_clockedIn.pause();
+        this.startDateTime = new Date (Date.now());
+      }
     }
   },
-  props:{
-    startDateTime: Date,
-  }
+
 }
 </script>
 
