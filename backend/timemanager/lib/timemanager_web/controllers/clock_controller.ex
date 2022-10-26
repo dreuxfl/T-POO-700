@@ -8,15 +8,15 @@ defmodule TimemanagerWeb.ClockController do
 
   user_clocks = []
 
-  def index(conn, %{"userID" => id}) do
+  def index(conn, %{"userID" => userID}) do
     clocks = Chrono.list_clocks()
-    {id, ""} = Integer.parse(id)
-    user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == id end)
+    {parsedUserID, ""} = Integer.parse(userID)
+    user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsedUserID end)
     render(conn, "index.json", clocks: user_clocks)
   end
 
-  def create(conn, %{"userID" => id, "clock" => clock_params}) do
-    new_clock = Map.put(clock_params, "user", id)
+  def create(conn, %{"userID" => userID, "clock" => clock_params}) do
+    new_clock = Map.put(clock_params, "user", userID)
 
     with {:ok, %Clock{} = clock} <- Chrono.create_clock(new_clock) do
       conn

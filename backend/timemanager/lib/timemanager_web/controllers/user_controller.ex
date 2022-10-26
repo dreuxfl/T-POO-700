@@ -20,21 +20,21 @@ defmodule TimemanagerWeb.UserController do
     end
   end
 
-  def show(conn, %{"userID" => id}) do
-    user = Employees.get_user!(id)
+  def show(conn, %{"userID" => userID}) do
+    user = Employees.get_user!(userID)
     render(conn, "show.json", user: user)
   end
 
-  def update(conn, %{"userID" => id, "user" => user_params}) do
-    user = Employees.get_user!(id)
+  def update(conn, %{"userID" => userID, "user" => user_params}) do
+    user = Employees.get_user!(userID)
 
     with {:ok, %User{} = user} <- Employees.update_user(user, user_params) do
       render(conn, "show.json", user: user)
     end
   end
 
-  def delete(conn, %{"userID" => id}) do
-    user = Employees.get_user!(id)
+  def delete(conn, %{"userID" => userID}) do
+    user = Employees.get_user!(userID)
 
     with {:ok, %User{}} <- Employees.delete_user(user) do
       send_resp(conn, :no_content, "")
