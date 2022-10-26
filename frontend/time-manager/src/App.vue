@@ -77,6 +77,7 @@
 
     <q-page-container>
       <HelloWorld />
+      <WorkingTime />
     </q-page-container>
   </q-layout>
 </template>
@@ -84,12 +85,14 @@
 <script>
 import { ref } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
+import WorkingTime from "@/components/WorkingTime";
 
 export default {
   name: 'LayoutDefault',
 
   components: {
-    HelloWorld
+    HelloWorld,
+    WorkingTime
   },
 
   setup () {
