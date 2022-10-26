@@ -13,9 +13,9 @@
     <h1 v-if="selectedCity != null">Météo actuelle à {{selectedCity}}</h1>
     <h1 v-else>Veuillez sélectionner une ville</h1>
     <p>Temperature : {{temperature}}°C</p>
-    <p>Date : {{Date.now()}}</p>
+    <p>Date : {{ new Date (Date.now())}}</p>
   </div>
-    
+
 </template>
   
 <script>
@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     refresh(){
-      if(this.selectedCity != null) this.temperature = Math.round(Math.random(100)*100) ;
+      if(this.selectedCity != null) this.temperature = Math.round(Math.random()*100) ;
     }
   },
   props: {
