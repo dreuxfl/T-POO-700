@@ -6,7 +6,7 @@
       <router-view />
       <div class="q-a-md row items-start q-gutter-md justify-center align-center ">
         <clock-work userId=1 />
-        <working-time/>
+        <UsersList/>
         <working-times/>
       </div>
       
@@ -18,7 +18,7 @@
   import { ref } from 'vue'
 
   import ClockWork from "./components/ClockWork";
-  import WorkingTime from "./components/WorkingTime";
+  import UsersList from "./components/UsersList";
   import WorkingTimes from "./components/WorkingTimes";
   import UserLogin from "./components/UserLogin.vue";
 
@@ -27,7 +27,7 @@
 
     components: {
       ClockWork,
-      WorkingTime,
+      UsersList,
       WorkingTimes,
       UserLogin
     },

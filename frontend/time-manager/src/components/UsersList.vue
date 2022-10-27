@@ -125,7 +125,7 @@ const rows = [
 ]
 
 export default {
-  name: 'WorkingTime',
+  name: 'UsersList',
   setup() {
     function onTime(row) {
       console.log('onEdit', row)
