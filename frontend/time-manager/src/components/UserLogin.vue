@@ -67,7 +67,7 @@
           :rules="[val => val && val.length > 0 || 'Please type something']" />
 
         <q-input filled v-model="Password" label="Password" :type="isPwd1 ? 'Password' : 'text'" lazy-rules
-          :rules="[val => val && val.length > 0 || 'Please type something']">
+          :rules="[val => val && val.length > 8 || '8 characters minimum']">
           <template v-slot:append>
             <q-icon :name="isPwd1 ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd1 = !isPwd1" />
           </template>
