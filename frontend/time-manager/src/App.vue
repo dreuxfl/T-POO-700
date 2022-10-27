@@ -10,9 +10,12 @@
     </q-header>
 
     <q-page-container>
-      <clock-work/>
-      <working-time/>
-      <WorkingTimesVue/>
+      <div class="q-pa-md row items-start q-gutter-md">
+        <clock-work userId=1 />
+        <working-time/>
+        <working-times/>
+      </div>
+      
     </q-page-container>
   </q-layout>
 </template>
@@ -23,7 +26,7 @@
   import ClockWork from "./components/ClockWork";
   import WorkingTime from "./components/WorkingTime";
   //import HelloWorld from './components/HelloWorld.vue'
-  import WorkingTimesVue from './components/WorkingTimes.vue'
+  import WorkingTimes from './components/WorkingTimes'
 
   export default {
     name: 'LayoutDefault',
@@ -31,7 +34,7 @@
     components: {
       ClockWork,
       WorkingTime,
-      WorkingTimesVue
+      WorkingTimes
     },
 
     setup () {
