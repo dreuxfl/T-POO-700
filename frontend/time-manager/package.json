@@ -14,7 +14,8 @@
     "quasar": "^2.10.0",
     "vue": "^3.2.13",
     "vue-chartjs": "^4.1.2",
-    "vue-timer-hook": "^1.0.11"
+    "vue-timer-hook": "^1.0.11",
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

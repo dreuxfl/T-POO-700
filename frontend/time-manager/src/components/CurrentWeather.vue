@@ -53,9 +53,6 @@ export default {
 h1 {
   margin: 40px 0 0;
 }
-button {
-
-}
 select {
   width: 40%
 }
