@@ -35,9 +35,8 @@
     components: {
       ClockWork,
       WorkingTime,
-      WorkingTimes
+      WorkingTimes,
       UserLogin
-
     },
 
     setup () {
