@@ -18,6 +18,7 @@
       
     </q-page-container>
   </q-layout>
+  <UserLogin/>
 </template>
 
 <script>
@@ -25,8 +26,8 @@
 
   import ClockWork from "./components/ClockWork";
   import WorkingTime from "./components/WorkingTime";
-  //import HelloWorld from './components/HelloWorld.vue'
-  import WorkingTimes from './components/WorkingTimes'
+  import WorkingTimes from "./components/WorkingTimes";
+  import UserLogin from "./components/UserLogin.vue";
 
   export default {
     name: 'LayoutDefault',
@@ -35,6 +36,8 @@
       ClockWork,
       WorkingTime,
       WorkingTimes
+      UserLogin
+
     },
 
     setup () {
