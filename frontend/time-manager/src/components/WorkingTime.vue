@@ -5,12 +5,21 @@
         :rows="rows"
         :columns="columns"
         row-key="name"
+        :filter="filter"
     >
-      <template v-slot:top-right>
-        <q-input v-model="email" filled type="email" placeholder="Email" />
-        <q-input ref="inputRef"  filled placeholder="Username"  :rules="[val => !!val || 'Field is required']"/>
-      </template>
+      <template v-slot:top-right="props">
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
 
+        <q-btn
+            flat round dense
+            :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+            @click="props.toggleFullscreen"
+        />
+      </template>
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
@@ -38,6 +47,8 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+
 const columns = [
   {
     name: 'id',
@@ -138,6 +149,7 @@ export default {
     }
 
     return {
+      filter: ref(''),
       columns,
       rows,
       onTime,
