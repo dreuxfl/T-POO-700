@@ -1,58 +1,95 @@
 <template>
-  <div>
-  <h2>
-    Clock Manager
-  </h2>
-  <div class="q-pa-md q-gutter-sm">
-    <q-btn v-if="clockIn" v-on:click=clock() round color="positive"  label="Clock In" id="clockinBtn"/>
-    <q-btn v-else v-on:click=clock() round color="negative" label="Clock Out" id="clockinBtn"/>
-  </div>
+  <q-card class="my-card margin" style="padding:1em">
+    <q-card-section>
+      <div class="text-h6 text-center"> Clock Pointer </div>
+    </q-card-section>
+    <q-card-section class="row justify-center">
+      
+        <q-btn v-if="IsClockIn" v-on:click=clock() round color="positive"  label="Clock In" id="IsClockInBtn"/>
+        <q-btn v-else v-on:click=clock() round color="negative" label="Clock Out" id="IsClockInBtn"/>
+    </q-card-section>
 
-  <p>Last Clock In : {{ startDateTime }}</p>
+    <q-card-section class="text-center">
+      <p  v-if="startDateTime === null">You never clocked in</p>
+      <p  v-else>Last Clock In : {{ startDateTime }}</p>
 
-  <div>
-    <p>Time Clocked In:
-      <span>{{time_clockedIn.hours}}</span>h<span>{{time_clockedIn.minutes}}</span>m<span>{{time_clockedIn.seconds}}</span>s
-    </p>
-  </div>
-  </div>
+
+      <p>Time Clocked In: {{time_clockedIn.hours}} hours, {{time_clockedIn.minutes}} minutes, {{time_clockedIn.seconds}} seconds</p>
+    </q-card-section>
+    
+  </q-card>
 </template>
 
 <style scoped>
-#clockinBtn{
-  width: 100px;
-  height: 100px;
-  align-content: center;
-}
+
+  #IsClockInBtn{
+    width: 100px;
+    height: 100px;
+    align-content: center;
+  }
+  q-card-section{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 
 </style>
 
 <script >
 
-import { useStopwatch } from 'vue-timer-hook';
-import moment from "moment";
-const stopwatch = useStopwatch(false, false);
+  import { useStopwatch } from 'vue-timer-hook';
+  import moment from "moment";
+  import ClockService from "../service/ClockService";
 
-export default {
-  name: "ClockWork",
-  data() {
-    return{
-      startDateTime: moment(new Date (Date.now())).format("DD/MM/YYYY, h:mm:ss"),
-      time_clockedIn: stopwatch,
-      clockIn: true, //intialiser avec la valeur du status
-    }
-  },
-  methods: {
-    clock(){
-      this.clockIn = !this.clockIn;
-      if(!this.clockIn)
-        this.time_clockedIn.start();
-      else
-        this.time_clockedIn.pause();
-      this.startDateTime = moment(new Date (Date.now())).format("DD/MM/YYYY, h:mm:ss");
-    }
-  },
+  const stopwatch = useStopwatch(false, false);
 
-}
+  export default {
+    name: "ClockWork",
+    data() {
+      return{
+        startDateTime: null,
+        time_clockedIn: stopwatch,
+        IsClockIn: true, //intialiser avec la valeur du status
+
+      }
+    },
+    methods: {
+      clock(){
+
+        let now = Date.now();
+        this.startDateTime = moment(new Date (now)).format("YYYY-MM-DD HH:mm:ss");
+        ClockService.postClock(this.userId, this.IsClockIn, moment(new Date (now)).format("YYYY-MM-DD HH:mm:ss"));
+        
+        if(this.IsClockIn)
+          this.time_clockedIn.start();
+        else
+          this.time_clockedIn.pause();
+          
+        this.IsClockIn = !this.IsClockIn;
+      }
+    },
+    props: {
+      userId : Number
+    },
+    created: function () {
+    // `this` points to the vm instance
+      ClockService.getClocks(this.userId).then((response) => {
+        if(response.data.data.length > 0){
+          let lastClock = response.data.data.pop();
+          let beforeLast = response.data.data.pop();
+
+          this.startDateTime = moment(new Date (lastClock.time)).format("YYYY-MM-DD HH:mm:ss");
+          this.IsClockIn = !lastClock.status;
+          console.log(new Date(lastClock.time).getTime());
+
+          if(this.IsClockIn) this.time_clockedIn = useStopwatch((new Date(lastClock.time).getTime() - new Date(beforeLast.time).getTime())/1000, false);
+          else this.time_clockedIn = useStopwatch((Date.now() - new Date(lastClock.time).getTime())/1000, true);
+            console.log(this.time_clockedIn.minutes);
+        } 
+      });
+
+    }
+
+  }
 </script>
-
