@@ -6,6 +6,12 @@
         :columns="columns"
         row-key="name"
     >
+      <template v-slot:top-right>
+        <q-input v-model="email" filled type="email" placeholder="Email" />
+        <q-input ref="inputRef"  filled placeholder="Username"  :rules="[val => !!val || 'Field is required']"/>
+      </template>
+
+
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <q-btn round outline style="color: blue" @click="onTime(props.row)">
