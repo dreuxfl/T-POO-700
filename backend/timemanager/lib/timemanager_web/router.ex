@@ -25,13 +25,15 @@ defmodule TimemanagerWeb.Router do
   scope "/api", TimemanagerWeb do
      pipe_through :api
 
-     get "/users/:userID", UserController, :show
      post "/users", UserController, :create
+     get "/users", UserController, :index
+     get "/users/:userID", UserController, :show
      put "/users/:userID", UserController, :update
      delete "/users/:userID", UserController, :delete
 
-     get "/workingtimes/:userID/:id", WorkingtimeController, :show
      post "/workingtimes/:userID", WorkingtimeController, :create
+     get "/workingtimes/", WorkingtimeController, :index
+     get "/workingtimes/:userID/:id", WorkingtimeController, :show
      put "/workingtimes/:id", WorkingtimeController, :update
      delete "/workingtimes/:id", WorkingtimeController, :delete
 
