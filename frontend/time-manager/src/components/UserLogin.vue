@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://www.manutan.fr/fstrz/r/s/www.manutan.fr/img/S/GRP/ST/AIG3946300.jpg?frz-v=67">
+            <img src="..\assets\Logo_Team.png">
           </q-avatar>
           Interface de pointage
         </q-toolbar-title>
