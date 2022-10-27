@@ -10,7 +10,9 @@
     </q-card-section>
 
     <q-card-section class="text-center">
-      <p>Last Clock In : {{ startDateTime }}</p>
+      <p  v-if="startDateTime === null">You never clocked in</p>
+      <p  v-else>Last Clock In : {{ startDateTime }}</p>
+
 
       <p>Time Clocked In: {{time_clockedIn.hours}} hours, {{time_clockedIn.minutes}} minutes, {{time_clockedIn.seconds}} seconds</p>
     </q-card-section>
@@ -46,9 +48,9 @@
     name: "ClockWork",
     data() {
       return{
-        startDateTime: moment(new Date (Date.now())).format("YYYY-MM-DD HH:mm:ss"),
+        startDateTime: null,
         time_clockedIn: stopwatch,
-        IsClockIn: null, //intialiser avec la valeur du status
+        IsClockIn: true, //intialiser avec la valeur du status
 
       }
     },
@@ -73,16 +75,18 @@
     created: function () {
     // `this` points to the vm instance
       ClockService.getClocks(this.userId).then((response) => {
-        let lastClock = response.data.data.pop();
-        let beforeLast = response.data.data.pop();
+        if(response.data.data.length > 0){
+          let lastClock = response.data.data.pop();
+          let beforeLast = response.data.data.pop();
 
-        this.startDateTime = moment(new Date (lastClock.time)).format("YYYY-MM-DD HH:mm:ss");
-        this.IsClockIn = !lastClock.status;
-        console.log(new Date(lastClock.time).getTime());
+          this.startDateTime = moment(new Date (lastClock.time)).format("YYYY-MM-DD HH:mm:ss");
+          this.IsClockIn = !lastClock.status;
+          console.log(new Date(lastClock.time).getTime());
 
-        if(this.IsClockIn) this.time_clockedIn = useStopwatch((new Date(lastClock.time).getTime() - new Date(beforeLast.time).getTime())/1000, false);
-        else this.time_clockedIn = useStopwatch((Date.now() - new Date(lastClock.time).getTime())/1000, true);
-          console.log(this.time_clockedIn.minutes);
+          if(this.IsClockIn) this.time_clockedIn = useStopwatch((new Date(lastClock.time).getTime() - new Date(beforeLast.time).getTime())/1000, false);
+          else this.time_clockedIn = useStopwatch((Date.now() - new Date(lastClock.time).getTime())/1000, true);
+            console.log(this.time_clockedIn.minutes);
+        } 
       });
 
     }
