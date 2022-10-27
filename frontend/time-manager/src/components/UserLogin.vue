@@ -36,7 +36,6 @@
       </q-tabs>
     </q-header>
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated>
-      <!--q-input v-model="ph" label="Username" placeholder="xxx@yyy" hint="" :dense="dense" /-->
       <q-form @login="onLogin" @erase="onErase" class="q-gutter-md">
         <q-input filled v-model="Email" label="Email" hint="xxx@yyy" lazy-rules
           :rules="[val => val && val.length > 0 || 'Please type something']" />
@@ -54,24 +53,6 @@
           <q-btn label="Erase" type="erase" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
-      <!--q-input v-model="Email1" label="Email" filled type="email" />
-      <br />
-      <br />
-      <q-input v-model="Password1" label="Password" filled :type="isPwd ? 'Password' : 'text'">
-        <template v-slot:append>
-          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
-        </template>
-      </q-input>
-      <q-checkbox v-model="customModel" color="secondary" label="Remember username and password ?" true-value="yes"
-        false-value="no" />
-      <div class="bouton.aligne">
-        <q-form @login="onLogin" @erase="onErase" class="q-gutter-md">
-          <div>
-            <q-btn color="blue" icon-right="done" label="Login" type="submit" />
-            <q-btn color="blue" icon-right="delete" label="Erase" type="reset" />
-          </div>
-        </q-form>
-      </div-->
       <br />
       <br />
       <hr />
@@ -127,10 +108,6 @@ export default {
     const Password1 = ref(null)
     const customModel = ref(false)
     const PasswordSame = ref(null)
-
-
-
-
     return {
       isPwd: ref(true),
       isPwd1: ref(true),
@@ -176,9 +153,6 @@ export default {
       },
       onLogin() {
       },
-      // Fin du rajout posant potentiellement problème à checker
-      //customModel: ref('no'),
-      //onItemClick () {},
       rightDrawerOpen,
       toggleRightDrawer() {
         rightDrawerOpen.value = !rightDrawerOpen.value
@@ -206,7 +180,6 @@ export default {
 }
 </script>
     
-  <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1 {
   margin: 40px 0 0;
