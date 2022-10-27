@@ -1,16 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-toolbar-title>
-          Outil de pointage GROUPE 7
-        </q-toolbar-title>
-
-      </q-toolbar>
-    </q-header>
+    <UserLogin/>
 
     <q-page-container>
-      <div class="q-pa-md row items-start q-gutter-md">
+      <router-view />
+      <div class="q-a-md row items-start q-gutter-md justify-center align-center ">
         <clock-work userId=1 />
         <working-time/>
         <working-times/>
@@ -18,7 +12,6 @@
       
     </q-page-container>
   </q-layout>
-  <UserLogin/>
 </template>
 
 <script>

@@ -1,12 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <q-table
-        title="Users"
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-        :filter="filter"
-    >
+    <q-table title="Users" :rows="rows" :columns="columns" row-key="name" :filter="filter">
       <template v-slot:top-right="props">
         <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
           <template v-slot:append>
@@ -14,11 +8,8 @@
           </template>
         </q-input>
 
-        <q-btn
-            flat round dense
-            :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-            @click="props.toggleFullscreen"
-        />
+        <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+          @click="props.toggleFullscreen" />
       </template>
 
       <template v-slot:body-cell-actions="props">
@@ -135,16 +126,16 @@ const rows = [
 
 export default {
   name: 'WorkingTime',
-  setup () {
-    function onTime (row) {
+  setup() {
+    function onTime(row) {
       console.log('onEdit', row)
     }
 
-    function onEdit (row) {
+    function onEdit(row) {
       console.log('onEdit', row)
     }
 
-    function onDelete (row) {
+    function onDelete(row) {
       console.log('onEdit', row)
     }
 

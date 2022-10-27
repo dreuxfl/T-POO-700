@@ -1,23 +1,26 @@
-<template>
-  <q-card class="my-card margin" style="padding:1em">
-    <q-card-section>
-      <div class="text-h6 text-center"> Clock Pointer </div>
-    </q-card-section>
-    <q-card-section class="row justify-center">
+<template >
+  <div class="q-pa-md">
+    <q-card class="my-card margin" style="padding:1em">
+      <q-card-section>
+        <div class="text-h6 text-center"> Clock Pointer </div>
+      </q-card-section>
+      <q-card-section class="row justify-center">
+        
+          <q-btn v-if="IsClockIn" v-on:click=clock() round color="positive"  label="Clock In" id="IsClockInBtn"/>
+          <q-btn v-else v-on:click=clock() round color="negative" label="Clock Out" id="IsClockInBtn"/>
+      </q-card-section>
+
+      <q-card-section class="text-center">
+        <p  v-if="startDateTime === null">You never clocked in</p>
+        <p  v-else>Last Clock In : {{ startDateTime }}</p>
+
+
+        <p>Time Clocked In: {{time_clockedIn.hours}} hours, {{time_clockedIn.minutes}} minutes, {{time_clockedIn.seconds}} seconds</p>
+      </q-card-section>
       
-        <q-btn v-if="IsClockIn" v-on:click=clock() round color="positive"  label="Clock In" id="IsClockInBtn"/>
-        <q-btn v-else v-on:click=clock() round color="negative" label="Clock Out" id="IsClockInBtn"/>
-    </q-card-section>
-
-    <q-card-section class="text-center">
-      <p  v-if="startDateTime === null">You never clocked in</p>
-      <p  v-else>Last Clock In : {{ startDateTime }}</p>
-
-
-      <p>Time Clocked In: {{time_clockedIn.hours}} hours, {{time_clockedIn.minutes}} minutes, {{time_clockedIn.seconds}} seconds</p>
-    </q-card-section>
-    
-  </q-card>
+    </q-card>
+  </div>
+ 
 </template>
 
 <style scoped>
