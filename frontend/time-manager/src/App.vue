@@ -33,7 +33,7 @@
 
         <q-space />
 
-        <q-btn color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
+        <q-btn color="primary" icon-right="person" label="Profile" @click="toggleRightDrawer" />
       </q-toolbar>
     </q-header>
 
@@ -47,9 +47,8 @@
         
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center ">
         <clock-work :userId=this.userId />
-        <working-time/>
 
-        <UsersList/>
+        <users-list/>
 
         <working-times/>
       </div>
