@@ -1,79 +1,176 @@
 <template>
-  
-  <q-card class="my-card margin" style="padding:1em">
-    <q-card-section>
-      <div class="text-h6">Mes temps du {{getFormattedDate(Date.now())}}</div>
-    </q-card-section>
-    <q-list class="dark bordered separator" v-for="(time, index) in myTimes" :key="index">
-      <q-item clickable class="row items-start">
-        <q-item-section avatar class="col-2">
-          <q-icon name="alarm" color="primary" />
-        </q-item-section>
-        <q-item-section class="col-3">
-          <q-item-label caption>Start</q-item-label>
-          <q-item-label>{{ getFormattedDateTime(time.startTime) }}</q-item-label>
-        </q-item-section>
-        <q-item-section class="col-3">
-          <q-item-label caption>End</q-item-label>
-          <q-item-label>{{ getFormattedDateTime(time.endTime) }}</q-item-label>
-        </q-item-section>
-        <q-item-section class="col-3">
-          <q-item-label caption>Duration</q-item-label>
-          <q-item-label>{{ getFormattedDuration(time.startTime, time.endTime) }}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-list>
-  </q-card>
-  
-  
+  <div class="q-pa-md">
+    <q-table title="Working Times" :rows="rows" :columns="columns" row-key="id">
+      <template v-slot:top-right="props">
+        <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+               @click="props.toggleFullscreen" />
+      </template>
+
+      <template v-slot:body-cell-actions="props">
+        <q-td :props="props">
+          <q-btn round outline style="color: yellow" @click="editWorkingTime(props.row)">
+            <div class="text-yellow">
+              <q-icon name="mode_edit" />
+            </div>
+          </q-btn>
+
+          <q-btn round outline style="color: red" @click="deleteWorkingTime(props.row)">
+            <div class="text-red">
+              <q-icon name="delete" />
+            </div>
+          </q-btn>
+        </q-td>
+
+        <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated>
+          <h5 class="text-h5 text-blue">You are editing working time #{{ this.id }}</h5>
+
+          <h5 class="text-h5 text-blue">Start time</h5>
+          <q-input filled v-model="start">
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-date v-model="start" mask="YYYY-MM-DD HH:mm">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+
+            <q-icon name="access_time" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-time v-model="start" mask="YYYY-MM-DD HH:mm" format24h>
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-time>
+              </q-popup-proxy>
+            </q-icon>
+          </q-input>
+
+          <h5 class="text-h5 text-blue">End time</h5>
+          <q-input filled v-model="end">
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-date v-model="end" mask="YYYY-MM-DD HH:mm">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+
+            <q-icon name="access_time" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-time v-model="end" mask="YYYY-MM-DD HH:mm" format24h>
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-time>
+              </q-popup-proxy>
+            </q-icon>
+          </q-input>
+
+          <q-btn round outline style="color: blue" @click="saveWorkingTime(props.row)">
+            <div class="text-blue">
+              <q-icon name="save" />
+            </div>
+          </q-btn>
+        </q-drawer>
+      </template>
+    </q-table>
+  </div>
 </template>
-  
+
 <script>
-  import moment from 'moment';
-  export default {
-    name: 'WorkingTimes',
-    data() {
-      return {
-        myTimes: [
-          {
-            startTime: new Date("2022-10-26T09:00:00"),
-            endTime: new Date("2022-10-26T09:05:00"),
-          },
-          {
-            startTime: new Date("2022-10-26T09:00:00"),
-            endTime: new Date("2022-10-26T21:00:00"),  
-          },
-          {
-            startTime: new Date("2022-10-25T21:00:00"),
-            endTime: new Date("2022-10-26T21:00:00"),          
-          },
-        ]
-      }
-    },
-    methods: {
-      getFormattedDate(date){
-        return moment(date).format('DD/MM/YYYY')
-      },
-      getFormattedDateTime(date){
-        return moment(date).format('DD/MM/YYYY, h:mm:ss')
-      },
-      getFormattedDuration(start, end){
-        return moment.duration(end - start).humanize();
-      }
-    },
-    props: {
-      // myTimes: Array
+import moment from "moment";
+import WorkingTimesService from "@/service/WorkingTimesService";
+import {ref} from "vue";
+
+const columns = [
+  {
+    name: 'id',
+    required: true,
+    label: 'Id',
+    align: 'left',
+    field: row => row.id,
+    format: val => `${val}`,
+    sortable: true
+  },
+  {
+    name: 'startTime',
+    required: true,
+    label: 'Start time',
+    align: 'left',
+    field: row => row.start,
+    format: val => `${val}`,
+    sortable: true
+  },
+  {
+    name: 'endTime',
+    required: true,
+    label: 'End time',
+    align: 'left',
+    field: row => row.end,
+    format: val => `${val}`,
+    sortable: true
+  },
+  {
+    name: 'duration',
+    required: true,
+    label: 'Duration',
+    align: 'left',
+    field: row => row.duration,
+    format: val => `${val}`,
+    sortable: true
+  },
+  { name: 'actions', label: 'Action', field: 'actions' }
+]
+
+const rows = []
+
+WorkingTimesService.getWorkingTimes().then((response) => {
+  if(response.data.data.length > 0){
+    for (let i = 0; i < response.data.data.length; i++) {
+      rows.push({
+        id: response.data.data[i].id,
+        start: moment(response.data.data[i].start).format('YYYY-MM-DD HH:mm'),
+        end: moment(response.data.data[i].end).format('YYYY-MM-DD HH:mm'),
+        duration: moment.duration(new Date(response.data.data[i].end) - new Date(response.data.data[i].start)).humanize()
+      })
     }
   }
-</script>
-  
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-  h1 {
-    margin: 40px 0 0;
-  }
-  select {
-    width: 40%
-  }
+});
 
-</style>
+export default {
+  name: 'WorkingTimes',
+  setup() {
+    const rightDrawerOpen = ref(false)
+
+    function deleteWorkingTime(row) {
+      console.log('onDelete', row)
+    }
+
+    return {
+      columns,
+      rows,
+      deleteWorkingTime,
+      rightDrawerOpen,
+      editWorkingTime (props) {
+        console.log(props)
+        rightDrawerOpen.value = !rightDrawerOpen.value
+        this.id = props.id
+        this.start = props.start
+        this.end = props.end
+      },
+      id: ref(''),
+      start: ref(''),
+      end: ref(''),
+      saveWorkingTime (props) {
+        WorkingTimesService.editWorkingTimes(this.id, this.start, this.end).then((response) => {
+          console.log(response)
+        })
+      }
+    }
+  }
+}
+</script>

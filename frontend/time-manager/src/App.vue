@@ -48,6 +48,9 @@
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center ">
         <clock-work :userId=this.userId />
         <working-time/>
+
+        <UsersList/>
+
         <working-times/>
       </div>
       
@@ -59,7 +62,7 @@
   import { ref } from 'vue'
 
   import ClockWork from "./components/ClockWork";
-  import WorkingTime from "./components/WorkingTime";
+  import UsersList from "./components/UsersList";
   import WorkingTimes from "./components/WorkingTimes";
   import UserLogin from "./components/User.vue";
 
@@ -68,7 +71,7 @@
 
     components: {
       ClockWork,
-      WorkingTime,
+      UsersList,
       WorkingTimes,
       UserLogin
     },

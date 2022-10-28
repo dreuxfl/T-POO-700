@@ -10,26 +10,6 @@ defmodule TimemanagerWeb.WorkingtimeController do
 
   def index(conn, _params) do
     workingtimes = Workinghours.list_workingtimes()
-#    Enum.each(workingtimes, fn time ->
-#      if time.user == params["id"] do
-#
-#        if params["start"] do
-#          if params["end"] do
-#            render("show.json", workingtime: time)
-#            elseif(time.startTime > params["start"]) do render("show.json", workingtime: time) end
-#          end
-#
-#        else
-#          if params["end"]
-#          if time.endTime <= params["end"] do render("show.json", workingtime: time) end
-#
-#        else
-#          render("show.json", workingtime: time)
-#
-#        end
-#
-#      end
-#    end)
     render(conn, "index.json", workingtimes: workingtimes)
   end
 
