@@ -41,7 +41,7 @@
       <UserLogin @create-user-event="setUserId"/>
     </q-drawer>
 
-    <q-page-container class="flex justify-center align-center " style="margin-top: 5em;">
+    <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
 
       <q-btn v-if="userId === null" color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
         
@@ -63,7 +63,7 @@
   import ClockWork from "./components/ClockWork";
   import UsersList from "./components/UsersList";
   import WorkingTimes from "./components/WorkingTimes";
-  import UserLogin from "./components/User.vue";
+  import UserLogin from "./components/User";
 
   export default {
     name: 'LayoutDefault',

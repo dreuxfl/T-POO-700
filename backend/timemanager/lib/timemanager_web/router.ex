@@ -25,6 +25,8 @@ defmodule TimemanagerWeb.Router do
   scope "/api", TimemanagerWeb do
      pipe_through :api
 
+     post "/login", UserController, :login
+
      post "/users", UserController, :create
      get "/users", UserController, :index
      get "/users/:userID", UserController, :show

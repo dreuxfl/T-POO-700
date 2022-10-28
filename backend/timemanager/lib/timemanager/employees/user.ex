@@ -18,5 +18,6 @@ defmodule Timemanager.Employees.User do
     |> validate_required([:username, :email, :password])
     |> validate_format(:email, ~r/@/)
     |> validate_length(:password, min: 8)
+    |> unique_constraint(:email)
   end
 end
