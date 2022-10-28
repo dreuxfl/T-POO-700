@@ -48,9 +48,9 @@
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center ">
         <clock-work :userId=this.userId />
 
-        <users-list/>
+        <users-list @transfer-user-event="setSelectedUserID" />
 
-        <working-times/>
+        <working-times :key="this.selectedUserID" :selectedUserID=this.selectedUserID />
       </div>
       
     </q-page-container>
@@ -77,18 +77,20 @@
 
     methods:{
       setUserId(payload){
-          this.userId = payload.id;
-          console.log(this.userId);
+        this.userId = payload.id;
       },
-        toggleRightDrawer() {
-          
+      toggleRightDrawer() {
         this.rightDrawerOpen = !this.rightDrawerOpen;
       },
+      setSelectedUserID(payload){
+        this.selectedUserID = payload.id;
+      }
     },
     data() {
       return {
         rightDrawerOpen : ref(false),
         userId: null,
+        selectedUserID: null
       }
     }
   }

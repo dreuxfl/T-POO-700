@@ -14,6 +14,12 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
+          <q-btn round outline style="color: blue" @click="editUserWorkingTimes(props.row)">
+            <div class="text-blue">
+              <q-icon name="timer" />
+            </div>
+          </q-btn>
+
           <q-btn round outline style="color: yellow" @click="editUser(props.row)">
             <div class="text-yellow">
               <q-icon name="mode_edit" />
@@ -32,7 +38,6 @@
 </template>
 
 <script>
-import { ref } from 'vue'
 import UserService from "../service/UserService";
 
 const columns = [
@@ -66,38 +71,40 @@ const columns = [
   { name: 'actions', label: 'Action', field: 'actions' }
 ]
 
-const rows = []
-
-UserService.getUsers().then((response) => {
-  if(response.data.data.length > 0){
-    for (let i = 0; i < response.data.data.length; i++) {
-      rows.push({
-        id: response.data.data[i].id,
-        username: response.data.data[i].username,
-        email: response.data.data[i].email
-      })
-    }
-  }
-});
-
 export default {
   name: 'UsersList',
-  setup() {
-    function editUser(row) {
-      console.log('onEdit', row)
+  data() {
+    return {
+      columns,
+      rows: [],
+      filter: '',
+      selectedUserID: null
     }
-
-    function deleteUser(row) {
+  },
+  methods: {
+    editUserWorkingTimes(row) {
+      this.selectedUserID = row.id;
+      this.$emit('transfer-user-event', {id: this.selectedUserID});
+    },
+    editUser(row) {
+      console.log('onEdit', row)
+    },
+    deleteUser(row) {
       console.log('onDelete', row)
     }
-
-    return {
-      filter: ref(''),
-      columns,
-      rows,
-      editUser,
-      deleteUser
-    }
+  },
+  created() {
+    UserService.getUsers().then((response) => {
+      if(response.data.data && response.data.data.length > 0){
+        for (let i = 0; i < response.data.data.length; i++) {
+          this.rows.push({
+            id: response.data.data[i].id,
+            username: response.data.data[i].username,
+            email: response.data.data[i].email
+          })
+        }
+      }
+    });
   }
 }
 </script>

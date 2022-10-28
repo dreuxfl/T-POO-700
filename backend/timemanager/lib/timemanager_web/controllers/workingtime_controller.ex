@@ -4,14 +4,7 @@ defmodule TimemanagerWeb.WorkingtimeController do
   alias Timemanager.Workinghours
   alias Timemanager.Workinghours.Workingtime
 
-  alias Timemanager.Employees
-
   action_fallback TimemanagerWeb.FallbackController
-
-  def index(conn, _params) do
-    workingtimes = Workinghours.list_workingtimes()
-    render(conn, "index.json", workingtimes: workingtimes)
-  end
 
   def create(conn, %{"userID" => userID, "workingtime" => workingtime_params}) do
     new_working_time = Map.put(workingtime_params, "user", userID)
@@ -22,6 +15,18 @@ defmodule TimemanagerWeb.WorkingtimeController do
       |> put_resp_header("location", Routes.workingtime_path(conn, :create, workingtime))
       |> render("show.json", workingtime: workingtime)
     end
+  end
+
+  def index(conn, _params) do
+    workingtimes = Workinghours.list_workingtimes()
+    render(conn, "index.json", workingtimes: workingtimes)
+  end
+
+  def all(conn, %{"userID" => userID}) do
+    workingtimes = Workinghours.list_workingtimes()
+    {parsedUserID, ""} = Integer.parse(userID)
+    user_working_times = Enum.filter(workingtimes, fn(wt) -> wt.user != nil && wt.user == parsedUserID end)
+    render(conn, "index.json", workingtimes: user_working_times)
   end
 
   def show(conn, %{"userID" => userID, "id" => wtID}) do

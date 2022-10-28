@@ -2,8 +2,11 @@
   <div class="q-pa-md">
     <q-table title="Working Times" :rows="rows" :columns="columns" row-key="id">
       <template v-slot:top-right="props">
-        <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-               @click="props.toggleFullscreen" />
+        <q-btn round outline style="color: blue" @click="editWorkingTime(props.row)">
+          <div class="text-blue">
+            <q-icon name="add" />
+          </div>
+        </q-btn>
       </template>
 
       <template v-slot:body-cell-actions="props">
@@ -84,7 +87,6 @@
 <script>
 import moment from "moment";
 import WorkingTimesService from "@/service/WorkingTimesService";
-import {ref} from "vue";
 
 const columns = [
   {
@@ -126,50 +128,51 @@ const columns = [
   { name: 'actions', label: 'Action', field: 'actions' }
 ]
 
-const rows = []
-
-WorkingTimesService.getWorkingTimes().then((response) => {
-  if(response.data.data.length > 0){
-    for (let i = 0; i < response.data.data.length; i++) {
-      rows.push({
-        id: response.data.data[i].id,
-        start: moment(response.data.data[i].start).format('YYYY-MM-DD HH:mm'),
-        end: moment(response.data.data[i].end).format('YYYY-MM-DD HH:mm'),
-        duration: moment.duration(new Date(response.data.data[i].end) - new Date(response.data.data[i].start)).humanize()
-      })
-    }
-  }
-});
-
 export default {
   name: 'WorkingTimes',
-  setup() {
-    const rightDrawerOpen = ref(false)
-
-    function deleteWorkingTime(row) {
-      console.log('onDelete', row)
-    }
-
+  data() {
     return {
       columns,
-      rows,
-      deleteWorkingTime,
-      rightDrawerOpen,
-      editWorkingTime (props) {
-        console.log(props)
-        rightDrawerOpen.value = !rightDrawerOpen.value
-        this.id = props.id
-        this.start = props.start
-        this.end = props.end
-      },
-      id: ref(''),
-      start: ref(''),
-      end: ref(''),
-      saveWorkingTime (props) {
-        WorkingTimesService.editWorkingTimes(this.id, this.start, this.end).then((response) => {
-          console.log(response)
-        })
-      }
+      rows: [],
+      rightDrawerOpen: false,
+      id: null,
+      start: null,
+      end: null
+    }
+  },
+  methods: {
+    editWorkingTime(row) {
+      this.rightDrawerOpen = true
+      this.id = row.id
+      this.start = row.start
+      this.end = row.end
+    },
+    deleteWorkingTime(row) {
+      console.log('onDelete', row)
+    },
+    saveWorkingTime () {
+      WorkingTimesService.editWorkingTimes(this.id, this.start, this.end).then((response) => {
+        console.log(response)
+      })
+    }
+  },
+  props: {
+    selectedUserID : Number
+  },
+  created() {
+    if (this.selectedUserID) {
+      WorkingTimesService.getWorkingTimesByUser(this.selectedUserID).then((response) => {
+        if(response.data.data && response.data.data.length > 0){
+          for (let i = 0; i < response.data.data.length; i++) {
+            this.rows.push({
+              id: response.data.data[i].id,
+              start: moment(response.data.data[i].start).format('ddd MM YYYY - HH:mm'),
+              end: moment(response.data.data[i].end).format('ddd MM YYYY - HH:mm'),
+              duration: moment.duration(new Date(response.data.data[i].end) - new Date(response.data.data[i].start)).humanize()
+            })
+          }
+        }
+      });
     }
   }
 }

@@ -1,10 +1,10 @@
 import axios from "axios";
 
 export default class WorkingTimesService {
-    static getWorkingTimes() {
+    static getWorkingTimesByUser(selectedUserID) {
         return axios({
             method: 'get',
-            url: `http://localhost:4000/api/workingtimes/`
+            url: `http://localhost:4000/api/workingtimes/${selectedUserID}`,
         });
     }
 
