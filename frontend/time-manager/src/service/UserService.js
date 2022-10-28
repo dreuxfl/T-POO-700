@@ -2,6 +2,12 @@ import axios from "axios";
 
 export default class UserService {
 
+    static login(username, password){
+        return axios({
+            method: 'post',
+            url: `http://localhost:4000/api/login?username=${username}&password=${password}`
+        })
+    }
     static postUser(email, username, password) {
         return axios({
             method: 'post',
@@ -22,7 +28,7 @@ export default class UserService {
         });
     }
 
-    static putUser(email, username, password, userId) {
+    static putUser(email, username, userId) {
         return axios({
             method: 'put',
             url: `http://localhost:4000/api/users/${userId}`,
@@ -36,7 +42,6 @@ export default class UserService {
                 {
                     "email": email,
                     "username": username,
-                    "password": password
                 }
             })
         });

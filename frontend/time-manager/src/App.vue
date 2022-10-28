@@ -38,7 +38,7 @@
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
-      <UserLogin @create-user-event="setUserId"/>
+      <UserLogin @user-create-event="setUserId" @user-login-event="setUserId"/>
     </q-drawer>
 
     <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
