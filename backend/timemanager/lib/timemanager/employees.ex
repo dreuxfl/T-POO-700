@@ -49,6 +49,16 @@ defmodule Timemanager.Employees do
       {:error, %Ecto.Changeset{}}
 
   """
+  def login(username, password) do
+    from(u in User, where: u.username == ^username and u.password == ^password)
+    |> Repo.one
+  end
+
+  def search_user(username, email) do
+    from(u in User, where: u.username == ^username or u.email == ^email)
+    |> Repo.all
+  end
+
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.changeset(attrs)
