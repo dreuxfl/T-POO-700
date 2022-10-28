@@ -59,9 +59,7 @@
       <q-btn v-else color="negative" icon-right="logout" label="Disconnect" @click="onDisconnect" />
 
       <q-space />
-    </div>
-      
-    
+    </div> 
     
 </template>
 
@@ -127,7 +125,6 @@ export default {
       }
     },
 
-
     createUser(email, username, password){
       UserService.postUser(email, username, password).then((response)=>{
         try {
@@ -139,8 +136,39 @@ export default {
         }
       }).catch(e => console.log(e));
     },
+
+    updateUser(email, username, password, userId){
+      UserService.putUser(email, username, password, userId).then((response)=>{
+        try {
+          console.log(response)
+        } catch (e) {
+          console.log(e);
+        }
+      }).catch(e => console.log(e));
+    },
+
+    getUser(userId){
+      UserService.getUser(userId).then((response)=>{
+        try {
+          console.log(response)
+        } catch (e) {
+          console.log(e);
+        }
+      }).catch(e => console.log(e));
+    },
+
+    deleteUser(userId){
+      UserService.deleteUser(userId).then((response)=>{
+        try {
+          console.log(response)
+        } catch (e) {
+          console.log(e);
+        }
+      }).catch(e => console.log(e));
+    },
     
     onLogin() {
+      //TODO
     },
 
     onDisconnect(){
