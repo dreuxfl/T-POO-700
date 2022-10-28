@@ -54,7 +54,6 @@
         startDateTime: null,
         time_clockedIn: stopwatch,
         IsClockIn: true, //intialiser avec la valeur du status
-
       }
     },
     methods: {

@@ -72,7 +72,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 
 export default {
-  name: 'User',
+  name: 'UserComponent',
   data() {
     return {
       isLogin : true,

@@ -41,15 +41,12 @@
       <UserLogin @create-user-event="setUserId"/>
     </q-drawer>
 
-    <q-page-container >
+    <q-page-container class="flex justify-center align-center " style="margin-top: 5em;">
 
-      <div v-if="userId === null" class="flex justify-center column">
-        <q-space />
-        <q-btn color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
-        <q-space />
-      </div>
+      <q-btn v-if="userId === null" color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
+        
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center ">
-        <clock-work userId=1 />
+        <clock-work :userId=this.userId />
         <working-time/>
         <working-times/>
       </div>
@@ -82,6 +79,7 @@
           console.log(this.userId);
       },
         toggleRightDrawer() {
+          
         this.rightDrawerOpen = !this.rightDrawerOpen;
       },
     },
