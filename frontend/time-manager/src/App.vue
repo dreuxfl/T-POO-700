@@ -38,7 +38,7 @@
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
-      <UserLogin @create-user-event="setUserId"/>
+      <User @create-user-event="setUserId"/>
     </q-drawer>
 
     <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
@@ -51,6 +51,7 @@
         <users-list/>
 
         <working-times/>
+        <chart-manager/>
 
       </div>
 
@@ -62,16 +63,18 @@
   import { ref } from 'vue'
 
   import ClockWork from "./components/ClockWork";
-  import UsersList from "./components/UsersList";
+  import User from "./components/User";
   import WorkingTimes from "./components/WorkingTimes";
+  import ChartManager from "@/components/ChartManager";
 
 
   export default {
     name: 'LayoutDefault',
 
     components: {
+      ChartManager,
       ClockWork,
-      UsersList,
+      User,
       WorkingTimes
     },
 

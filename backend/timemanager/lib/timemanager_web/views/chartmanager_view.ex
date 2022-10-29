@@ -17,7 +17,8 @@ defmodule TimemanagerWeb.ChartmanagerView do
   def render("statchart.json", %{chartmanager: chart})do
     %{
       day: chart.day,
-      usersthatclockedin: chart.usersthatclockedin
+      usersthatclockedin: chart.usersthatclockedin,
+      userworkingtime: chart.userworkingtime
     }
   end
 

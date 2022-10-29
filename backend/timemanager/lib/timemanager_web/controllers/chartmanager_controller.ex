@@ -75,11 +75,18 @@ defmodule TimemanagerWeb.ChartmanagerController do
     clocks = Chrono.list_clocks()
     user_clocks = Enum.uniq_by(clocks, fn clock -> clock.user
     end)
+    workingtimes = Workinghours.list_workingtimes()
+    user_workingtimes = Enum.uniq_by(workingtimes, fn workingtime -> workingtime.user
+    end)
+
+
     chart_result= Enum.map(user_clocks, fn  user_clock->
     user_clockedIn = Enum.count(user_clocks)
+    user_should_be_working = Enum.count(user_workingtimes)
       %{
       day: NaiveDateTime.to_date(user_clock.time),
-      usersthatclockedin: user_clockedIn
+      usersthatclockedin: user_clockedIn,
+      userworkingtime: user_should_be_working
     }
     end)
     chart_result = Enum.uniq_by(chart_result, fn chart -> chart.day end)

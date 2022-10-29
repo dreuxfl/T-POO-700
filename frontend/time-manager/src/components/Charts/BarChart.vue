@@ -26,6 +26,9 @@ export default {
   name: 'BarChart',
   components: { Bar },
   props: {
+    days : Array,
+    userclockedin : Array,
+    usersshouldwork : Array,
     chartId: {
       type: String,
       default: 'bar-chart'
@@ -58,11 +61,11 @@ export default {
   data() {
     return {
       chartData: {
-        labels: [ 'Mon', 'Tue','Wed', 'Thu', 'Fri', 'Sat', 'Sun' ],
-        datasets: [ { data: [9, 8, 10,7, 8, 11,8],
-        label: "Work Hours", backgroundColor: '#027BE3'},
-          {data:[8, 8, 11,9, 8, 10,10],
-            label: "Hours Clocked", backgroundColor: '#f87979'} ]
+        labels: this.days,
+        datasets: [ { data: this.userclockedin,
+        label: "Employees that clocked in", backgroundColor: '#027BE3'},
+          {data:this.usersshouldwork,
+            label: "Employees that should work", backgroundColor: '#f87979'} ]
       },
       chartOptions: {
         responsive: true
