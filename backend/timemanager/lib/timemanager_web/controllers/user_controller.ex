@@ -8,7 +8,6 @@ defmodule TimemanagerWeb.UserController do
 
   def login(conn, %{"username" => username, "password" => password}) do
     user = Employees.login(username, password)
-
     if user == nil do
       conn
       |> put_status(:unauthorized)
