@@ -24,7 +24,7 @@
           </q-btn>
         </q-td>
 
-        <q-drawer v-model="rightDrawerAdding" side="right" behavior="mobile" elevated>
+        <q-drawer v-model="rightDrawerAddingWorkingTime" side="right" behavior="mobile" elevated>
           <h5 class="text-h5 text-blue">You are adding a working time</h5>
 
           <h5 class="text-h5 text-blue">Start time</h5>
@@ -80,7 +80,7 @@
           </q-btn>
         </q-drawer>
 
-        <q-drawer v-model="rightDrawerEditing" side="right" behavior="mobile" elevated>
+        <q-drawer v-model="rightDrawerEditingWorkingTime" side="right" behavior="mobile" elevated>
           <h5 class="text-h5 text-blue">You are editing working time #{{ this.id }}</h5>
 
           <h5 class="text-h5 text-blue">Start time</h5>
@@ -205,8 +205,8 @@ export default {
     return {
       columns,
       rows: [],
-      rightDrawerAdding: false,
-      rightDrawerEditing: false,
+      rightDrawerAddingWorkingTime: false,
+      rightDrawerEditingWorkingTime: false,
       id: null,
       start: null,
       end: null
@@ -214,7 +214,7 @@ export default {
   },
   methods: {
     addWorkingTime() {
-      this.rightDrawerAdding = true
+      this.rightDrawerAddingWorkingTime = true
       this.id = null
       this.start = null
       this.end = null
@@ -228,14 +228,14 @@ export default {
       WorkingTimesService.addWorkingTime(this.selectedUserID, this.start, this.end)
         .then(() => {
           this.showNotif(true, "Working time added successfully!")
-          this.rightDrawerAdding = false
+          this.rightDrawerAddingWorkingTime = false
         })
         .catch(e => {
           console.log(e)
         })
     },
     editWorkingTime(row) {
-      this.rightDrawerEditing = true
+      this.rightDrawerEditingWorkingTime = true
       this.id = row.id
       this.start = row.start
       this.end = row.end
@@ -243,8 +243,8 @@ export default {
     saveEditedWorkingTime () {
       WorkingTimesService.editWorkingTimes(this.id, this.start, this.end)
         .then(() => {
-          this.showNotif(true, "Working time edited successfully!")
-          this.rightDrawerEditing = false
+          this.showNotif(true, "Working time updated successfully!")
+          this.rightDrawerEditingWorkingTime = false
         })
         .catch(e => {
           console.log(e)

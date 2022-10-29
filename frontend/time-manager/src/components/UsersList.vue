@@ -32,6 +32,22 @@
             </div>
           </q-btn>
         </q-td>
+
+        <q-drawer v-model="rightDrawerEditingUser" side="right" behavior="mobile" elevated>
+          <h5 class="text-h5 text-blue">You are editing user #{{ this.selectedUserID }}</h5>
+
+          <h5 class="text-h5 text-blue">Username</h5>
+          <q-input filled v-model="username" />
+
+          <h5 class="text-h5 text-blue">Email</h5>
+          <q-input filled v-model="email" />
+
+          <q-btn round outline style="color: blue" @click="saveEditedUser(props.row)">
+            <div class="text-blue">
+              <q-icon name="save" />
+            </div>
+          </q-btn>
+        </q-drawer>
       </template>
     </q-table>
   </div>
@@ -39,6 +55,7 @@
 
 <script>
 import UserService from "../service/UserService";
+import {useQuasar} from "quasar";
 
 const columns = [
   {
@@ -73,12 +90,29 @@ const columns = [
 
 export default {
   name: 'UsersList',
+  setup () {
+    const $q = useQuasar()
+
+    return {
+      showNotif (positive, message) {
+        $q.notify({
+          color: (positive ? "positive" : "warning"),
+          textColor: 'white',
+          icon: (positive ? "cloud_done" : "warning"),
+          message: message
+        })
+      }
+    }
+  },
   data() {
     return {
       columns,
       rows: [],
       filter: '',
-      selectedUserID: null
+      rightDrawerEditingUser: false,
+      selectedUserID: null,
+      username: null,
+      email: null,
     }
   },
   methods: {
@@ -87,24 +121,47 @@ export default {
       this.$emit('transfer-user-event', {id: this.selectedUserID});
     },
     editUser(row) {
-      console.log('onEdit', row)
+      this.rightDrawerEditingUser = true
+      this.id = row.id;
+      this.username = row.username;
+      this.email = row.email;
+    },
+    saveEditedUser() {
+      UserService.putUser(this.email, this.username, this.id)
+        .then(() => {
+          this.showNotif(true, "User updated successfully");
+          this.rightDrawerEditingUser = false;
+        })
+        .catch(e => {
+          console.log(e);
+        });
     },
     deleteUser(row) {
-      console.log('onDelete', row)
+      UserService.deleteUser(row.id)
+          .then(() => {
+            this.showNotif(true, "User deleted successfully!")
+          })
+          .catch(e => {
+            console.log(e)
+          })
     }
   },
   created() {
-    UserService.getUsers().then((response) => {
-      if(response.data.data && response.data.data.length > 0){
-        for (let i = 0; i < response.data.data.length; i++) {
-          this.rows.push({
-            id: response.data.data[i].id,
-            username: response.data.data[i].username,
-            email: response.data.data[i].email
-          })
-        }
-      }
-    });
+    UserService.getUsers()
+      .then(response => {
+          if(response.data.data && response.data.data.length > 0){
+            for (let i = 0; i < response.data.data.length; i++) {
+              this.rows.push({
+                id: response.data.data[i].id,
+                username: response.data.data[i].username,
+                email: response.data.data[i].email
+              })
+            }
+          }
+      })
+      .catch(e => {
+        console.log(e);
+      });
   }
 }
 </script>
