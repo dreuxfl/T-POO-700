@@ -51,7 +51,7 @@
         <users-list/>
 
         <working-times/>
-        <chart-manager/>
+        <chart-manager :user-id=this.userId />
 
       </div>
 

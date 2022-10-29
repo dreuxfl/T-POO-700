@@ -50,6 +50,9 @@ export default defineComponent({
     Line
   },
   props: {
+    days : Array,
+    hoursclockedIn : Array,
+    usersshouldwork : Array,
     chartId: {
       type: String,
       default: 'line-chart'
@@ -84,16 +87,16 @@ export default defineComponent({
     return {
 
       chartData: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        labels: this.days,
         datasets: [{
-          data: [9, 8, 10, 7, 8, 11, 8],
+          data: this.usersshouldwork,
           label: "Work Hours",
           backgroundColor: '#027BE3', lineTension: 0.4,
           borderWidth: 2,
           borderColor: '#027BE3',
         },
           {
-            data: [8, 8, 11, 9, 8, 10, 10],
+            data: this.hoursclockedIn,
             label: "Hours Clocked",
             borderWidth: 2,
             borderColor: '#f87979',
