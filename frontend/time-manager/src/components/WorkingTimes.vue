@@ -1,8 +1,8 @@
 <template>
   <div class="q-pa-md">
     <q-table title="Working Times" :rows="rows" :columns="columns" row-key="id">
-      <template v-slot:top-right="props">
-        <q-btn round outline style="color: blue" @click="editWorkingTime(props.row)">
+      <template v-slot:top-right>
+        <q-btn round outline style="color: blue" @click="addWorkingTime()">
           <div class="text-blue">
             <q-icon name="add" />
           </div>
@@ -24,7 +24,63 @@
           </q-btn>
         </q-td>
 
-        <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated>
+        <q-drawer v-model="rightDrawerAdding" side="right" behavior="mobile" elevated>
+          <h5 class="text-h5 text-blue">You are adding a working time</h5>
+
+          <h5 class="text-h5 text-blue">Start time</h5>
+          <q-input filled v-model="start">
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-date v-model="start" mask="YYYY-MM-DD HH:mm">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+
+            <q-icon name="access_time" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-time v-model="start" mask="YYYY-MM-DD HH:mm" format24h>
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-time>
+              </q-popup-proxy>
+            </q-icon>
+          </q-input>
+
+          <h5 class="text-h5 text-blue">End time</h5>
+          <q-input filled v-model="end">
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-date v-model="end" mask="YYYY-MM-DD HH:mm">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+
+            <q-icon name="access_time" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-time v-model="end" mask="YYYY-MM-DD HH:mm" format24h>
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-time>
+              </q-popup-proxy>
+            </q-icon>
+          </q-input>
+
+          <q-btn round outline style="color: blue" @click="saveAddedWorkingTime()">
+            <div class="text-blue">
+              <q-icon name="save" />
+            </div>
+          </q-btn>
+        </q-drawer>
+
+        <q-drawer v-model="rightDrawerEditing" side="right" behavior="mobile" elevated>
           <h5 class="text-h5 text-blue">You are editing working time #{{ this.id }}</h5>
 
           <h5 class="text-h5 text-blue">Start time</h5>
@@ -73,7 +129,7 @@
             </q-icon>
           </q-input>
 
-          <q-btn round outline style="color: blue" @click="saveWorkingTime(props.row)">
+          <q-btn round outline style="color: blue" @click="saveEditedWorkingTime(props.row)">
             <div class="text-blue">
               <q-icon name="save" />
             </div>
@@ -87,6 +143,7 @@
 <script>
 import moment from "moment";
 import WorkingTimesService from "@/service/WorkingTimesService";
+import {useQuasar} from "quasar";
 
 const columns = [
   {
@@ -130,49 +187,100 @@ const columns = [
 
 export default {
   name: 'WorkingTimes',
+  setup () {
+    const $q = useQuasar()
+
+    return {
+      showNotif (positive, message) {
+        $q.notify({
+          color: (positive ? "positive" : "warning"),
+          textColor: 'white',
+          icon: (positive ? "cloud_done" : "warning"),
+          message: message
+        })
+      }
+    }
+  },
   data() {
     return {
       columns,
       rows: [],
-      rightDrawerOpen: false,
+      rightDrawerAdding: false,
+      rightDrawerEditing: false,
       id: null,
       start: null,
       end: null
     }
   },
   methods: {
+    addWorkingTime() {
+      this.rightDrawerAdding = true
+      this.id = null
+      this.start = null
+      this.end = null
+    },
+    saveAddedWorkingTime() {
+      if (this.start === null || this.end === null) {
+        this.showNotif(false, "Start and end time must be filled!")
+        return
+      }
+
+      WorkingTimesService.addWorkingTime(this.selectedUserID, this.start, this.end)
+        .then(() => {
+          this.showNotif(true, "Working time added successfully!")
+          this.rightDrawerAdding = false
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    },
     editWorkingTime(row) {
-      this.rightDrawerOpen = true
+      this.rightDrawerEditing = true
       this.id = row.id
       this.start = row.start
       this.end = row.end
     },
-    deleteWorkingTime(row) {
-      console.log('onDelete', row)
+    saveEditedWorkingTime () {
+      WorkingTimesService.editWorkingTimes(this.id, this.start, this.end)
+        .then(() => {
+          this.showNotif(true, "Working time edited successfully!")
+          this.rightDrawerEditing = false
+        })
+        .catch(e => {
+          console.log(e)
+        })
     },
-    saveWorkingTime () {
-      WorkingTimesService.editWorkingTimes(this.id, this.start, this.end).then((response) => {
-        console.log(response)
-      })
-    }
+    deleteWorkingTime(row) {
+      WorkingTimesService.deleteWorkingTimes(row.id)
+        .then(() => {
+          this.showNotif(true, "Working time deleted successfully!")
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    },
   },
   props: {
     selectedUserID : Number
   },
   created() {
     if (this.selectedUserID) {
-      WorkingTimesService.getWorkingTimesByUser(this.selectedUserID).then((response) => {
-        if(response.data.data && response.data.data.length > 0){
-          for (let i = 0; i < response.data.data.length; i++) {
-            this.rows.push({
-              id: response.data.data[i].id,
-              start: moment(response.data.data[i].start).format('ddd MM YYYY - HH:mm'),
-              end: moment(response.data.data[i].end).format('ddd MM YYYY - HH:mm'),
-              duration: moment.duration(new Date(response.data.data[i].end) - new Date(response.data.data[i].start)).humanize()
-            })
+      WorkingTimesService.getWorkingTimesByUser(this.selectedUserID)
+        .then(response => {
+          if(response.data.data && response.data.data.length > 0){
+            for (let i = 0; i < response.data.data.length; i++) {
+              this.rows.push({
+                id: response.data.data[i].id,
+                start: moment(response.data.data[i].start).format('YYYY-MM-DD HH:mm'),
+                end: moment(response.data.data[i].end).format('YYYY-MM-DD HH:mm'),
+                duration: moment.duration(new Date(response.data.data[i].end) - new Date(response.data.data[i].start)).humanize()
+              })
+            }
           }
-        }
-      });
+        })
+        .catch(e => {
+          console.log(e)
+        })
     }
   }
 }
