@@ -3,10 +3,10 @@ defmodule TimemanagerWeb.WorkingtimeController do
 
   alias Timemanager.Workinghours
   alias Timemanager.Workinghours.Workingtime
-  alias Timemanager.Employees
+
   action_fallback TimemanagerWeb.FallbackController
 
-  def index(conn, %{"userID" => userID}) do
+  def index_with_params(conn, %{"userID" => userID}) do
     {parsedUserID, ""} = Integer.parse(userID)
     workingtimes = Workinghours.list_workingtimes()
     url_params = Plug.Conn.fetch_query_params(conn)
@@ -16,7 +16,7 @@ defmodule TimemanagerWeb.WorkingtimeController do
                                                                        workingtime.user == parsedUserID &&
                                                                        NaiveDateTime.compare(workingtime.start,started) != :lt &&
                                                                        NaiveDateTime.compare(workingtime.end,ended) != :gt
-                                                                     end)
+    end)
     render(conn, "index.json", workingtimes: user_workingtimes)
   end
 
@@ -28,6 +28,18 @@ defmodule TimemanagerWeb.WorkingtimeController do
       |> put_resp_header("location", Routes.workingtime_path(conn, :create, workingtime))
       |> render("show.json", workingtime: workingtime)
     end
+  end
+
+  def index(conn, _params) do
+    workingtimes = Workinghours.list_workingtimes()
+    render(conn, "index.json", workingtimes: workingtimes)
+  end
+
+  def all(conn, %{"userID" => userID}) do
+    workingtimes = Workinghours.list_workingtimes()
+    {parsedUserID, ""} = Integer.parse(userID)
+    user_working_times = Enum.filter(workingtimes, fn(wt) -> wt.user != nil && wt.user == parsedUserID end)
+    render(conn, "index.json", workingtimes: user_working_times)
   end
 
   def show(conn, %{"userID" => userID, "id" => wtID}) do
