@@ -30,29 +30,24 @@
           </q-item>
         </q-list>
         </q-btn-dropdown>
-
         <q-space />
-
         <q-btn color="primary" icon-right="person" label="Profile" @click="toggleRightDrawer" />
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
-      <User @create-user-event="setUserId"/>
+      <User @create-user-event="setUserId"  @user-login-event="setUserId"/>
     </q-drawer>
 
     <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
 
-      <q-btn v-if="userId === null" color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
+      <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
         
-      <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center ">
+      <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
         <clock-work :userId=this.userId />
-
         <users-list/>
-
         <working-times/>
         <chart-manager :user-id=this.userId />
-
       </div>
 
     </q-page-container>
@@ -66,12 +61,14 @@
   import User from "./components/User";
   import WorkingTimes from "./components/WorkingTimes";
   import ChartManager from "@/components/ChartManager";
+  import UsersList from "@/components/UsersList";
 
 
   export default {
     name: 'LayoutDefault',
 
     components: {
+      UsersList,
       ChartManager,
       ClockWork,
       User,

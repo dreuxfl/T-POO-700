@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { defineComponent, h } from 'vue'
+import { defineComponent} from 'vue'
 
 import { Line } from 'vue-chartjs'
 import {
@@ -43,16 +43,13 @@ ChartJS.register(
     LineController
 )
 
-
 export default defineComponent({
   name: 'LineChart',
   components: {
     Line
   },
   props: {
-    days : Array,
-    hoursclockedIn : Array,
-    usersshouldwork : Array,
+    line_data: Array,
     chartId: {
       type: String,
       default: 'line-chart'
@@ -82,21 +79,23 @@ export default defineComponent({
       default: () => {}
     }
   },
-
-  data() {
+  setup(props){
+    let days = Object.assign([], Object.assign([],{...props.line_data})[0]);
+    let workinghours = Object.assign([], Object.assign([],{...props.line_data})[1]);
+    let clocked = Object.assign([], Object.assign([],{...props.line_data})[2]);
     return {
-
       chartData: {
-        labels: this.days,
+        labels: days,
         datasets: [{
-          data: this.usersshouldwork,
+          data: workinghours,
           label: "Work Hours",
           backgroundColor: '#027BE3', lineTension: 0.4,
           borderWidth: 2,
           borderColor: '#027BE3',
         },
           {
-            data: this.hoursclockedIn,
+
+            data: clocked,
             label: "Hours Clocked",
             borderWidth: 2,
             borderColor: '#f87979',
@@ -109,9 +108,9 @@ export default defineComponent({
         maintainAspectRatio: false
       }
     }
-  }
-})
+  },
 
+})
 
 </script>
 

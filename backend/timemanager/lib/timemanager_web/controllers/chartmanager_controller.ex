@@ -38,7 +38,9 @@ defmodule TimemanagerWeb.ChartmanagerController do
           hoursclocked: dummy_clock
         }
     end)
-    render(conn, "chart_workingtime_uid.json", chartmanager: chartdata)
+    conn
+    |> put_status(:ok)
+    |> render("chart_workingtime_uid.json", chartmanager: chartdata)
   end
 
 
@@ -68,7 +70,9 @@ defmodule TimemanagerWeb.ChartmanagerController do
       workingtime: NaiveDateTime.diff(user_workingtime.end, user_workingtime.start, :hour),
       hoursclocked: dummy_clock
     }
-    render(conn, "piechart.json", chartmanager: chart_result)
+    conn
+    |> put_status(:ok)
+    |> render("piechart.json", chartmanager: chart_result)
   end
 
   def barchart_stats(conn, _params) do
