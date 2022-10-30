@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 export default class ClockService {
     static postClock(userId, status, time) {
         return axios({
@@ -21,6 +20,7 @@ export default class ClockService {
             })
         });
     }
+
     static getClocks(userId) {
         return axios({
             method: 'get',

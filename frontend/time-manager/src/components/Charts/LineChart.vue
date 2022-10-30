@@ -60,6 +60,7 @@ export default defineComponent({
     },
     width: {
       type: Number,
+
       default: 400
     },
     height: {

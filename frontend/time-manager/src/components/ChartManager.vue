@@ -1,6 +1,5 @@
 <template>
-
-  <bar-chart :bar_data=all_bar_data />
+  <line-chart :line_data=all_line_data />
 </template>
 
 <script>
@@ -10,24 +9,25 @@ import PieChart from "@/components/Charts/PieChart";
 import ChartsManagerService from "@/service/ChartsManagerService";
 import moment from "moment";
 
+let bar_days = [];
+let bar_usersclockedin = [];
+let bar_users_shouldbe_working = [];
+let line_days = [];
+let line_usersclockedin = [];
+let line_users_shouldbe_working = [];
+var pie_hours_worked;
+var pie_hours_left;
+
 export default {
   name: "CharmManager",
   components: {
-    BarChart,
+    LineChart,
 
   },
   props: {
     userId: Number
   },
- setup(props){
-   let bar_days = [];
-   let bar_usersclockedin = [];
-   let bar_users_shouldbe_working = [];
-   let line_days = [];
-   let line_usersclockedin = [];
-   let line_users_shouldbe_working = [];
-   var pie_hours_worked;
-   var pie_hours_left;
+setup(props) {
    ChartsManagerService.getBarChart().then((response) => {
          if (response.data.data.length > 0) {
            for (let i = 0; i < response.data.data.length; i++) {
@@ -38,6 +38,7 @@ export default {
          }
        }
    );
+
    ChartsManagerService.getLineChart(props.userId).then((response) => {
 
          if (response.data.data.length > 0) {
@@ -50,14 +51,13 @@ export default {
        }
    );
 
-
    ChartsManagerService.getPieChart(props.userId).then((response) => {
-         if (response.data.data.length > 0) {
            pie_hours_left = response.data.data.workingtime
            pie_hours_worked = response.data.data.hoursclocked
-         }
        }
    );
+ },
+  data(){
    return {
      all_bar_data: [bar_days, bar_users_shouldbe_working, bar_usersclockedin],
      all_line_data: [line_days, line_users_shouldbe_working, line_usersclockedin],

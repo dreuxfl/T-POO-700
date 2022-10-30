@@ -48,6 +48,9 @@
         <users-list/>
         <working-times/>
         <chart-manager :user-id=this.userId />
+
+        <chart-manager/>
+
       </div>
 
     </q-page-container>

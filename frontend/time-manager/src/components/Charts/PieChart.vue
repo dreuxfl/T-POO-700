@@ -38,8 +38,6 @@ export default defineComponent({
     Pie
   },
   props: {
-    hoursclockedIn : Number,
-    workingtime : Number,
     chartId: {
       type: String,
       default: 'pie-chart'
@@ -72,7 +70,7 @@ export default defineComponent({
         datasets: [
           {
             backgroundColor: ['#E46651', '#00D8FF'],
-            data: [this.workingtime-this.hoursclockedIn, this.hoursclockedIn]
+            data: [8, 9]
           }
         ]
       },
