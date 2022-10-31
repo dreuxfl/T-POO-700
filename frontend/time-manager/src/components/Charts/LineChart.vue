@@ -80,6 +80,7 @@ export default defineComponent({
       default: () => {}
     }
   },
+
   setup(props){
     let days = Object.assign([], Object.assign([],{...props.line_data})[0]);
     let workinghours = Object.assign([], Object.assign([],{...props.line_data})[1]);
@@ -95,7 +96,6 @@ export default defineComponent({
           borderColor: '#027BE3',
         },
           {
-
             data: clocked,
             label: "Hours Clocked",
             borderWidth: 2,

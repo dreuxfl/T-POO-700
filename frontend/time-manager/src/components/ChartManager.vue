@@ -1,13 +1,19 @@
 <template>
-  <line-chart :line_data=all_line_data />
+    <line-chart v-if='this.chartID === 2' :line_data=all_line_data />
+    <bar-chart v-if='this.chartID === 3'  :bar_data=all_bar_data />
+    <pie-chart v-if='this.chartID === 1'  :workingtime=pie_workingtime :hoursclocked-in=pie_clockin />
 </template>
 
 <script>
 import BarChart from "@/components/Charts/BarChart";
+import Vue from 'vue';
 import LineChart from "@/components/Charts/LineChart";
 import PieChart from "@/components/Charts/PieChart";
 import ChartsManagerService from "@/service/ChartsManagerService";
 import moment from "moment";
+
+
+
 
 let bar_days = [];
 let bar_usersclockedin = [];
@@ -21,11 +27,13 @@ var pie_hours_left;
 export default {
   name: "CharmManager",
   components: {
+    PieChart,
+    BarChart,
     LineChart,
-
   },
   props: {
-    userId: Number
+    userId: Number,
+    chartID: Number
   },
 setup(props) {
    ChartsManagerService.getBarChart().then((response) => {
@@ -52,8 +60,10 @@ setup(props) {
    );
 
    ChartsManagerService.getPieChart(props.userId).then((response) => {
-           pie_hours_left = response.data.data.workingtime
-           pie_hours_worked = response.data.data.hoursclocked
+     if(response.data.data != null) {
+       pie_hours_left = response.data.data.workingtime
+       pie_hours_worked = response.data.data.hoursclocked
+     }
        }
    );
  },
@@ -64,10 +74,8 @@ setup(props) {
      pie_workingtime: pie_hours_left,
      pie_clockin: pie_hours_worked,
    }
-
  }
 }
-
 
 </script>
 
