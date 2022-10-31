@@ -8,7 +8,6 @@ defmodule TimemanagerWeb.UserController do
 
   def login(conn, %{"username" => username, "password" => password}) do
     user = Employees.login(username, password)
-
     if user == nil do
       conn
       |> put_status(:unauthorized)
@@ -40,7 +39,6 @@ defmodule TimemanagerWeb.UserController do
 
   def update(conn, %{"userID" => userID, "user" => user_params}) do
     user = Employees.get_user!(userID)
-
     with {:ok, %User{} = user} <- Employees.update_user(user, user_params) do
       render(conn, "show.json", user: user)
     end

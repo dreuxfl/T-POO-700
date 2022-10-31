@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  phoenix:
+    build: .
+    container_name: "timemanager_phx"
+    image: timemanager:latest
+    ports:
+      - "4000:4000"
+    environment:
+      DB_HOST: host.docker.internal
+      DB_USER: postgres
+      DB_PASS: password
+    
+  
+
+  db:
+    container_name: "psql"
+    image: postgres:15.0
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: timemanager_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASS: password
+      PGDATA: C:\Program Files\PostgreSQL\15\data\pgdata
+    restart: always

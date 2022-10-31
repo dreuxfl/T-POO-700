@@ -35,13 +35,17 @@ defmodule TimemanagerWeb.Router do
 
      post "/workingtimes/:userID", WorkingtimeController, :create
      get "/workingtimes/", WorkingtimeController, :index
-     get "/workingtimes/:userID/", WorkingtimeController, :all
+     get "/workingtimes/:userID", WorkingtimeController, :all
      get "/workingtimes/:userID/:id", WorkingtimeController, :show
      put "/workingtimes/:id", WorkingtimeController, :update
      delete "/workingtimes/:id", WorkingtimeController, :delete
 
      get "/clocks/:userID", ClockController, :index
      post "/clocks/:userID", ClockController, :create
+
+     get "/chartmanager/linechart/:userID", ChartmanagerController, :linechart_workingtime_clockedhours
+     get "/chartmanager/piechart/:userID", ChartmanagerController, :piechart_workingtime_clockedhours_user
+     get "/chartmanager/barchart", ChartmanagerController, :barchart_stats
   end
 
   # Enables LiveDashboard only for development
