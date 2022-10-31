@@ -1,6 +1,26 @@
 import axios from "axios";
 
 export default class WorkingTimesService {
+    static addWorkingTime(selectedUserID, start, end) {
+        return axios({
+            method: 'post',
+            url: `http://localhost:4000/api/workingtimes/${selectedUserID}`,
+            responseType: 'json',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8',
+                // 'Authorization' : `Bearer ${token}`,
+            },
+            data: JSON.stringify({
+                "workingtime":
+                    {
+                        "start": start,
+                        "end": end,
+                    }
+            })
+        });
+    }
+
     static getWorkingTimesByUser(selectedUserID) {
         return axios({
             method: 'get',
@@ -25,6 +45,19 @@ export default class WorkingTimesService {
                         "end": end,
                     }
             })
+        });
+    }
+
+    static deleteWorkingTimes(workingTimeId) {
+        return axios({
+            method: 'delete',
+            url: `http://localhost:4000/api/workingtimes/${workingTimeId}`,
+            responseType: 'json',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8',
+                // 'Authorization' : `Bearer ${token}`,
+            },
         });
     }
 }
