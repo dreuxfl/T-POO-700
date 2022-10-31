@@ -1,27 +1,26 @@
-version: "3"
+version: "3.9"
 
 services:
-  phoenix:
+  web:
     build: .
-    container_name: "timemanager_phx"
-    image: timemanager:latest
     ports:
       - "4000:4000"
-    environment:
-      DB_HOST: host.docker.internal
-      DB_USER: postgres
-      DB_PASS: password
-    
-  
-
+    depends_on:
+      - db
+    env_file: timemanager_envi.env
+    restart: always
+    #networks: 
+    #- mynw
   db:
-    container_name: "psql"
     image: postgres:15.0
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: timemanager_dev
-      POSTGRES_USER: postgres
-      POSTGRES_PASS: password
-      PGDATA: C:\Program Files\PostgreSQL\15\data\pgdata
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
     restart: always
+    #networks: 
+    #- mynw
