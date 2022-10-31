@@ -1,26 +1,23 @@
-# syntax=docker/dockerfile:1
-
 FROM elixir:latest
-
-RUN mkdir /app	
-
-COPY . /app
 
 # Install debian packages
 RUN apt-get update && \
     apt-get install --yes build-essential inotify-tools postgresql-client git && \
     apt-get clean
-	
+
+COPY . /app
+
 WORKDIR /app
 
 # Install Phoenix packages
 RUN mix local.hex --force && \
-    mix local.rebar --force && \
-    mix archive.install --force hex phx_new 1.5.1	
+    mix archive.install --force hex phx_new
 
 RUN mix deps.get
-RUN mix do compile, release
 
 EXPOSE 4000
 
+RUN chmod +x /app/docker-entrypoint.sh
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
+
+CMD ["mix", "phx.server"]
