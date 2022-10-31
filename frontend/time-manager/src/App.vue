@@ -43,11 +43,11 @@
 
       <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
         
-      <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
+      <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center" :key=this.userId>
         <users-list :key=this.userId @transfer-user-event="setSelectedUserID" />
         <clock-work :userId=this.userId />
-        <working-times/>
-        <chart-manager :userId=this.userId :chartID=this.chartID />
+        <working-times :key="this.selectedUserID" :selectedUserID=this.selectedUserID />
+        <chart-manager :key=this.userId :userId=this.userId :chartID=this.chartID />
         <chart-manager/>
 
       </div>

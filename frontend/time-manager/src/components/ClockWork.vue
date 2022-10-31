@@ -109,32 +109,17 @@
     created: function () {
       ClockService.getCurrentClocks(this.userId).then((response) => {
         let totalClockDuration = 0;
-
+        let lastClockStatus = false;
         console.log(response.data.data)
-
-        // if(response.data.data.length > 0){
-        //   response.data.data.forEach(clock => {
-        //     lastClockStatus = clock.status;
-            
-        //     if(clock.status == false){
-        //       totalClockDuration += (new Date(clock.time).getTime() - new Date(lastClockTime).getTime())/1000;
-        //     }
-        //     lastClockTime = clock.time;
-        //   })
-        // }
-
-        // if(lastClockTime) totalClockDuration += (Date.now() - new Date(lastClockTime).getTime())/1000
-        // this.IsClockIn = !lastClockTime  //le statut du bouton doit être l'opposé 
-        // this.time_clockedIn = useStopwatch(totalClockDuration, lastClockStatus); //de la dernière valeur de la bdd
 
         if(response.data.data.length > 0){
           response.data.data.forEach(clock => {
             if(clock.status) totalClockDuration -= new Date(clock.time).getTime();
             else totalClockDuration += new Date(clock.time).getTime();
           })
-        }
 
-        let lastClockStatus = response.data.data.at(-1).status;
+          lastClockStatus= response.data.data.at(-1).status;
+        }
 
         if(lastClockStatus) totalClockDuration += (Date.now());
 

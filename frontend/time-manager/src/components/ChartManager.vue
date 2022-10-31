@@ -11,9 +11,6 @@ import PieChart from "@/components/Charts/PieChart";
 import ChartsManagerService from "@/service/ChartsManagerService";
 import moment from "moment";
 
-
-
-
 let bar_days = [];
 let bar_usersclockedin = [];
 let bar_users_shouldbe_working = [];
@@ -21,7 +18,6 @@ let line_days = [];
 let line_usersclockedin = [];
 let line_users_shouldbe_working = [];
 let pie_datas = [];
-
 
 export default {
   name: "CharmManager",
