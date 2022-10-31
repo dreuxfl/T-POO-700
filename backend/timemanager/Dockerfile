@@ -1,23 +1,26 @@
+# syntax=docker/dockerfile:1
+
 FROM elixir:latest
 
-COPY . .
+RUN mkdir /app	
 
+COPY . /app
 
-RUN export MIX_ENV=prod && \
-    rm -Rf _build && \
-    apt-get update && \
-    apt-get install -y postgresql-client && \
-    apt-get install -y inotify-tools && \
-    apt-get install -y nodejs && \
-    curl -L https://npmjs.org/install.sh | sh && \
-    mix local.hex --force && \
+# Install debian packages
+RUN apt-get update && \
+    apt-get install --yes build-essential inotify-tools postgresql-client git && \
+    apt-get clean
+	
+WORKDIR /app
+
+# Install Phoenix packages
+RUN mix local.hex --force && \
     mix local.rebar --force && \
-    mix deps.get && \
-    mix release && \
-    mix archive.install hex phx_new 1.6.14 --force
-    
+    mix archive.install --force hex phx_new 1.5.1	
 
+RUN mix deps.get
+RUN mix do compile, release
 
+EXPOSE 4000
 
-CMD ["mix", "ecto.setup"]
-CMD ["mix", "phx.server"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
