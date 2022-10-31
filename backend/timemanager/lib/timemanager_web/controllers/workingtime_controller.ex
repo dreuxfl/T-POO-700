@@ -6,9 +6,22 @@ defmodule TimemanagerWeb.WorkingtimeController do
 
   action_fallback TimemanagerWeb.FallbackController
 
+  def index_with_params(conn, %{"userID" => userID}) do
+    {parsedUserID, ""} = Integer.parse(userID)
+    workingtimes = Workinghours.list_workingtimes()
+    url_params = Plug.Conn.fetch_query_params(conn)
+    started = NaiveDateTime.from_iso8601!(url_params.query_params["start"])
+    ended = NaiveDateTime.from_iso8601!(url_params.query_params["end"])
+    user_workingtimes = Enum.filter(workingtimes, fn(workingtime) -> workingtime.user != nil &&
+                                                                       workingtime.user == parsedUserID &&
+                                                                       NaiveDateTime.compare(workingtime.start,started) != :lt &&
+                                                                       NaiveDateTime.compare(workingtime.end,ended) != :gt
+    end)
+    render(conn, "index.json", workingtimes: user_workingtimes)
+  end
+
   def create(conn, %{"userID" => userID, "workingtime" => workingtime_params}) do
     new_working_time = Map.put(workingtime_params, "user", userID)
-
     with {:ok, %Workingtime{} = workingtime} <- Workinghours.create_workingtime(new_working_time) do
       conn
       |> put_status(:created)
@@ -43,7 +56,6 @@ defmodule TimemanagerWeb.WorkingtimeController do
 
   def update(conn, %{"id" => wtID, "workingtime" => workingtime_params}) do
     workingtime = Workinghours.get_workingtime!(wtID)
-
     with {:ok, %Workingtime{} = workingtime} <- Workinghours.update_workingtime(workingtime, workingtime_params) do
       render(conn, "show.json", workingtime: workingtime)
     end

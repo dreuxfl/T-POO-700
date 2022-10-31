@@ -30,29 +30,30 @@
           </q-item>
         </q-list>
         </q-btn-dropdown>
-
         <q-space />
-
         <q-btn color="primary" icon-right="person" label="Profile" @click="toggleRightDrawer" />
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
-      <UserLogin @user-create-event="setUserId" @user-login-event="setUserId"/>
+      <User @create-user-event="setUserId"  @user-login-event="setUserId"/>
     </q-drawer>
 
     <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
 
-      <q-btn v-if="userId === null" color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
+      <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
         
-      <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center ">
+      <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
         <clock-work :userId=this.userId />
+        <users-list/>
+        <working-times/>
+        <chart-manager :user-id=this.userId />
 
-        <users-list @transfer-user-event="setSelectedUserID" />
+        <users-list :key=this.userId @transfer-user-event="setSelectedUserID" />
+        <chart-manager/>
 
-        <working-times :key="this.selectedUserID" :selectedUserID=this.selectedUserID />
       </div>
-      
+
     </q-page-container>
   </q-layout>
 </template>
@@ -61,36 +62,37 @@
   import { ref } from 'vue'
 
   import ClockWork from "./components/ClockWork";
-  import UsersList from "./components/UsersList";
+  import User from "./components/User";
   import WorkingTimes from "./components/WorkingTimes";
-  import UserLogin from "./components/User";
+  import ChartManager from "@/components/ChartManager";
+  import UsersList from "@/components/UsersList";
+
 
   export default {
     name: 'LayoutDefault',
 
     components: {
-      ClockWork,
       UsersList,
-      WorkingTimes,
-      UserLogin
+      ChartManager,
+      ClockWork,
+      User,
+      WorkingTimes
     },
 
     methods:{
       setUserId(payload){
-        this.userId = payload.id;
+          this.userId = payload.id;
+          console.log(this.userId);
       },
-      toggleRightDrawer() {
+        toggleRightDrawer() {
+          
         this.rightDrawerOpen = !this.rightDrawerOpen;
       },
-      setSelectedUserID(payload){
-        this.selectedUserID = payload.id;
-      }
     },
     data() {
       return {
         rightDrawerOpen : ref(false),
         userId: null,
-        selectedUserID: null
       }
     }
   }

@@ -27,4 +27,11 @@ export default class ClockService {
             url: `http://localhost:4000/api/clocks/${userId}`
         });
     }
+
+    static getCurrentClocks(userId) {
+        return axios({
+            method: 'get',
+            url: `http://localhost:4000/api/clocks/${userId}/today`
+        });
+    }
 }
