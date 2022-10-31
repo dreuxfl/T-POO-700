@@ -9,7 +9,22 @@ defmodule TimemanagerWeb.ClockController do
   user_clocks = []
 
   def index(conn, %{"userID" => userID}) do
-    clocks = Chrono.list_clocks()
+    url_params = Plug.Conn.fetch_query_params(conn)
+    if(is_nil(url_params.query_params["date"])) do
+      clocks = Chrono.list_clocks()
+      {parsedUserID, ""} = Integer.parse(userID)
+      user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsedUserID end)
+      render(conn, "index.json", clocks: user_clocks)
+    else
+      clocks = Chrono.list_clocks_by_date(url_params.query_params["date"])
+      {parsedUserID, ""} = Integer.parse(userID)
+      user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsedUserID end)
+      render(conn, "index.json", clocks: user_clocks)
+    end
+  end
+
+  def fetchCurrentClocks(conn, %{"userID" => userID}) do
+    clocks = Chrono.list_current_clocks
     {parsedUserID, ""} = Integer.parse(userID)
     user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsedUserID end)
     render(conn, "index.json", clocks: user_clocks)

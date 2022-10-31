@@ -49,6 +49,9 @@
         <working-times/>
         <chart-manager :userId=this.userId :chartID=this.chartID />
 
+        <users-list :key=this.userId @transfer-user-event="setSelectedUserID" />
+        <chart-manager/>
+
       </div>
 
     </q-page-container>
