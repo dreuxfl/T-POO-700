@@ -48,7 +48,7 @@
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center ">
         <clock-work :userId=this.userId />
 
-        <users-list @transfer-user-event="setSelectedUserID" />
+        <users-list :key=this.userId @transfer-user-event="setSelectedUserID" />
 
         <working-times :key="this.selectedUserID" :selectedUserID=this.selectedUserID />
       </div>
