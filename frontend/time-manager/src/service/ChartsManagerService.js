@@ -2,12 +2,14 @@ import axios from "axios";
 import moment from "moment";
 
 export default class ChartsManagerService {
+
     static getBarChart() {
         return axios({
             method: 'get',
             url: `http://localhost:4000/api/chartmanager/barchart`
         });
     }
+
     static getLineChart(userID) {
         const now = new Date();
         const end = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss");

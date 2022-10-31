@@ -5,8 +5,8 @@
       :chart-options="chartOptions"
       :chart-data="chartData"
       :chart-id="chartId"
-      :dataset-id-key="datasetIdKey"
       :plugins="plugins"
+      :dataset-id-key="datasetIdKey"
       :css-classes="cssClasses"
       :styles="styles"
       :width="width"
@@ -26,8 +26,7 @@ import {
   Tooltip,
   Legend,
   ArcElement,
-  CategoryScale,
-  Plugin
+  CategoryScale
 } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
@@ -38,6 +37,7 @@ export default defineComponent({
     Pie
   },
   props: {
+    pie_data : Array,
     chartId: {
       type: String,
       default: 'pie-chart'
@@ -63,14 +63,17 @@ export default defineComponent({
       default: () => {}
     }
   },
-  data() {
+  setup(props) {
+    console.log({...props.pie_data}[0]);
+    let hours_left = {...props.pie_data}[0] - {...props.pie_data}[1];
+    let hours_worked = {...props.pie_data}[1];
     return{
       chartData: {
         labels: ['Work Hours Left', 'Hours Clocked'],
         datasets: [
           {
             backgroundColor: ['#E46651', '#00D8FF'],
-            data: [8, 9]
+            data: [hours_left, hours_worked]
           }
         ]
       },

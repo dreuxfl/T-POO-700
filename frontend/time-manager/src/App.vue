@@ -13,19 +13,19 @@
         <q-list>
           <q-item clickable v-close-popup @click="onItemClick">
             <q-item-section>
-              <q-item-label>Chart 1</q-item-label>
+              <q-item-label @click="setchartID(1)">Pie Chart</q-item-label>
             </q-item-section>
           </q-item>
 
           <q-item clickable v-close-popup @click="onItemClick">
             <q-item-section>
-              <q-item-label>Chart 2</q-item-label>
+              <q-item-label @click="setchartID(2)"> Line Chart</q-item-label>
             </q-item-section>
           </q-item>
 
           <q-item clickable v-close-popup @click="onItemClick">
             <q-item-section>
-              <q-item-label>Chart 3</q-item-label>
+              <q-item-label @click="setchartID(3)">Bar Chart</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -44,12 +44,10 @@
       <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
         
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
-        <clock-work :userId=this.userId />
-        <users-list/>
-        <working-times/>
-        <chart-manager :user-id=this.userId />
-
         <users-list :key=this.userId @transfer-user-event="setSelectedUserID" />
+        <clock-work :userId=this.userId />
+        <working-times/>
+        <chart-manager :userId=this.userId :chartID=this.chartID />
         <chart-manager/>
 
       </div>
@@ -59,14 +57,13 @@
 </template>
 
 <script>
-  import { ref } from 'vue'
 
+  import Vue, { ref } from 'vue'
   import ClockWork from "./components/ClockWork";
   import User from "./components/User";
   import WorkingTimes from "./components/WorkingTimes";
   import ChartManager from "@/components/ChartManager";
   import UsersList from "@/components/UsersList";
-
 
   export default {
     name: 'LayoutDefault',
@@ -81,18 +78,24 @@
 
     methods:{
       setUserId(payload){
-          this.userId = payload.id;
-          console.log(this.userId);
+        this.userId = payload.id;
       },
-        toggleRightDrawer() {
-          
+      toggleRightDrawer() {
         this.rightDrawerOpen = !this.rightDrawerOpen;
       },
+      setSelectedUserID(payload){
+        this.selectedUserID = payload.id;
+      },
+      setchartID(chart){
+        this.chartID = chart;
+      }
     },
     data() {
       return {
         rightDrawerOpen : ref(false),
         userId: null,
+        chartID: 0,
+        selectedUserID: null,
       }
     }
   }
