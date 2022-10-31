@@ -44,12 +44,10 @@
       <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
         
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
+        <users-list :key=this.userId @transfer-user-event="setSelectedUserID" />
         <clock-work :userId=this.userId />
-        <users-list/>
         <working-times/>
         <chart-manager :userId=this.userId :chartID=this.chartID />
-
-        <users-list :key=this.userId @transfer-user-event="setSelectedUserID" />
         <chart-manager/>
 
       </div>
@@ -80,11 +78,13 @@
 
     methods:{
       setUserId(payload){
-          this.userId = payload.id;
-          console.log(this.userId);
+        this.userId = payload.id;
       },
-        toggleRightDrawer() {
+      toggleRightDrawer() {
         this.rightDrawerOpen = !this.rightDrawerOpen;
+      },
+      setSelectedUserID(payload){
+        this.selectedUserID = payload.id;
       },
       setchartID(chart){
         this.chartID = chart;
@@ -95,8 +95,8 @@
         rightDrawerOpen : ref(false),
         userId: null,
         chartID: 0,
+        selectedUserID: null,
       }
     }
-
   }
 </script>
