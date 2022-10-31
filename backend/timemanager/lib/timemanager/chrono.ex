@@ -7,7 +7,6 @@ defmodule Timemanager.Chrono do
   alias Timemanager.Repo
 
   alias Timemanager.Chrono.Clock
-
   @doc """
   Returns the list of clocks.
 
@@ -21,6 +20,25 @@ defmodule Timemanager.Chrono do
     Repo.all(Clock)
   end
 
+  def list_clocks_by_date(date) do
+    query = from c in Clock,
+      where: c.time > (^date)
+    Repo.all(query)
+  end
+
+  def list_current_clocks do
+    today = Date.utc_today()
+    todayNaive =  DateTime.to_naive( %DateTime{
+      year: today.year, month: today.month, day: today.day, zone_abbr: "CET",
+      hour: 0, minute: 0, second: 0, microsecond: {0, 0},
+      utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"
+    })
+    # todayNaiveString = NaiveDatetime.to_string(todayNaive)
+
+    query = from c in Clock,
+      where: c.time > (^todayNaive)
+    Repo.all(query)
+  end
   @doc """
   Gets a single clock.
 
