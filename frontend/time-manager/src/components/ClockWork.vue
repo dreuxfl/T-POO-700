@@ -11,11 +11,11 @@
       </q-card-section>
 
       <q-card-section class="text-center">
-        <p  v-if="lastClockTime === null">You never clocked in</p>
+        <p  v-if="lastClockTime === null">You never clocked in <strong>today</strong></p>
         <p  v-else>Last Clock In : {{ lastClockTime }}</p>
 
 
-        <p>Time Clocked In: {{time_clockedIn.hours + time_clockedIn.days*24}} hours, {{time_clockedIn.minutes}} minutes, {{time_clockedIn.seconds}} seconds</p>
+        <p>Time Clocked In: <strong>{{time_clockedIn.hours + time_clockedIn.days*24}} hours, {{time_clockedIn.minutes}} minutes, {{time_clockedIn.seconds}} seconds</strong></p>
       </q-card-section>
       
     </q-card>
@@ -107,19 +107,50 @@
       userId : Number
     },
     created: function () {
-      ClockService.getClocks(this.userId).then((response) => {
+      ClockService.getCurrentClocks(this.userId).then((response) => {
+        let totalClockDuration = 0;
+
+        console.log(response.data.data)
+
+        // if(response.data.data.length > 0){
+        //   response.data.data.forEach(clock => {
+        //     lastClockStatus = clock.status;
+            
+        //     if(clock.status == false){
+        //       totalClockDuration += (new Date(clock.time).getTime() - new Date(lastClockTime).getTime())/1000;
+        //     }
+        //     lastClockTime = clock.time;
+        //   })
+        // }
+
+        // if(lastClockTime) totalClockDuration += (Date.now() - new Date(lastClockTime).getTime())/1000
+        // this.IsClockIn = !lastClockTime  //le statut du bouton doit être l'opposé 
+        // this.time_clockedIn = useStopwatch(totalClockDuration, lastClockStatus); //de la dernière valeur de la bdd
+
         if(response.data.data.length > 0){
-          let lastClock = response.data.data.pop();
-          let beforeLast = response.data.data.pop();
+          response.data.data.forEach(clock => {
+            if(clock.status) totalClockDuration -= new Date(clock.time).getTime();
+            else totalClockDuration += new Date(clock.time).getTime();
+          })
+        }
 
-          this.lastClockTime = moment(new Date (lastClock.time)).format("YYYY-MM-DD HH:mm:ss");
-          this.IsClockIn = !lastClock.status;
-          console.log(new Date(lastClock.time).getTime());
+        let lastClockStatus = response.data.data.at(-1).status;
 
-          if(this.IsClockIn) this.time_clockedIn = useStopwatch((new Date(lastClock.time).getTime() - new Date(beforeLast.time).getTime())/1000, false);
-          else this.time_clockedIn = useStopwatch((Date.now() - new Date(lastClock.time).getTime())/1000, true);
-            console.log(this.time_clockedIn.minutes);
-        } 
+        if(lastClockStatus) totalClockDuration += (Date.now());
+
+        this.IsClockIn = !lastClockStatus  //le statut du bouton doit être l'opposé 
+        this.time_clockedIn = useStopwatch(totalClockDuration/1000, lastClockStatus); //de la dernière valeur de la bdd
+
+        // if(response.data.data.length > 0){
+
+        //   this.lastClockTime = moment(new Date (lastStatus.time)).format("YYYY-MM-DD HH:mm:ss");
+        //   this.IsClockIn = !lastClock.status;
+        //   console.log(new Date(lastClock.time).getTime());
+
+        //   if(this.IsClockIn) this.time_clockedIn = useStopwatch((new Date(lastClock.time).getTime() - new Date(beforeLast.time).getTime())/1000, false);
+        //   else this.time_clockedIn = useStopwatch((Date.now() - new Date(lastClock.time).getTime())/1000, true);
+        //     console.log(this.time_clockedIn.minutes);
+        // } 
       });
 
     }

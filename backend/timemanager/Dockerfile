@@ -1,4 +1,3 @@
-
 # syntax=docker/dockerfile:1
 
 FROM elixir:latest
@@ -11,7 +10,7 @@ COPY . /app
 RUN apt-get update && \
     apt-get install --yes build-essential inotify-tools postgresql-client git && \
     apt-get clean
-
+	
 WORKDIR /app
 
 # Install Phoenix packages

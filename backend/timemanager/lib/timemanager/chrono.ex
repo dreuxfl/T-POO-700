@@ -22,7 +22,8 @@ defmodule Timemanager.Chrono do
 
   def list_clocks_by_date(date) do
     query = from c in Clock,
-      where: c.time > (^date)
+      where: c.time > (^date),
+      order_by: c.time
     Repo.all(query)
   end
 
