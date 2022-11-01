@@ -13,9 +13,10 @@ if [ "$1" = 'mix' ]; then
     if [[ -z `psql -Atqc "\\list $PGDATABASE"` ]]; then
       echo "Database $PGDATABASE does not exist. Creating..."
       mix ecto.setup
-      mix ecto.migrate
       echo "Database $PGDATABASE created."
     fi
+
+    mix ecto.migrate
 fi
 
 exec "$@"
