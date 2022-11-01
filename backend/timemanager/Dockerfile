@@ -17,7 +17,9 @@ RUN mix deps.get
 
 EXPOSE 4000
 
+# Execute entrypoints
 RUN chmod +x /app/docker-entrypoint.sh
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
+# Start app
 CMD ["mix", "phx.server"]
