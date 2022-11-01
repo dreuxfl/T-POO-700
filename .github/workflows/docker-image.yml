@@ -1,0 +1,22 @@
+name: Docker Images CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build the Backend Docker image
+      run: docker build backend/timemanager/ --tag timemanager-backend:$(date +%s)
+      
+    - name: Build the Frontend Docker image
+      run: docker build frontend/timemanager/ --tag timemanager-frontend:$(date +%s)
