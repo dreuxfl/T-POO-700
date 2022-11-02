@@ -13,44 +13,43 @@
       </template>
 
       <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn round outline style="color: blue" @click="editUserWorkingTimes(props.row)">
-            <div class="text-blue">
-              <q-icon name="timer" />
-            </div>
+        <q-td :props="props" class="q-gutter-x-xs">
+          <q-btn round outline color="primary" @click="editUserWorkingTimes(props.row)">
+            <q-icon name="timer" />
           </q-btn>
 
-          <q-btn round outline style="color: yellow" @click="editUser(props.row)">
-            <div class="text-yellow">
-              <q-icon name="mode_edit" />
-            </div>
+          <q-btn round outline color="secondary" @click="showEditUserModal(props.row)">
+            <q-icon name="mode_edit" />
           </q-btn>
 
-          <q-btn round outline style="color: red" @click="deleteUser(props.row)">
-            <div class="text-red">
-              <q-icon name="delete" />
-            </div>
+          <q-btn round outline color="negative" @click="deleteUser(props.row)">
+            <q-icon name="delete" />
           </q-btn>
         </q-td>
-
-        <q-drawer v-model="rightDrawerEditingUser" side="right" behavior="mobile" elevated>
-          <h5 class="text-h5 text-blue">You are editing user #{{ this.selectedUserID }}</h5>
-
-          <h5 class="text-h5 text-blue">Username</h5>
-          <q-input filled v-model="username" />
-
-          <h5 class="text-h5 text-blue">Email</h5>
-          <q-input filled v-model="email" />
-
-          <q-btn round outline style="color: blue" @click="saveEditedUser(props.row)">
-            <div class="text-blue">
-              <q-icon name="save" />
-            </div>
-          </q-btn>
-        </q-drawer>
       </template>
     </q-table>
   </div>
+
+  <q-dialog v-model="showUserEdit" persistent >
+    <q-card style="width: 400px; max-width: 80vw;" >
+      <q-card-section>
+        <div class="text-h6">Edit user #{{this.id }}</div>
+      </q-card-section>
+      <q-form @submit="saveEditedUser">
+        <q-card-section class="q-pt-none">
+          <q-input filled v-model="email" label="Email" hint="xxx@yyy" lazy-rules
+            :rules="[val => val && val.length > 0 || 'Email is required']" />
+          <q-input filled v-model="username" label="Username" lazy-rules
+            :rules="[val => val && val.length > 0 || 'Username is required']" />
+          <q-card-actions align="right">
+            <q-btn flat label="OK" type="submit" color="primary"/>
+            <q-btn flat label="Cancel" color="negative"  v-close-popup />
+          </q-card-actions>
+        </q-card-section>
+      </q-form>
+      
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -90,6 +89,7 @@ const columns = [
 
 export default {
   name: 'UsersList',
+
   setup () {
     const $q = useQuasar()
 
@@ -110,40 +110,55 @@ export default {
       rows: [],
       filter: '',
       rightDrawerEditingUser: false,
-      selectedUserID: null,
+      selectedUserId: null,
       username: null,
       email: null,
+      showUserEdit: false,
     }
   },
   methods: {
     editUserWorkingTimes(row) {
-      this.selectedUserID = row.id;
-      this.$emit('transfer-user-event', {id: this.selectedUserID});
+      this.selectedUserId = row.id;
+      this.$emit('user-select-event', {id: this.selectedUserId});
     },
-    editUser(row) {
-      this.rightDrawerEditingUser = true
+    showEditUserModal(row) {
+      this.showUserEdit = true;
       this.id = row.id;
       this.username = row.username;
       this.email = row.email;
     },
     saveEditedUser() {
       UserService.putUser(this.email, this.username, this.id)
-        .then(() => {
-          this.showNotif(true, "User updated successfully");
-          this.rightDrawerEditingUser = false;
-        })
-        .catch(e => {
-          console.log(e);
-        });
+      .then(() => {
+        this.showNotif(true, "User updated successfully");
+        this.$emit('rerender-user-list-event');
+      })
+      .catch(e => {
+        console.log(e);
+        this.showNotif(true, "User update failed");
+      })
+      .finally(() => {
+        this.showUserEdit= false
+      });
+      
     },
     deleteUser(row) {
-      UserService.deleteUser(row.id)
-          .then(() => {
-            this.showNotif(true, "User deleted successfully!")
-          })
-          .catch(e => {
-            console.log(e)
-          })
+      this.$q.dialog({
+        title: `Confirm user delete user #${row.id}`,
+        message: `Are you sure you want to delete ${row.username} ?`,
+        cancel: true,
+        persistent: true,
+      })
+      .onOk(() => {
+        UserService.deleteUser(row.id).then(() => {
+          this.showNotif(true, "User deleted successfully!")
+          this.$emit('rerender-user-list-event');
+        })
+        .catch(e => {
+          console.log(e)
+        })
+              
+      })      
     }
   },
   created() {

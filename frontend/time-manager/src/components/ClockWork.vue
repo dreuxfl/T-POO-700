@@ -110,7 +110,6 @@
       ClockService.getCurrentClocks(this.userId).then((response) => {
         let totalClockDuration = 0;
         let lastClockStatus = false;
-        console.log(response.data.data)
 
         if(response.data.data.length > 0){
           response.data.data.forEach(clock => {
