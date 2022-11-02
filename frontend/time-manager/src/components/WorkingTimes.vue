@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <q-table title="Working Times" :rows="rows" :columns="columns" row-key="id">
       <template v-slot:top-right>
-        <q-btn round outline color="primary" @click="addWorkingTime">
+        <q-btn round outline color="primary" @click="addWorkingTime()">
             <q-icon name="add" />
         </q-btn>
       </template>
@@ -27,34 +27,32 @@
       <q-card-section>
         <div class="text-h6">Add a working time{{this.id }}</div>
       </q-card-section>
-      <q-form @submit="saveAddedWorkingTime">
+      <q-form @submit="submitWorkingTime(true)">
         <q-card-section class="q-pt-none">
           <div class="text-h6">Start time</div>
           <q-input filled v-model="start">
             <template v-slot:append>
               <q-td class="q-gutter-x-xs" >
-                <q-btn round outline color="primary" @click="showDateSelectorCreateModal(true)">
+                <q-btn round outline color="primary" @click="showModal(true, false)">
                   <q-icon name="event" />
                 </q-btn>
 
-                <q-btn round outline color="primary" @click="showTimeSelectorCreateModal(true)">
+                <q-btn round outline color="primary" @click="showModal(true, true)">
                   <q-icon name="access_time" />
                 </q-btn>
               </q-td>
             </template>
-            
-
           </q-input>
 
           <div class="text-h6">End time</div>
           <q-input filled v-model="end">
             <template v-slot:append>
               <q-td class="q-gutter-x-xs" >
-                <q-btn round outline color="primary" @click="showDateSelectorEditModal(false)">
+                <q-btn round outline color="primary" @click="showModal(false, false)">
                   <q-icon name="event" />
                 </q-btn>
 
-                <q-btn round outline color="primary" @click="showTimeSelectorEditModal(false)">
+                <q-btn round outline color="primary" @click="showModal(false, true)">
                   <q-icon name="access_time" />
                 </q-btn>
               </q-td>
@@ -70,17 +68,16 @@
       
     </q-card>
   </q-dialog>
-
   
   <q-dialog v-model="showDateSelector" >
     <q-date v-if="isStartDate" v-model="start" mask="YYYY-MM-DD HH:mm">
       <div class="row items-center justify-end">
-        <q-btn v-close-popup label="Close" color="primary" flat />
+        <q-btn v-close-popup label="Ok" color="primary" flat />
       </div>
     </q-date>
     <q-date v-else v-model="end" mask="YYYY-MM-DD HH:mm">
       <div class="row items-center justify-end">
-        <q-btn v-close-popup label="Close" color="primary" flat />
+        <q-btn v-close-popup label="Ok" color="primary" flat />
       </div>
     </q-date>
   </q-dialog>
@@ -88,12 +85,12 @@
   <q-dialog v-model="showTimeSelector" >
     <q-time v-if="isStartDate" v-model="start" mask="YYYY-MM-DD HH:mm" format24h>
       <div class="row items-center justify-end">
-        <q-btn v-close-popup label="Close" color="primary" flat />
+        <q-btn v-close-popup label="Ok" color="primary" flat />
       </div>
     </q-time>
     <q-time v-else v-model="end" mask="YYYY-MM-DD HH:mm" format24h>
       <div class="row items-center justify-end">
-        <q-btn v-close-popup label="Close" color="primary" flat />
+        <q-btn v-close-popup label="Ok" color="primary" flat />
       </div>
     </q-time>
   </q-dialog>
@@ -175,6 +172,10 @@ export default {
     }
   },
   methods: {
+    showModal(isStartDate, isTimeSelector){
+      this.isStartDate = isStartDate;
+      isTimeSelector? this.showTimeSelector = true : this.showDateSelector = true
+    },
     addWorkingTime() {
       console.log("this.addWorkingTime")
       this.showWorkingTimesCreate = true
@@ -182,7 +183,18 @@ export default {
       this.start = null
       this.end = null
     },
-    saveAddedWorkingTime() {
+    editWorkingTime(row) {
+      this.rightDrawerEditingWorkingTime = true
+      this.id = row.id
+      this.start = row.start
+      this.end = row.end
+    },
+    submitWorkingTime(){
+      if(this.isEdit) this.saveEditedWorkingTime();
+
+      else this.saveNewWorkingTime();
+    },
+    saveNewWorkingTime() {
       if (this.start === null || this.end === null) {
         this.showNotif(false, "Start and end time must be filled!")
         return
@@ -197,12 +209,6 @@ export default {
           console.log(e)
         })
     },
-    editWorkingTime(row) {
-      this.rightDrawerEditingWorkingTime = true
-      this.id = row.id
-      this.start = row.start
-      this.end = row.end
-    },
     saveEditedWorkingTime () {
       WorkingTimesService.editWorkingTimes(this.id, this.start, this.end)
         .then(() => {
@@ -213,6 +219,7 @@ export default {
           console.log(e)
         })
     },
+
     deleteWorkingTime(row) {
       WorkingTimesService.deleteWorkingTimes(row.id)
         .then(() => {
@@ -221,22 +228,6 @@ export default {
         .catch(e => {
           console.log(e)
         })
-    },
-    showDateSelectorCreateModal(isStartDate){
-      this.isStartDate = isStartDate;
-      this.showDateSelector = true;
-    },
-    showDateSelectorEditModal(isStartDate){
-      this.isStartDate = isStartDate;
-      this.showDateSelector = true;
-    },
-    showTimeSelectorCreateModal(isStartDate){
-      this.isStartDate = isStartDate;
-      this.showTimeSelector = true;
-    },
-    showTimeSelectorEditModal(isStartDate){
-      this.isStartDate = isStartDate;
-      this.showTimeSelector = true;
     },
   },
   props: {
