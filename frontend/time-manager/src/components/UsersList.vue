@@ -133,7 +133,7 @@ export default {
       UserService.putUser(this.email, this.username, this.id)
       .then(() => {
         this.showNotif(true, "User updated successfully");
-        this.$emit('user-edit-event');
+        this.$emit('rerender-user-list-event');
       })
       .catch(e => {
         console.log(e);
@@ -145,13 +145,22 @@ export default {
       
     },
     deleteUser(row) {
-      UserService.deleteUser(row.id)
-      .then(() => {
-        this.showNotif(true, "User deleted successfully!")
+      this.$q.dialog({
+        title: `Confirm user delete user #${row.id}`,
+        message: `Are you sure you want to delete ${row.username} ?`,
+        cancel: true,
+        persistent: true,
       })
-      .catch(e => {
-        console.log(e)
-      })
+      .onOk(() => {
+        UserService.deleteUser(row.id).then(() => {
+          this.showNotif(true, "User deleted successfully!")
+          this.$emit('rerender-user-list-event');
+        })
+        .catch(e => {
+          console.log(e)
+        })
+              
+      })      
     }
   },
   created() {

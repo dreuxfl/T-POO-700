@@ -44,11 +44,10 @@
       <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
         
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
-        <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @user-edit-event="rerenderUserList" />
+        <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @rerender-user-list-event="rerenderUserList" />
         <clock-work :userId=this.userId />
         <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId />
         <chart-manager :key="this.chartManagerKey" :userId=this.userId :chartId=this.chartId />
-
       </div>
 
     </q-page-container>
