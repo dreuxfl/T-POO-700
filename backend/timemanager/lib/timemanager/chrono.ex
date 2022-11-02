@@ -27,6 +27,14 @@ defmodule Timemanager.Chrono do
     Repo.all(query)
   end
 
+  def list_clocks_by_dateuid(date, uid) do
+    query = from c in Clock,
+                 where: c.time == (^date) and c.user == ^uid,
+                 order_by: c.time
+    Repo.all(query)
+  end
+
+
   def list_current_clocks do
     today = Date.utc_today()
     todayNaive =  DateTime.to_naive( %DateTime{
@@ -38,6 +46,13 @@ defmodule Timemanager.Chrono do
 
     query = from c in Clock,
       where: c.time > (^todayNaive)
+    Repo.all(query)
+  end
+
+
+  def list_clocks_distinctUID() do
+    query = from c in Clock,
+      distinct: c.user
     Repo.all(query)
   end
   @doc """
