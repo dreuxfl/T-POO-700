@@ -15,19 +15,17 @@
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" class="q-gutter-x-xs">
           <q-btn round outline color="primary" @click="editUserWorkingTimes(props.row)">
-              <q-icon name="timer" />
+            <q-icon name="timer" />
           </q-btn>
 
           <q-btn round outline color="secondary" @click="showEditUserModal(props.row)">
-            
-              <q-icon name="mode_edit" />
+            <q-icon name="mode_edit" />
           </q-btn>
 
           <q-btn round outline color="negative" @click="deleteUser(props.row)">
-              <q-icon name="delete" />
+            <q-icon name="delete" />
           </q-btn>
         </q-td>
-
       </template>
     </q-table>
   </div>
@@ -35,7 +33,7 @@
   <q-dialog v-model="showUserEdit" persistent >
     <q-card style="width: 400px; max-width: 80vw;" >
       <q-card-section>
-        <div class="text-h6">You are editing user #{{this.id }}</div>
+        <div class="text-h6">Edit user #{{this.id }}</div>
       </q-card-section>
       <q-form @submit="saveEditedUser">
         <q-card-section class="q-pt-none">

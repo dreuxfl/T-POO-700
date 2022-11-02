@@ -2,142 +2,101 @@
   <div class="q-pa-md">
     <q-table title="Working Times" :rows="rows" :columns="columns" row-key="id">
       <template v-slot:top-right>
-        <q-btn round outline style="color: blue" @click="addWorkingTime()">
-          <div class="text-blue">
+        <q-btn round outline color="primary" @click="addWorkingTime">
             <q-icon name="add" />
-          </div>
         </q-btn>
       </template>
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn round outline style="color: yellow" @click="editWorkingTime(props.row)">
-            <div class="text-yellow">
-              <q-icon name="mode_edit" />
-            </div>
+          <q-btn round outline color="secondary" @click="editWorkingTime(props.row)">
+            <q-icon name="mode_edit" />
           </q-btn>
 
-          <q-btn round outline style="color: red" @click="deleteWorkingTime(props.row)">
-            <div class="text-red">
-              <q-icon name="delete" />
-            </div>
+          <q-btn round outline color="negative" @click="deleteWorkingTime(props.row)">
+            <q-icon name="delete" />
           </q-btn>
         </q-td>
 
-        <q-drawer v-model="rightDrawerAddingWorkingTime" side="right" behavior="mobile" elevated>
-          <h5 class="text-h5 text-blue">You are adding a working time</h5>
-
-          <h5 class="text-h5 text-blue">Start time</h5>
-          <q-input filled v-model="start">
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="start" mask="YYYY-MM-DD HH:mm">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-
-            <q-icon name="access_time" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-time v-model="start" mask="YYYY-MM-DD HH:mm" format24h>
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-time>
-              </q-popup-proxy>
-            </q-icon>
-          </q-input>
-
-          <h5 class="text-h5 text-blue">End time</h5>
-          <q-input filled v-model="end">
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="end" mask="YYYY-MM-DD HH:mm">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-
-            <q-icon name="access_time" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-time v-model="end" mask="YYYY-MM-DD HH:mm" format24h>
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-time>
-              </q-popup-proxy>
-            </q-icon>
-          </q-input>
-
-          <q-btn round outline style="color: blue" @click="saveAddedWorkingTime()">
-            <div class="text-blue">
-              <q-icon name="save" />
-            </div>
-          </q-btn>
-        </q-drawer>
-
-        <q-drawer v-model="rightDrawerEditingWorkingTime" side="right" behavior="mobile" elevated>
-          <h5 class="text-h5 text-blue">You are editing working time #{{ this.id }}</h5>
-
-          <h5 class="text-h5 text-blue">Start time</h5>
-          <q-input filled v-model="start">
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="start" mask="YYYY-MM-DD HH:mm">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-
-            <q-icon name="access_time" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-time v-model="start" mask="YYYY-MM-DD HH:mm" format24h>
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-time>
-              </q-popup-proxy>
-            </q-icon>
-          </q-input>
-
-          <h5 class="text-h5 text-blue">End time</h5>
-          <q-input filled v-model="end">
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="end" mask="YYYY-MM-DD HH:mm">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-
-            <q-icon name="access_time" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-time v-model="end" mask="YYYY-MM-DD HH:mm" format24h>
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-time>
-              </q-popup-proxy>
-            </q-icon>
-          </q-input>
-
-          <q-btn round outline style="color: blue" @click="saveEditedWorkingTime(props.row)">
-            <div class="text-blue">
-              <q-icon name="save" />
-            </div>
-          </q-btn>
-        </q-drawer>
       </template>
     </q-table>
   </div>
+
+  <q-dialog v-model="showWorkingTimesCreate" persistent >
+    <q-card style="width: 400px; max-width: 80vw;" >
+      <q-card-section>
+        <div class="text-h6">Add a working time{{this.id }}</div>
+      </q-card-section>
+      <q-form @submit="saveAddedWorkingTime">
+        <q-card-section class="q-pt-none">
+          <div class="text-h6">Start time</div>
+          <q-input filled v-model="start">
+            <template v-slot:append>
+              <q-td class="q-gutter-x-xs" >
+                <q-btn round outline color="primary" @click="showDateSelectorCreateModal(true)">
+                  <q-icon name="event" />
+                </q-btn>
+
+                <q-btn round outline color="primary" @click="showTimeSelectorCreateModal(true)">
+                  <q-icon name="access_time" />
+                </q-btn>
+              </q-td>
+            </template>
+            
+
+          </q-input>
+
+          <div class="text-h6">End time</div>
+          <q-input filled v-model="end">
+            <template v-slot:append>
+              <q-td class="q-gutter-x-xs" >
+                <q-btn round outline color="primary" @click="showDateSelectorEditModal(false)">
+                  <q-icon name="event" />
+                </q-btn>
+
+                <q-btn round outline color="primary" @click="showTimeSelectorEditModal(false)">
+                  <q-icon name="access_time" />
+                </q-btn>
+              </q-td>
+            </template>
+          </q-input>
+
+          <q-card-actions align="right">
+            <q-btn flat label="OK" type="submit" color="primary"/>
+            <q-btn flat label="Cancel" color="negative"  v-close-popup />
+          </q-card-actions>
+        </q-card-section>
+      </q-form>
+      
+    </q-card>
+  </q-dialog>
+
+  
+  <q-dialog v-model="showDateSelector" >
+    <q-date v-if="isStartDate" v-model="start" mask="YYYY-MM-DD HH:mm">
+      <div class="row items-center justify-end">
+        <q-btn v-close-popup label="Close" color="primary" flat />
+      </div>
+    </q-date>
+    <q-date v-else v-model="end" mask="YYYY-MM-DD HH:mm">
+      <div class="row items-center justify-end">
+        <q-btn v-close-popup label="Close" color="primary" flat />
+      </div>
+    </q-date>
+  </q-dialog>
+
+  <q-dialog v-model="showTimeSelector" >
+    <q-time v-if="isStartDate" v-model="start" mask="YYYY-MM-DD HH:mm" format24h>
+      <div class="row items-center justify-end">
+        <q-btn v-close-popup label="Close" color="primary" flat />
+      </div>
+    </q-time>
+    <q-time v-else v-model="end" mask="YYYY-MM-DD HH:mm" format24h>
+      <div class="row items-center justify-end">
+        <q-btn v-close-popup label="Close" color="primary" flat />
+      </div>
+    </q-time>
+  </q-dialog>
 </template>
 
 <script>
@@ -205,16 +164,20 @@ export default {
     return {
       columns,
       rows: [],
-      rightDrawerAddingWorkingTime: false,
-      rightDrawerEditingWorkingTime: false,
       id: null,
       start: null,
-      end: null
+      end: null,
+      showWorkingTimesCreate: false,
+      showWorkingTimesEdit: false,
+      showDateSelector: false,
+      showTimeSelector: false,
+      isStartDate: null,
     }
   },
   methods: {
     addWorkingTime() {
-      this.rightDrawerAddingWorkingTime = true
+      console.log("this.addWorkingTime")
+      this.showWorkingTimesCreate = true
       this.id = null
       this.start = null
       this.end = null
@@ -228,7 +191,7 @@ export default {
       WorkingTimesService.addWorkingTime(this.selectedUserId, this.start, this.end)
         .then(() => {
           this.showNotif(true, "Working time added successfully!")
-          this.rightDrawerAddingWorkingTime = false
+          this.showWorkingTimesCreate = false
         })
         .catch(e => {
           console.log(e)
@@ -258,6 +221,22 @@ export default {
         .catch(e => {
           console.log(e)
         })
+    },
+    showDateSelectorCreateModal(isStartDate){
+      this.isStartDate = isStartDate;
+      this.showDateSelector = true;
+    },
+    showDateSelectorEditModal(isStartDate){
+      this.isStartDate = isStartDate;
+      this.showDateSelector = true;
+    },
+    showTimeSelectorCreateModal(isStartDate){
+      this.isStartDate = isStartDate;
+      this.showTimeSelector = true;
+    },
+    showTimeSelectorEditModal(isStartDate){
+      this.isStartDate = isStartDate;
+      this.showTimeSelector = true;
     },
   },
   props: {
