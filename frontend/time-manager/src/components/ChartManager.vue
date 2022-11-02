@@ -1,7 +1,7 @@
 <template>
-    <line-chart v-if='this.chartID === 2' :line_data=all_line_data />
-    <bar-chart v-if='this.chartID === 3'  :bar_data=all_bar_data />
-    <pie-chart v-if='this.chartID === 1'  :pie_data=all_pie_data />
+    <line-chart v-if='this.chartId === 2' :line_data=all_line_data />
+    <bar-chart v-if='this.chartId === 3'  :bar_data=all_bar_data />
+    <pie-chart v-if='this.chartId === 1'  :pie_data=all_pie_data />
 </template>
 
 <script>
@@ -28,7 +28,7 @@ export default {
   },
   props: {
     userId: Number,
-    chartID: Number
+    chartId: Number
   },
 
 setup(props) {

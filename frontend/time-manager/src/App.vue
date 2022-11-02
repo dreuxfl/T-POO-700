@@ -13,42 +13,41 @@
         <q-list>
           <q-item clickable v-close-popup @click="onItemClick">
             <q-item-section>
-              <q-item-label @click="setchartID(1)">Pie Chart</q-item-label>
+              <q-item-label @click="setchartId(1)">Pie Chart</q-item-label>
             </q-item-section>
           </q-item>
 
           <q-item clickable v-close-popup @click="onItemClick">
             <q-item-section>
-              <q-item-label @click="setchartID(2)"> Line Chart</q-item-label>
+              <q-item-label @click="setchartId(2)"> Line Chart</q-item-label>
             </q-item-section>
           </q-item>
 
           <q-item clickable v-close-popup @click="onItemClick">
             <q-item-section>
-              <q-item-label @click="setchartID(3)">Bar Chart</q-item-label>
+              <q-item-label @click="setchartId(3)">Bar Chart</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
         </q-btn-dropdown>
         <q-space />
-        <q-btn color="primary" icon-right="person" label="Profile" @click="toggleRightDrawer" />
+        <q-btn color="primary" icon-right="person" label="Profile" @click="toggleProfileDrawer" />
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
-      <User @create-user-event="setUserId"  @user-login-event="setUserId"/>
+      <User @create-user-event="userChanged"  @user-login-event="userChanged"/>
     </q-drawer>
 
     <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
 
-      <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleRightDrawer" />
+      <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
         
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center" :key=this.userId>
-        <users-list :key=this.userId @transfer-user-event="setSelectedUserID" />
+        <users-list :key="this.userListKey" @select-user-event="setSelectedUserId" @user-edit-event="rerenderUserList" />
         <clock-work :userId=this.userId />
-        <working-times :key="this.selectedUserID" :selectedUserID=this.selectedUserID />
-        <chart-manager :key=this.userId :userId=this.userId :chartID=this.chartID />
-        <chart-manager/>
+        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId />
+        <chart-manager :key="this.chartManagerKey" :userId=this.userId :chartId=this.chartId />
 
       </div>
 
@@ -58,7 +57,7 @@
 
 <script>
 
-  import Vue, { ref } from 'vue'
+  import { ref } from 'vue'
   import ClockWork from "./components/ClockWork";
   import User from "./components/User";
   import WorkingTimes from "./components/WorkingTimes";
@@ -77,25 +76,42 @@
     },
 
     methods:{
-      setUserId(payload){
-        this.userId = payload.id;
-      },
-      toggleRightDrawer() {
+      toggleProfileDrawer() {
         this.rightDrawerOpen = !this.rightDrawerOpen;
       },
-      setSelectedUserID(payload){
-        this.selectedUserID = payload.id;
+
+      // rerender events
+      rerenderUserList(){ this.userListKey += 1; },
+      rerenderWorkingTimes(){ this.workingTimesKey += 1; },
+      rerenderChartManager(){ this.chartManagerKey += 1; },
+
+      userChanged(payload){
+        this.userId = payload.id;
+        this.rerenderUserList();
+        this.rerenderWorkingTimes();
+        this.rerenderChartManager();
       },
-      setchartID(chart){
-        this.chartID = chart;
+      
+      setSelectedUserId(payload){
+        this.selectedUserId = payload.id;
+        console.log(payload.id)
+        this.rerenderWorkingTimes();
+        this.rerenderChartManager();
+      },
+      setchartId(chart){
+        this.chartId = chart;
+        this.rerenderChartManager();
       }
     },
     data() {
       return {
+        userListKey: 0,
+        workingTimesKey: 0,
+        chartManagerKey: 0,
         rightDrawerOpen : ref(false),
         userId: null,
-        chartID: 0,
-        selectedUserID: null,
+        chartId: 0,
+        selectedUserId: null,
       }
     }
   }

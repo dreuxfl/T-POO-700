@@ -172,7 +172,6 @@ export default {
       });
     },
     onUpdate(){
-      console.log("onupdate pls")
       this.updateUser(this.connectedUserData.email, this.connectedUserData.username, this.userId);
     },
     onDisconnect(){

@@ -225,7 +225,7 @@ export default {
         return
       }
 
-      WorkingTimesService.addWorkingTime(this.selectedUserID, this.start, this.end)
+      WorkingTimesService.addWorkingTime(this.selectedUserId, this.start, this.end)
         .then(() => {
           this.showNotif(true, "Working time added successfully!")
           this.rightDrawerAddingWorkingTime = false
@@ -261,11 +261,11 @@ export default {
     },
   },
   props: {
-    selectedUserID : Number
+    selectedUserId : Number
   },
   created() {
-    if (this.selectedUserID) {
-      WorkingTimesService.getWorkingTimesByUser(this.selectedUserID)
+    if (this.selectedUserId) {
+      WorkingTimesService.getWorkingTimesByUser(this.selectedUserId)
         .then(response => {
           if(response.data.data && response.data.data.length > 0){
             for (let i = 0; i < response.data.data.length; i++) {
