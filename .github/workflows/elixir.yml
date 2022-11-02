@@ -32,7 +32,3 @@ jobs:
       run: |
         cd  backend/timemanager/
         mix deps.get
-    - name: Run tests
-      run: |
-        cd backend/timemanager/config/
-        mix test
