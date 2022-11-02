@@ -36,15 +36,15 @@
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
-      <User @create-user-event="userChanged"  @user-login-event="userChanged"/>
+      <User @user-create-event="userChanged"  @user-login-event="userChanged"/>
     </q-drawer>
 
     <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
 
       <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
         
-      <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center" :key=this.userId>
-        <users-list :key="this.userListKey" @select-user-event="setSelectedUserId" @user-edit-event="rerenderUserList" />
+      <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
+        <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @user-edit-event="rerenderUserList" />
         <clock-work :userId=this.userId />
         <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId />
         <chart-manager :key="this.chartManagerKey" :userId=this.userId :chartId=this.chartId />
@@ -81,9 +81,18 @@
       },
 
       // rerender events
-      rerenderUserList(){ this.userListKey += 1; },
-      rerenderWorkingTimes(){ this.workingTimesKey += 1; },
-      rerenderChartManager(){ this.chartManagerKey += 1; },
+      rerenderUserList(){ 
+        this.userListRenderCount++;
+        this.userListKey = `user-list-${this.userListRenderCount}`; 
+      },
+      rerenderWorkingTimes(){ 
+        this.workingTimesRenderCount++;
+        this.workingTimesKey = `working-times-${this.workingTimesRenderCount}`; 
+      },
+      rerenderChartManager(){ 
+        this.chartManagerRenderCount++;
+        this.chartManagerKey = `chart-manager-${this.chartManagerRenderCount}`; 
+      },
 
       userChanged(payload){
         this.userId = payload.id;
@@ -105,9 +114,12 @@
     },
     data() {
       return {
-        userListKey: 0,
-        workingTimesKey: 0,
-        chartManagerKey: 0,
+        userListRenderCount: 0,
+        workingTimesRenderCount: 0,
+        chartManagerRenderCount: 0,
+        userListKey: "user-list-0",
+        workingTimesKey: "working-times-key-0",
+        chartManagerKey: "chart-manager-0",
         rightDrawerOpen : ref(false),
         userId: null,
         chartId: 0,

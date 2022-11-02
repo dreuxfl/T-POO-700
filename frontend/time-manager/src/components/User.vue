@@ -139,7 +139,7 @@ export default {
       this.customModel = false;
     },
     onRegister() {
-      if (this.accept) this.showNotif (false, 'You need to accept the license and terms first')
+      if (!this.accept) this.showNotif (false, 'You need to accept the license and terms first')
         
       else {
         UserService.postUser(this.email, this.username1, this.password1).then((response)=>{

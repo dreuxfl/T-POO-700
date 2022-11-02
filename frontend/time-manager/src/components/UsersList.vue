@@ -121,7 +121,7 @@ export default {
   methods: {
     editUserWorkingTimes(row) {
       this.selectedUserId = row.id;
-      this.$emit('select-user-event', {id: this.selectedUserId});
+      this.$emit('user-select-event', {id: this.selectedUserId});
     },
     showEditUserModal(row) {
       this.showUserEdit = true;
@@ -133,7 +133,7 @@ export default {
       UserService.putUser(this.email, this.username, this.id)
       .then(() => {
         this.showNotif(true, "User updated successfully");
-        this.$emit('user-edit-event', {id: this.selectedUserId});
+        this.$emit('user-edit-event');
       })
       .catch(e => {
         console.log(e);
@@ -146,12 +146,12 @@ export default {
     },
     deleteUser(row) {
       UserService.deleteUser(row.id)
-          .then(() => {
-            this.showNotif(true, "User deleted successfully!")
-          })
-          .catch(e => {
-            console.log(e)
-          })
+      .then(() => {
+        this.showNotif(true, "User deleted successfully!")
+      })
+      .catch(e => {
+        console.log(e)
+      })
     }
   },
   created() {
