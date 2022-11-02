@@ -10,6 +10,7 @@ import LineChart from "@/components/Charts/LineChart";
 import PieChart from "@/components/Charts/PieChart";
 import ChartsManagerService from "@/service/ChartsManagerService";
 import moment from "moment";
+import async from "async";
 
 let bar_days = [];
 let bar_usersclockedin = [];
@@ -30,36 +31,70 @@ export default {
     userId: Number,
     chartID: Number
   },
+  methods:{
 
-setup(props) {
-   ChartsManagerService.getBarChart().then((response) => {
-         if (response.data.data.length > 0) {
-           for (let i = 0; i < response.data.data.length; i++) {
-             bar_days.push(moment(response.data.data[i].day).format("ddd"))
-             bar_usersclockedin.push(response.data.data[i].usersthatclockedin)
-             bar_users_shouldbe_working.push(response.data.data[i].userworkingtime)
-           }
-         }
-       }
-   );
+  },
 
-   ChartsManagerService.getLineChart(props.userId).then((response) => {
+setup(props, { emit }) {
+  const barchart = async () =>{
+    ChartsManagerService.getBarChart().then((response) => {
+          if (response.data.data.length > 0) {
+            bar_days = []
+            bar_usersclockedin = []
+            bar_users_shouldbe_working = []
+            for (let i = 0; i < response.data.data.length; i++) {
+              bar_days.push(moment(response.data.data[i].day).format("ddd"))
+              bar_usersclockedin.push(response.data.data[i].usersthatclockedin)
+              bar_users_shouldbe_working.push(response.data.data[i].userworkingtime)
+            }
+          }
+        }
+    );
+  }
 
-         if (response.data.data.length > 0) {
-           for (let i = 0; i < response.data.data.length; i++) {
-             line_days.push(moment(response.data.data[i].day).format("ddd"))
-             line_usersclockedin.push(response.data.data[i].hoursclocked)
-             line_users_shouldbe_working.push(response.data.data[i].workingtime)
-           }
-         }
-       }
-   );
+  const linechart = async() =>{
+    ChartsManagerService.getLineChart(props.userId).then((response) => {
+          if (response.data.data.length > 0) {
+            line_usersclockedin = []
+            line_days = []
+            line_users_shouldbe_working = []
+            for (let i = 0; i < response.data.data.length; i++) {
+              line_days.push(moment(response.data.data[i].day).format("ddd"))
+              line_usersclockedin.push(response.data.data[i].hoursclocked)
+              line_users_shouldbe_working.push(response.data.data[i].workingtime)
+            }
+          }
+        }
+    );
+  }
 
-   ChartsManagerService.getPieChart(props.userId).then((response) => {
-     pie_datas.push(response.data.data.hoursclocked)
-     pie_datas.push(response.data.data.workingtime)
-       }
-   );
+  const piechart = async() =>{
+    ChartsManagerService.getPieChart(props.userId).then((response) => {
+          pie_datas = []
+          pie_datas.push(response.data.data.hoursclocked)
+          pie_datas.push(response.data.data.workingtime)
+        }
+    );
+  }
+
+  async function getcharts() {
+    switch (props.chartId) {
+      case 1:
+        await piechart(props.userId);
+        break;
+      case 2:
+        await linechart(props.userId);
+        break;
+      case 3:
+        await barchart();
+        break;
+      default:
+        break;
+    }
+  }
+
+  getcharts()
+
  },
   data(){
    return {
