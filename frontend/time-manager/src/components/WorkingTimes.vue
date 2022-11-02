@@ -8,7 +8,7 @@
       </template>
 
       <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
+        <q-td :props="props" class="q-gutter-x-xs">
           <q-btn round outline color="secondary" @click="editWorkingTime(props.row)">
             <q-icon name="mode_edit" />
           </q-btn>
@@ -22,22 +22,24 @@
     </q-table>
   </div>
 
-  <q-dialog v-model="showWorkingTimesCreate" persistent >
+  <q-dialog v-model="showWorkingTimesModal" persistent >
     <q-card style="width: 400px; max-width: 80vw;" >
       <q-card-section>
-        <div class="text-h6">Add a working time{{this.id }}</div>
+        <div v-if="this.isEditMode" class="text-h6">Modify working time {{this.id }}</div>
+        <div v-else class="text-h6">Add a working time</div>
+
       </q-card-section>
-      <q-form @submit="submitWorkingTime(true)">
+      <q-form @submit="submitWorkingTime">
         <q-card-section class="q-pt-none">
           <div class="text-h6">Start time</div>
           <q-input filled v-model="start">
             <template v-slot:append>
               <q-td class="q-gutter-x-xs" >
-                <q-btn round outline color="primary" @click="showModal(true, false)">
+                <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.StartDate)">
                   <q-icon name="event" />
                 </q-btn>
 
-                <q-btn round outline color="primary" @click="showModal(true, true)">
+                <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.StartTime)">
                   <q-icon name="access_time" />
                 </q-btn>
               </q-td>
@@ -48,11 +50,11 @@
           <q-input filled v-model="end">
             <template v-slot:append>
               <q-td class="q-gutter-x-xs" >
-                <q-btn round outline color="primary" @click="showModal(false, false)">
+                <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.EndDate)">
                   <q-icon name="event" />
                 </q-btn>
 
-                <q-btn round outline color="primary" @click="showModal(false, true)">
+                <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.EndTime)">
                   <q-icon name="access_time" />
                 </q-btn>
               </q-td>
@@ -69,31 +71,40 @@
     </q-card>
   </q-dialog>
   
-  <q-dialog v-model="showDateSelector" >
-    <q-date v-if="isStartDate" v-model="start" mask="YYYY-MM-DD HH:mm">
-      <div class="row items-center justify-end">
-        <q-btn v-close-popup label="Ok" color="primary" flat />
-      </div>
-    </q-date>
-    <q-date v-else v-model="end" mask="YYYY-MM-DD HH:mm">
+  <!-- #region Selector modals-->
+  <q-dialog v-model="showStartDateSelector" >
+    <q-date v-model="start" mask="YYYY-MM-DD HH:mm">
       <div class="row items-center justify-end">
         <q-btn v-close-popup label="Ok" color="primary" flat />
       </div>
     </q-date>
   </q-dialog>
 
-  <q-dialog v-model="showTimeSelector" >
-    <q-time v-if="isStartDate" v-model="start" mask="YYYY-MM-DD HH:mm" format24h>
+  <q-dialog v-model="showEndDateSelector">
+    <q-date  v-model="end" mask="YYYY-MM-DD HH:mm">
       <div class="row items-center justify-end">
         <q-btn v-close-popup label="Ok" color="primary" flat />
       </div>
-    </q-time>
-    <q-time v-else v-model="end" mask="YYYY-MM-DD HH:mm" format24h>
+    </q-date>
+  </q-dialog>
+
+  <q-dialog v-model="showStartTimeSelector">
+    <q-time v-model="start" mask="YYYY-MM-DD HH:mm" format24h>
       <div class="row items-center justify-end">
         <q-btn v-close-popup label="Ok" color="primary" flat />
       </div>
     </q-time>
   </q-dialog>
+  
+  <q-dialog v-model="showEndTimeSelector" >
+    <q-time v-model="end" mask="YYYY-MM-DD HH:mm" format24h>
+      <div class="row items-center justify-end">
+        <q-btn v-close-popup label="Ok" color="primary" flat />
+      </div>
+    </q-time>
+  </q-dialog>
+
+  <!-- #endregion-->
 </template>
 
 <script>
@@ -141,6 +152,13 @@ const columns = [
   { name: 'actions', label: 'Action', field: 'actions' }
 ]
 
+const ModalTypes = {
+  StartDate : 0,
+  EndDate : 1,
+  StartTime : 2,
+  EndTime : 3
+}
+ 
 export default {
   name: 'WorkingTimes',
   setup () {
@@ -159,38 +177,56 @@ export default {
   },
   data() {
     return {
+      ModalTypes,
       columns,
       rows: [],
       id: null,
       start: null,
       end: null,
-      showWorkingTimesCreate: false,
-      showWorkingTimesEdit: false,
-      showDateSelector: false,
-      showTimeSelector: false,
-      isStartDate: null,
+      isEditMode: false,
+      showWorkingTimesModal: false,
+
+      showStartDateSelector: false,
+      showEndDateSelector: false,
+      showStartTimeSelector: false,
+      showEndTimeSelector: false,
+
     }
   },
   methods: {
-    showModal(isStartDate, isTimeSelector){
-      this.isStartDate = isStartDate;
-      isTimeSelector? this.showTimeSelector = true : this.showDateSelector = true
+    showSelectorModal(selectorType){
+      switch(selectorType){
+        case ModalTypes.StartDate :
+          this.showStartDateSelector = true; 
+          break;
+        case ModalTypes.EndDate : 
+          this.showEndDateSelector = true;
+          break;
+        case ModalTypes.StartTime : 
+          this.showStartTimeSelector = true;
+          break;
+        case ModalTypes.EndTime : 
+          this.showEndTimeSelector = true;
+          break
+        default: break;
+      }
     },
     addWorkingTime() {
-      console.log("this.addWorkingTime")
-      this.showWorkingTimesCreate = true
-      this.id = null
-      this.start = null
-      this.end = null
+      this.isEditMode = false;
+      this.showWorkingTimesModal = true;
+      this.id = null;
+      this.start = moment(Date.now()).format("YYYY-MM-DD HH:00"),
+      this.end = moment(Date.now()).format("YYYY-MM-DD HH:00")
     },
     editWorkingTime(row) {
-      this.rightDrawerEditingWorkingTime = true
-      this.id = row.id
-      this.start = row.start
-      this.end = row.end
+      this.isEditMode = true;
+      this.showWorkingTimesModal = true;
+      this.id = row.id;
+      this.start = row.start;
+      this.end = row.end;
     },
     submitWorkingTime(){
-      if(this.isEdit) this.saveEditedWorkingTime();
+      if(this.isEditMode) this.saveEditedWorkingTime();
 
       else this.saveNewWorkingTime();
     },
@@ -203,7 +239,7 @@ export default {
       WorkingTimesService.addWorkingTime(this.selectedUserId, this.start, this.end)
         .then(() => {
           this.showNotif(true, "Working time added successfully!")
-          this.showWorkingTimesCreate = false
+          this.showWorkingTimesModal = false
         })
         .catch(e => {
           console.log(e)
@@ -213,7 +249,7 @@ export default {
       WorkingTimesService.editWorkingTimes(this.id, this.start, this.end)
         .then(() => {
           this.showNotif(true, "Working time updated successfully!")
-          this.rightDrawerEditingWorkingTime = false
+          this.showWorkingTimesModal = false
         })
         .catch(e => {
           console.log(e)
