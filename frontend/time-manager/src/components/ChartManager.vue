@@ -104,8 +104,6 @@ setup(props, { emit }) {
    }
  }
 }
-console.log(pie_datas);
-console.log([line_days, line_users_shouldbe_working, line_usersclockedin]);
 </script>
 
 <style scoped>

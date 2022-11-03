@@ -6,16 +6,15 @@
       </q-card-section>
       <q-card-section class="row justify-center">
         
-          <q-btn v-if="IsClockIn" v-on:click=clock() round color="positive"  label="Clock In" id="IsClockInBtn"/>
-          <q-btn v-else v-on:click=clock() round color="negative" label="Clock Out" id="IsClockInBtn"/>
+          <q-btn v-if="isClockIn" v-on:click=clock() round color="positive"  label="Clock In" id="isClockInBtn"/>
+          <q-btn v-else v-on:click=clock() round color="negative" label="Clock Out" id="isClockInBtn"/>
       </q-card-section>
 
       <q-card-section class="text-center">
-        <p  v-if="lastClockTime === null">You never clocked in <strong>today</strong></p>
-        <p  v-else>Last Clock In : {{ lastClockTime }}</p>
+        <p v-if="lastClock && lastClock.time">Last Clock {{lastClock.status ? "in" : "out"}} : {{ lastClock.time }}</p>
+        <p v-else>You never clocked in <strong>today</strong></p>
 
-
-        <p>Time Clocked In: <strong>{{time_clockedIn.hours + time_clockedIn.days*24}} hours, {{time_clockedIn.minutes}} minutes, {{time_clockedIn.seconds}} seconds</strong></p>
+        <p>Time Clocked In: <strong>{{timeClockedIn.hours + timeClockedIn.days*24}} hours, {{timeClockedIn.minutes}} minutes, {{timeClockedIn.seconds}} seconds</strong></p>
       </q-card-section>
       
     </q-card>
@@ -25,7 +24,7 @@
 
 <style scoped>
 
-  #IsClockInBtn{
+  #isClockInBtn{
     width: 100px;
     height: 100px;
     align-content: center;
@@ -56,9 +55,12 @@
     },
     data() {
       return{
-        lastClockTime: null,
-        time_clockedIn: stopwatch,
-        IsClockIn: true, //intialiser avec la valeur du status
+        lastClock: {
+          time : null,
+          status : false
+        },
+        timeClockedIn: stopwatch,
+        isClockIn: true, //intialiser avec la valeur du status
       }
     },
     methods: {
@@ -68,7 +70,7 @@
             title: '<div class="text-h6">Confirm clock out</div>',
             message: `
               <p>Are you sure you want to clock out ?</p>
-              <p>Clock duration is <strong>${this.time_clockedIn.hours + this.time_clockedIn.days*24} hours, ${this.time_clockedIn.minutes} minutes, ${this.time_clockedIn.seconds} seconds</strong></p>`,
+              <p>Clock duration is <strong>${this.timeClockedIn.hours + this.timeClockedIn.days*24} hours, ${this.timeClockedIn.minutes} minutes, ${this.timeClockedIn.seconds} seconds</strong></p>`,
             cancel: true,
             html: true,
             persistent: true,
@@ -77,28 +79,29 @@
             .onCancel(() => resolve(false))
         })
       },
+      saveClock(clockTime){
+        this.lastClock.time = moment(new Date (clockTime)).format("YYYY-MM-DD HH:mm:ss");
+        this.lastClock.status = this.isClockIn;
+
+        ClockService.postClock(this.userId, this.isClockIn, moment(new Date (clockTime)).format("YYYY-MM-DD HH:mm:ss"));
+        this.isClockIn = !this.isClockIn;
+      },
       clock(){
         
         let now = Date.now();
 
-        if(this.IsClockIn) {
-          this.time_clockedIn.start();
-
-          this.lastClockTime = moment(new Date (now)).format("YYYY-MM-DD HH:mm:ss");
-          ClockService.postClock(this.userId, this.IsClockIn, moment(new Date (now)).format("YYYY-MM-DD HH:mm:ss"));
-          this.IsClockIn = !this.IsClockIn;
+        if(this.isClockIn) {
+          this.timeClockedIn.start();
+          this.saveClock(now)
         }
 
         else {
-          this.time_clockedIn.pause();
+          this.timeClockedIn.pause();
           this.confirmClockoutDialog().then(isConfirmed => {
 
-            if(isConfirmed){
-              this.lastClockTime = moment(new Date (now)).format("YYYY-MM-DD HH:mm:ss");
-              ClockService.postClock(this.userId, this.IsClockIn, moment(new Date (now)).format("YYYY-MM-DD HH:mm:ss"));
-              this.IsClockIn = !this.IsClockIn;
-            } 
-            else this.time_clockedIn.start();
+            if(isConfirmed) this.saveClock(now);
+
+            else this.timeClockedIn.start();
           }) 
         }
       }
@@ -109,7 +112,8 @@
     created: function () {
       ClockService.getCurrentClocks(this.userId).then((response) => {
         let totalClockDuration = 0;
-        let lastClockStatus = false;
+        let lastClock = null;
+        this.isClockIn = false;
 
         if(response.data.data.length > 0){
           response.data.data.forEach(clock => {
@@ -117,24 +121,18 @@
             else totalClockDuration += new Date(clock.time).getTime();
           })
 
-          lastClockStatus= response.data.data.at(-1).status;
+          lastClock= response.data.data.at(-1);
         }
+        if(lastClock){
+          if(lastClock.status) totalClockDuration += (Date.now());
 
-        if(lastClockStatus) totalClockDuration += (Date.now());
+          this.isClockIn = !lastClock.status;  //le statut du bouton doit être l'opposé 
+          this.lastClock.time = moment(new Date (lastClock.time)).format("YYYY-MM-DD HH:mm:ss");
+          this.lastClock.status = lastClock.status;
 
-        this.IsClockIn = !lastClockStatus  //le statut du bouton doit être l'opposé 
-        this.time_clockedIn = useStopwatch(totalClockDuration/1000, lastClockStatus); //de la dernière valeur de la bdd
-
-        // if(response.data.data.length > 0){
-
-        //   this.lastClockTime = moment(new Date (lastStatus.time)).format("YYYY-MM-DD HH:mm:ss");
-        //   this.IsClockIn = !lastClock.status;
-        //   console.log(new Date(lastClock.time).getTime());
-
-        //   if(this.IsClockIn) this.time_clockedIn = useStopwatch((new Date(lastClock.time).getTime() - new Date(beforeLast.time).getTime())/1000, false);
-        //   else this.time_clockedIn = useStopwatch((Date.now() - new Date(lastClock.time).getTime())/1000, true);
-        //     console.log(this.time_clockedIn.minutes);
-        // } 
+          this.timeClockedIn = useStopwatch(totalClockDuration/1000, lastClock.status); //de la dernière valeur de la bdd
+        } 
+        
       });
 
     }

@@ -64,7 +64,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-    console.log({...props.pie_data}[0]);
     let hours_left = {...props.pie_data}[0] - {...props.pie_data}[1];
     let hours_worked = {...props.pie_data}[1];
     return{
