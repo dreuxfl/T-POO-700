@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <q-table title="Working Times" :rows="rows" :columns="columns" row-key="id">
       <template v-slot:top-right>
-        <q-btn round outline color="primary" @click="addWorkingTime()">
+        <q-btn round outline color="primary" @click="addWorkingTime()" :disable="this.selectedUserId === null">
             <q-icon name="add" />
         </q-btn>
       </template>
@@ -20,6 +20,13 @@
 
       </template>
     </q-table>
+
+    <q-tooltip v-if="this.selectedUserId === null" 
+      transition-show="rotate" transition-hide="rotate"
+      class="text-body2 bg-warning" 
+    > 
+      Select user first 
+    </q-tooltip>
   </div>
 
   <q-dialog v-model="showWorkingTimesModal" persistent >
@@ -259,16 +266,24 @@ export default {
           console.log(e)
         })
     },
-
     deleteWorkingTime(row) {
-      WorkingTimesService.deleteWorkingTimes(row.id)
+      this.$q.dialog({
+        title: `Confirm delete working time #${row.id}`,
+        message: `Are you sure you want to delete this working time ?`,
+        cancel: true,
+        persistent: true,
+      })
+      .onOk(() => {
+        WorkingTimesService.deleteWorkingTimes(row.id)
         .then(() => {
           this.showNotif(true, "Working time deleted successfully!")
+          this.$emit('rerender-working-times-event');
         })
         .catch(e => {
           console.log(e)
-        })
-    },
+        })            
+      })      
+    }
   },
   props: {
     selectedUserId : Number
@@ -276,21 +291,21 @@ export default {
   created() {
     if (this.selectedUserId) {
       WorkingTimesService.getWorkingTimesByUser(this.selectedUserId)
-        .then(response => {
-          if(response.data.data && response.data.data.length > 0){
-            for (let i = 0; i < response.data.data.length; i++) {
-              this.rows.push({
-                id: response.data.data[i].id,
-                start: moment(response.data.data[i].start).format('YYYY-MM-DD HH:mm'),
-                end: moment(response.data.data[i].end).format('YYYY-MM-DD HH:mm'),
-                duration: moment.duration(new Date(response.data.data[i].end) - new Date(response.data.data[i].start)).humanize()
-              })
-            }
+      .then(response => {
+        if(response.data.data && response.data.data.length > 0){
+          for (let i = 0; i < response.data.data.length; i++) {
+            this.rows.push({
+              id: response.data.data[i].id,
+              start: moment(response.data.data[i].start).format('YYYY-MM-DD HH:mm'),
+              end: moment(response.data.data[i].end).format('YYYY-MM-DD HH:mm'),
+              duration: moment.duration(new Date(response.data.data[i].end) - new Date(response.data.data[i].start)).humanize()
+            })
           }
-        })
-        .catch(e => {
-          console.log(e)
-        })
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
     }
   }
 }

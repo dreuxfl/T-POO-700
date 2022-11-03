@@ -144,7 +144,7 @@ export default {
     },
     deleteUser(row) {
       this.$q.dialog({
-        title: `Confirm user delete user #${row.id}`,
+        title: `Confirm delete user #${row.id}`,
         message: `Are you sure you want to delete ${row.username} ?`,
         cancel: true,
         persistent: true,

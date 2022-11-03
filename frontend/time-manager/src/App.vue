@@ -38,7 +38,7 @@
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
-      <User @user-create-event="userChanged"  @user-login-event="userChanged"/>
+      <User @user-create-event="userChanged"  @user-login-event="userChanged" @user-logout-event="userLogout"/>
     </q-drawer>
 
     <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
@@ -99,6 +99,14 @@
 
       userChanged(payload){
         this.userId = payload.id;
+        this.rerenderUserList();
+        this.rerenderWorkingTimes();
+        this.rerenderChartManager();
+      },
+
+      userLogout(){
+        this.userId = null;
+        this.selectedUserId = null
         this.rerenderUserList();
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
