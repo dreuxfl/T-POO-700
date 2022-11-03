@@ -17,6 +17,11 @@ config :timemanager, TimemanagerWeb.Endpoint,
   pubsub_server: Timemanager.PubSub,
   live_view: [signing_salt: "OSev/l0x"]
 
+  config :timemanager, Timemanager.Guardian,
+       issuer: "timemanager",
+       secret_key: "cTtIcAYqhZq5H5Jhnw1wxHtfDrBfurpGWnpv0ui9ofH2fmM4IJOAEzI6oXQY94WY"
+
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

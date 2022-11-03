@@ -15,6 +15,10 @@ defmodule TimemanagerWeb.Router do
     plug CORSPlug
   end
 
+  pipeline :auth do
+    plug Timemanager.Guardian.AuthPipeline
+  end
+
   scope "/", TimemanagerWeb do
     pipe_through :browser
 
@@ -47,6 +51,17 @@ defmodule TimemanagerWeb.Router do
      get "/chartmanager/linechart/:userID", ChartmanagerController, :linechart_workingtime_clockedhours
      get "/chartmanager/piechart/:userID", ChartmanagerController, :piechart_workingtime_clockedhours_user
      get "/chartmanager/barchart", ChartmanagerController, :barchart_stats
+
+     post "/session/new", SessionController, :new
+
+  end
+
+  scope "/api", TimemanagerWeb do
+    pipe_through [:api, :auth]
+
+    post "/session/refresh", SessionController, :refresh
+    post "/session/delete", SessionController, :delete
+
   end
 
   # Enables LiveDashboard only for development
