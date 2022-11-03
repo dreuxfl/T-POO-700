@@ -6,18 +6,6 @@ defmodule TimemanagerWeb.UserController do
 
   action_fallback TimemanagerWeb.FallbackController
 
-  def login(conn, %{"username" => username, "password" => password}) do
-    user = Employees.login(username, password)
-    if user == nil do
-      conn
-      |> put_status(:unauthorized)
-      |> json(%{message: "Invalid credentials"})
-    else
-      render(conn, "show.json", user: user)
-    end
-
-  end
-
   def index(conn, _params) do
     users = Employees.list_users()
     render(conn, "index.json", users: users)

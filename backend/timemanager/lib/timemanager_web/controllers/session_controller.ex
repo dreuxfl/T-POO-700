@@ -6,7 +6,7 @@ defmodule TimemanagerWeb.SessionController do
 
   action_fallback TimemangerWeb.FallbackController
 
-  def new(conn, %{"username" => username, "password" => password}) do
+  def login(conn, %{"username" => username, "password" => password}) do
     case Employees.login(username, password) do
       {:ok, user} ->
         {:ok, access_token, _claims} =
