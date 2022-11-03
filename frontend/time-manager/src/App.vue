@@ -47,7 +47,7 @@
         <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @rerender-user-list-event="rerenderUserList" />
         <clock-work :userId=this.userId />
         <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId />
-        <chart-manager :key="this.chartManagerKey" :userId=this.userId :chartId=this.chartId />
+        <chart-manager :key="this.chartManagerKey" :userId=this.selectedUserId :chartId=this.chartId />
       </div>
 
     </q-page-container>
