@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <q-table title="Users" :rows="rows" :columns="columns" row-key="id" :filter="filter">
+    <q-table title="Users" :rows="rows" :columns="columns" row-key="id" :filter="filter" @row-click="rowClicked">
       <template v-slot:top-right="props">
         <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
           <template v-slot:append>
@@ -12,12 +12,8 @@
                @click="props.toggleFullscreen" />
       </template>
 
-      <template v-slot:body-cell-actions="props">
+      <template v-slot:body-cell-actions="props" >
         <q-td :props="props" class="q-gutter-x-xs">
-          <q-btn round outline color="primary" @click="editUserWorkingTimes(props.row)">
-            <q-icon name="timer" />
-          </q-btn>
-
           <q-btn round outline color="secondary" @click="showEditUserModal(props.row)">
             <q-icon name="mode_edit" />
           </q-btn>
@@ -42,8 +38,8 @@
           <q-input filled v-model="username" label="Username" lazy-rules
             :rules="[val => val && val.length > 0 || 'Username is required']" />
           <q-card-actions align="right">
-            <q-btn flat label="OK" type="submit" color="primary"/>
-            <q-btn flat label="Cancel" color="negative"  v-close-popup />
+            <q-btn flat padding="xs xs" label="Cancel" color="negative"  v-close-popup />
+            <q-btn flat padding="xs lg" label="OK" type="submit" color="primary"/>
           </q-card-actions>
         </q-card-section>
       </q-form>
@@ -117,7 +113,12 @@ export default {
     }
   },
   methods: {
-    editUserWorkingTimes(row) {
+    rowClicked (e, row) {
+      if (e.target.nodeName === 'TD') {
+        this.selectUser(row)
+      }
+    },
+    selectUser(row) {
       this.selectedUserId = row.id;
       this.$emit('user-select-event', {id: this.selectedUserId});
     },

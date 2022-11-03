@@ -38,8 +38,8 @@
       </q-card-section>
       <q-form @submit="submitWorkingTime">
         <q-card-section class="q-pt-none">
-          <div class="text-h6">Start time</div>
-          <q-input filled v-model="start">
+          <q-input filled v-model="start" label="Start time" lazy-rules
+            :rules="[val => val && val.length > 0 || 'Start date required']">
             <template v-slot:append>
               <q-td class="q-gutter-x-xs" >
                 <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.StartDate)">
@@ -53,8 +53,8 @@
             </template>
           </q-input>
 
-          <div class="text-h6">End time</div>
-          <q-input filled v-model="end">
+          <q-input filled v-model="end"  label="End time" lazy-rules
+            :rules="[val => val && val.length > 0 || 'End date required']">
             <template v-slot:append>
               <q-td class="q-gutter-x-xs" >
                 <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.EndDate)">
@@ -69,8 +69,8 @@
           </q-input>
 
           <q-card-actions align="right">
-            <q-btn flat label="OK" type="submit" color="primary"/>
-            <q-btn flat label="Cancel" color="negative"  v-close-popup />
+            <q-btn flat padding="xs xs" label="Cancel" color="negative"  v-close-popup />
+            <q-btn flat padding="xs lg" label="OK" type="submit" color="primary"/>
           </q-card-actions>
         </q-card-section>
       </q-form>
@@ -233,26 +233,27 @@ export default {
       this.end = row.end;
     },
     submitWorkingTime(){
-      if(this.isEditMode) this.saveEditedWorkingTime();
+      if(this.end > this.start) {
+        if(this.isEditMode) this.saveEditedWorkingTime();
 
-      else this.saveNewWorkingTime();
+        else this.saveNewWorkingTime();
+      } else if (this.end == this.start){
+        this.showNotif(false, "Working time start and end time cannot be equal")
+      } else {
+        this.showNotif(false, "Working time start time must precede end time")
+      }
     },
     saveNewWorkingTime() {
-      if (this.start === null || this.end === null) {
-        this.showNotif(false, "Start and end time must be filled!")
-        return
-      }
-
       WorkingTimesService.addWorkingTime(this.selectedUserId, this.start, this.end)
-        .then(() => {
-          this.showNotif(true, "Working time added successfully!");
-          this.showWorkingTimesModal = false;
-          this.$emit('rerender-working-times-event');
+      .then(() => {
+        this.showNotif(true, "Working time added successfully!");
+        this.showWorkingTimesModal = false;
+        this.$emit('rerender-working-times-event');
 
-        })
-        .catch(e => {
-          console.log(e)
-        })
+      })
+      .catch(e => {
+        console.log(e)
+      })
     },
     saveEditedWorkingTime () {
       WorkingTimesService.editWorkingTimes(this.id, this.start, this.end)
