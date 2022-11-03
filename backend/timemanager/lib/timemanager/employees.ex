@@ -61,7 +61,7 @@ defmodule Timemanager.Employees do
     end
   end
 
-  defp validate_password(password, encryptd_password) do
+  defp validate_password(password, encrypted_password) do
     Bcrypt.verify_pass(password, encrypted_password)
   end
 

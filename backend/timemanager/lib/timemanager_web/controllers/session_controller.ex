@@ -1,4 +1,4 @@
-defmodule Timemanager.SessionController do
+defmodule TimemanagerWeb.SessionController do
   use TimemanagerWeb, :controller
 
   alias Timemanager.Employees
@@ -6,15 +6,15 @@ defmodule Timemanager.SessionController do
 
   action_fallback TimemangerWeb.FallbackController
 
-  def new(conn, %{"email" => email, "password" => password}) do
-    case Employees.authenticate_user(email, password) do
+  def new(conn, %{"username" => username, "password" => password}) do
+    case Employees.login(username, password) do
       {:ok, user} ->
         {:ok, access_token, _claims} =
           Guardian.encode_and_sign(user, %{}, token_type: "access", ttl: {15, :minutes})
         {:ok, refresh_token, _claims} =
           Guardian.encode_and_sign(user, %{}, token_type: "refresh", ttl: {7, :day})
         conn
-        |> put_resp_cookie("ruid", refrsh_token)
+        |> put_resp_cookie("ruid", refresh_token)
         |> put_status(:created)
         |> render("token.json", access_token: access_token)
 
