@@ -27,6 +27,27 @@ defmodule Timemanager.Chrono do
     Repo.all(query)
   end
 
+  def list_clocks_by_dateuid(date, uid) do
+    datenaivetoday =  DateTime.to_naive( %DateTime{
+      year: date.year, month: date.month, day: date.day, zone_abbr: "CET",
+      hour: 0, minute: 0, second: 0, microsecond: {0, 0},
+      utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"
+    })
+
+    tomorrow  = Date.add(datenaivetoday, 1)
+
+    datenaivetomorrow =  DateTime.to_naive( %DateTime{
+      year: tomorrow.year, month: tomorrow.month, day: tomorrow.day, zone_abbr: "CET",
+      hour: 0, minute: 0, second: 0, microsecond: {0, 0},
+      utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"
+    })
+    query = from c in Clock,
+                 where: c.time >= ^datenaivetoday and c.time <= ^datenaivetomorrow and c.user == ^uid,
+                 order_by: c.time
+    Repo.all(query)
+  end
+
+
   def list_current_clocks do
     today = Date.utc_today()
     todayNaive =  DateTime.to_naive( %DateTime{
@@ -38,6 +59,13 @@ defmodule Timemanager.Chrono do
 
     query = from c in Clock,
       where: c.time > (^todayNaive)
+    Repo.all(query)
+  end
+
+
+  def list_clocks_distinctUID() do
+    query = from c in Clock,
+      distinct: c.user
     Repo.all(query)
   end
   @doc """
