@@ -238,8 +238,10 @@ export default {
 
       WorkingTimesService.addWorkingTime(this.selectedUserId, this.start, this.end)
         .then(() => {
-          this.showNotif(true, "Working time added successfully!")
-          this.showWorkingTimesModal = false
+          this.showNotif(true, "Working time added successfully!");
+          this.showWorkingTimesModal = false;
+          this.$emit('rerender-working-times-event');
+
         })
         .catch(e => {
           console.log(e)
@@ -248,8 +250,10 @@ export default {
     saveEditedWorkingTime () {
       WorkingTimesService.editWorkingTimes(this.id, this.start, this.end)
         .then(() => {
-          this.showNotif(true, "Working time updated successfully!")
-          this.showWorkingTimesModal = false
+          this.showNotif(true, "Working time updated successfully!");
+          this.showWorkingTimesModal = false;
+          this.$emit('rerender-working-times-event');
+
         })
         .catch(e => {
           console.log(e)

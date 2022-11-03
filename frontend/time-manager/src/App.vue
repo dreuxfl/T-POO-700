@@ -10,27 +10,29 @@
         </q-toolbar-title>
 
         <q-btn-dropdown  color="primary" label="Select chart to display">
-        <q-list>
-          <q-item clickable v-close-popup @click="onItemClick">
-            <q-item-section>
-              <q-item-label @click="setchartId(1)">Pie Chart</q-item-label>
-            </q-item-section>
-          </q-item>
+          <q-list>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label @click="setchartId(1)">Pie Chart</q-item-label>
+              </q-item-section>
+            </q-item>
 
-          <q-item clickable v-close-popup @click="onItemClick">
-            <q-item-section>
-              <q-item-label @click="setchartId(2)"> Line Chart</q-item-label>
-            </q-item-section>
-          </q-item>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label @click="setchartId(2)"> Line Chart</q-item-label>
+              </q-item-section>
+            </q-item>
 
-          <q-item clickable v-close-popup @click="onItemClick">
-            <q-item-section>
-              <q-item-label @click="setchartId(3)">Bar Chart</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label @click="setchartId(3)">Bar Chart</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
         </q-btn-dropdown>
+
         <q-space />
+        
         <q-btn color="primary" icon-right="person" label="Profile" @click="toggleProfileDrawer" />
       </q-toolbar>
     </q-header>
@@ -46,7 +48,7 @@
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
         <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @rerender-user-list-event="rerenderUserList" />
         <clock-work :userId=this.userId />
-        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId />
+        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @rerender-working-times-event="rerenderWorkingTimes"/>
         <chart-manager :key="this.chartManagerKey" :userId=this.userId :chartId=this.chartId />
       </div>
 
@@ -85,7 +87,9 @@
         this.userListKey = `user-list-${this.userListRenderCount}`; 
       },
       rerenderWorkingTimes(){ 
+
         this.workingTimesRenderCount++;
+        console.log(this.workingTimesRenderCount);
         this.workingTimesKey = `working-times-${this.workingTimesRenderCount}`; 
       },
       rerenderChartManager(){ 
