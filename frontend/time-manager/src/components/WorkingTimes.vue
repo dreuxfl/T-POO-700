@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <q-table title="Working Times" :rows="rows" :columns="columns" row-key="id">
       <template v-slot:top-right>
-        <q-btn round outline color="primary" @click="addWorkingTime()">
+        <q-btn round outline color="primary" @click="addWorkingTime()" :disable="this.selectedUserId === null">
             <q-icon name="add" />
         </q-btn>
       </template>
@@ -20,6 +20,13 @@
 
       </template>
     </q-table>
+
+    <q-tooltip v-if="this.selectedUserId === null" 
+      transition-show="rotate" transition-hide="rotate"
+      class="text-body2 bg-warning" 
+    > 
+      Select user first 
+    </q-tooltip>
   </div>
 
   <q-dialog v-model="showWorkingTimesModal" persistent >
@@ -31,8 +38,8 @@
       </q-card-section>
       <q-form @submit="submitWorkingTime">
         <q-card-section class="q-pt-none">
-          <div class="text-h6">Start time</div>
-          <q-input filled v-model="start">
+          <q-input filled v-model="start" label="Start time" lazy-rules
+            :rules="[val => val && val.length > 0 || 'Start date required']">
             <template v-slot:append>
               <q-td class="q-gutter-x-xs" >
                 <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.StartDate)">
@@ -46,8 +53,8 @@
             </template>
           </q-input>
 
-          <div class="text-h6">End time</div>
-          <q-input filled v-model="end">
+          <q-input filled v-model="end"  label="End time" lazy-rules
+            :rules="[val => val && val.length > 0 || 'End date required']">
             <template v-slot:append>
               <q-td class="q-gutter-x-xs" >
                 <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.EndDate)">
@@ -62,8 +69,8 @@
           </q-input>
 
           <q-card-actions align="right">
-            <q-btn flat label="OK" type="submit" color="primary"/>
-            <q-btn flat label="Cancel" color="negative"  v-close-popup />
+            <q-btn flat padding="xs xs" label="Cancel" color="negative"  v-close-popup />
+            <q-btn flat padding="xs lg" label="OK" type="submit" color="primary"/>
           </q-card-actions>
         </q-card-section>
       </q-form>
@@ -226,45 +233,58 @@ export default {
       this.end = row.end;
     },
     submitWorkingTime(){
-      if(this.isEditMode) this.saveEditedWorkingTime();
+      if(this.end > this.start) {
+        if(this.isEditMode) this.saveEditedWorkingTime();
 
-      else this.saveNewWorkingTime();
+        else this.saveNewWorkingTime();
+      } else if (this.end == this.start){
+        this.showNotif(false, "Working time start and end time cannot be equal")
+      } else {
+        this.showNotif(false, "Working time start time must precede end time")
+      }
     },
     saveNewWorkingTime() {
-      if (this.start === null || this.end === null) {
-        this.showNotif(false, "Start and end time must be filled!")
-        return
-      }
-
       WorkingTimesService.addWorkingTime(this.selectedUserId, this.start, this.end)
-        .then(() => {
-          this.showNotif(true, "Working time added successfully!")
-          this.showWorkingTimesModal = false
-        })
-        .catch(e => {
-          console.log(e)
-        })
+      .then(() => {
+        this.showNotif(true, "Working time added successfully!");
+        this.showWorkingTimesModal = false;
+        this.$emit('rerender-working-times-event');
+
+      })
+      .catch(e => {
+        console.log(e)
+      })
     },
     saveEditedWorkingTime () {
       WorkingTimesService.editWorkingTimes(this.id, this.start, this.end)
         .then(() => {
-          this.showNotif(true, "Working time updated successfully!")
-          this.showWorkingTimesModal = false
+          this.showNotif(true, "Working time updated successfully!");
+          this.showWorkingTimesModal = false;
+          this.$emit('rerender-working-times-event');
+
         })
         .catch(e => {
           console.log(e)
         })
     },
-
     deleteWorkingTime(row) {
-      WorkingTimesService.deleteWorkingTimes(row.id)
+      this.$q.dialog({
+        title: `Confirm delete working time #${row.id}`,
+        message: `Are you sure you want to delete this working time ?`,
+        cancel: true,
+        persistent: true,
+      })
+      .onOk(() => {
+        WorkingTimesService.deleteWorkingTimes(row.id)
         .then(() => {
           this.showNotif(true, "Working time deleted successfully!")
+          this.$emit('rerender-working-times-event');
         })
         .catch(e => {
           console.log(e)
-        })
-    },
+        })            
+      })      
+    }
   },
   props: {
     selectedUserId : Number
@@ -272,21 +292,21 @@ export default {
   created() {
     if (this.selectedUserId) {
       WorkingTimesService.getWorkingTimesByUser(this.selectedUserId)
-        .then(response => {
-          if(response.data.data && response.data.data.length > 0){
-            for (let i = 0; i < response.data.data.length; i++) {
-              this.rows.push({
-                id: response.data.data[i].id,
-                start: moment(response.data.data[i].start).format('YYYY-MM-DD HH:mm'),
-                end: moment(response.data.data[i].end).format('YYYY-MM-DD HH:mm'),
-                duration: moment.duration(new Date(response.data.data[i].end) - new Date(response.data.data[i].start)).humanize()
-              })
-            }
+      .then(response => {
+        if(response.data.data && response.data.data.length > 0){
+          for (let i = 0; i < response.data.data.length; i++) {
+            this.rows.push({
+              id: response.data.data[i].id,
+              start: moment(response.data.data[i].start).format('YYYY-MM-DD HH:mm'),
+              end: moment(response.data.data[i].end).format('YYYY-MM-DD HH:mm'),
+              duration: moment.duration(new Date(response.data.data[i].end) - new Date(response.data.data[i].start)).humanize()
+            })
           }
-        })
-        .catch(e => {
-          console.log(e)
-        })
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
     }
   }
 }

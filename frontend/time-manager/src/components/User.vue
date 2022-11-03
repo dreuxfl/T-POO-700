@@ -177,7 +177,7 @@ export default {
     onDisconnect(){
       this.userId = null;
       this.updateConnectedUserData()
-      this.$emit('create-user-event', {id: null});
+      this.$emit('user-logout-event');
     },
 
     updateUser(email, username, userId){

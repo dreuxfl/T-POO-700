@@ -10,33 +10,35 @@
         </q-toolbar-title>
 
         <q-btn-dropdown  color="primary" label="Select chart to display">
-        <q-list>
-          <q-item clickable v-close-popup @click="onItemClick">
-            <q-item-section>
-              <q-item-label @click="setchartId(1)">Pie Chart</q-item-label>
-            </q-item-section>
-          </q-item>
+          <q-list>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label @click="setchartId(1)">Pie Chart</q-item-label>
+              </q-item-section>
+            </q-item>
 
-          <q-item clickable v-close-popup @click="onItemClick">
-            <q-item-section>
-              <q-item-label @click="setchartId(2)"> Line Chart</q-item-label>
-            </q-item-section>
-          </q-item>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label @click="setchartId(2)"> Line Chart</q-item-label>
+              </q-item-section>
+            </q-item>
 
-          <q-item clickable v-close-popup @click="onItemClick">
-            <q-item-section>
-              <q-item-label @click="setchartId(3)">Bar Chart</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label @click="setchartId(3)">Bar Chart</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
         </q-btn-dropdown>
+
         <q-space />
+        
         <q-btn color="primary" icon-right="person" label="Profile" @click="toggleProfileDrawer" />
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
-      <User @user-create-event="userChanged"  @user-login-event="userChanged"/>
+      <User @user-create-event="userChanged"  @user-login-event="userChanged" @user-logout-event="userLogout"/>
     </q-drawer>
 
     <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
@@ -46,7 +48,7 @@
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
         <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @rerender-user-list-event="rerenderUserList" />
         <clock-work :userId=this.userId />
-        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId />
+        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @rerender-working-times-event="rerenderWorkingTimes"/>
         <chart-manager v-if="this.selectedUserId != null" :key="this.chartManagerKey" :userId=this.selectedUserId :chartId=this.chartId />
         <chart-manager v-else :key="this.chartManagerKey" :userId=this.userId :chartId=this.chartId />
       </div>
@@ -86,7 +88,9 @@
         this.userListKey = `user-list-${this.userListRenderCount}`; 
       },
       rerenderWorkingTimes(){ 
+
         this.workingTimesRenderCount++;
+        console.log(this.workingTimesRenderCount);
         this.workingTimesKey = `working-times-${this.workingTimesRenderCount}`; 
       },
       rerenderChartManager(){ 
@@ -96,6 +100,14 @@
 
       userChanged(payload){
         this.userId = payload.id;
+        this.rerenderUserList();
+        this.rerenderWorkingTimes();
+        this.rerenderChartManager();
+      },
+
+      userLogout(){
+        this.userId = null;
+        this.selectedUserId = null
         this.rerenderUserList();
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
