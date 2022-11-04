@@ -38,13 +38,20 @@
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
-      <User @user-create-event="userChanged"  @user-login-event="userChanged" @user-logout-event="userLogout"/>
+      <User 
+        @user-create-event="userChanged" @user-login-event="userChanged" @user-logout-event="userLogout"
+        @user-request-loading-event="onRequestLoading" @user-request-failed-event="onRequestFailed"
+      />
     </q-drawer>
 
     <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
 
-      <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
-        
+      <div v-if="loading" style="text-align: center">
+        <img src="@/assets/poulet.gif" alt="Poulet" width="200" height="200" class="rotating">
+        <div class="text-h2 text-primary" style="margin-top:220px;" >Clockorico !</div>
+      </div>
+      <q-btn v-else-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
+      
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
         <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @rerender-user-list-event="rerenderUserList" />
         <clock-work :userId=this.userId />
@@ -78,6 +85,15 @@
     },
 
     methods:{
+      onRequestLoading(){
+        this.loading = true;
+        this.rightDrawerOpen = false;
+        
+      },
+      onRequestFailed(){
+        this.loading = false;
+        this.rightDrawerOpen = true;
+      },
       toggleProfileDrawer() {
         this.rightDrawerOpen = !this.rightDrawerOpen;
       },
@@ -99,6 +115,7 @@
       },
 
       userChanged(payload){
+        this.loading = false;
         this.userId = payload.id;
         this.rerenderUserList();
         this.rerenderWorkingTimes();
@@ -136,7 +153,52 @@
         userId: null,
         chartId: 0,
         selectedUserId: null,
+        loading: false,
       }
     }
   }
 </script>
+
+<style scoped>
+@keyframes rotating
+    {
+    from
+        {
+        transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        }
+    to
+        {
+        transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        }
+    }
+@-webkit-keyframes rotating
+    {
+    from
+        {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        }
+    to
+        {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        }
+    }
+.rotating
+    {
+      transform-origin: bottom center;
+      -webkit-animation: rotating 3s linear infinite;
+      -moz-animation: rotating 3s linear infinite;
+      -ms-animation: rotating 3s linear infinite;
+      -o-animation: rotating 3s linear infinite;
+      animation: rotating 3s linear infinite;
+    }
+</style>

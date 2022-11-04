@@ -142,6 +142,7 @@ export default {
       if (!this.accept) this.showNotif (false, 'You need to accept the license and terms first')
         
       else {
+        this.$emit('user-request-loading-event');
         UserService.postUser(this.email, this.username1, this.password1).then((response)=>{
           try {
             this.showNotif (true, 'Registration complete. You are now logged in')
@@ -152,22 +153,28 @@ export default {
           } catch (e) {
             console.log(e);
           }
-        }).catch(e => console.log(e));      
+        }).catch(e => {
+          this.$emit('user-request-failed-event');
+          this.showNotif (false, 'Failed to register');
+          console.log(e)
+        });      
       }
     },
     onLogin() {
+      this.$emit('user-request-loading-event');
       UserService.login(this.username, this.password).then((response)=>{
         try {
           this.userId = response.data.data.id
-          this.$emit('user-login-event', {id: response.data.data.id})
+          this.$emit('user-login-event', {id: response.data.data.id});
           this.clearLoginFields();
-          this.updateConnectedUserData()
-          this.showNotif (true, 'You are now logged in')
+          this.updateConnectedUserData();
+          this.showNotif (true, 'You are now logged in');
         } catch (e) {
           console.log(e);
         }
       }).catch(e => {
         console.log(e);
+        this.$emit('user-request-failed-event');
         this.showNotif (false, 'Invalid credentials');
       });
     },
