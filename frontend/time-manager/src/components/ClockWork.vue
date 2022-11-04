@@ -112,15 +112,17 @@
       ClockService.getCurrentClocks(this.userId).then((response) => {
         let totalClockDuration = 0;
         let lastClock = null;
-        this.isClockIn = false;
+        this.isClockIn = true;
+        let clocks = response.data.data
+        if(clocks.length > 0){
+          if(!clocks[0].status) clocks.shift();
 
-        if(response.data.data.length > 0){
-          response.data.data.forEach(clock => {
+          clocks.forEach(clock => {
             if(clock.status) totalClockDuration -= new Date(clock.time).getTime();
             else totalClockDuration += new Date(clock.time).getTime();
-          })
+          });
 
-          lastClock= response.data.data.at(-1);
+          lastClock= clocks.at(-1);
         }
         if(lastClock){
           if(lastClock.status) totalClockDuration += (Date.now());
