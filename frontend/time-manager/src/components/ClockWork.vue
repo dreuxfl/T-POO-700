@@ -5,7 +5,6 @@
         <div class="text-h6 text-center"> Clock Pointer </div>
       </q-card-section>
       <q-card-section class="row justify-center">
-        
           <q-btn v-if="isClockIn" v-on:click=clock() round color="positive"  label="Clock In" id="isClockInBtn"/>
           <q-btn v-else v-on:click=clock() round color="negative" label="Clock Out" id="isClockInBtn"/>
       </q-card-section>

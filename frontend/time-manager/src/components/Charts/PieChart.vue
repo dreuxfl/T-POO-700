@@ -50,6 +50,8 @@ export default defineComponent({
       type: Number,
       default: 400
     },
+    primaryColor: String,
+    secondaryColor: String,
     cssClasses: {
       default: '',
       type: String
@@ -71,7 +73,7 @@ export default defineComponent({
         labels: ['Work Hours Left', 'Hours Clocked'],
         datasets: [
           {
-            backgroundColor: ['#E46651', '#00D8FF'],
+            backgroundColor: [props.primaryColor, props.secondaryColor],
             data: [hours_left, hours_worked]
           }
         ]

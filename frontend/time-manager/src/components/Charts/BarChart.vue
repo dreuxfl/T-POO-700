@@ -1,17 +1,17 @@
 <template>
-<div class="q-pa-md">
-  <q-card class="my-card margin" style="padding:1em">
-  <Bar
-    :chart-options="chartOptions"
-    :chart-data="chartData"
-    :chart-id="chartId"
-    :dataset-id-key="datasetIdKey"
-    :plugins="plugins"
-    :css-classes="cssClasses"
-    :styles="styles"
-    :width="width"
-    :height="height"
-/>
+  <div class="q-pa-md">
+    <q-card class="my-card margin" style="padding:1em">
+    <Bar
+      :chart-options="chartOptions"
+      :chart-data="chartData"
+      :chart-id="chartId"
+      :dataset-id-key="datasetIdKey"
+      :plugins="plugins"
+      :css-classes="cssClasses"
+      :styles="styles"
+      :width="width"
+      :height="height"
+  />
   </q-card>
   </div>
 </template>
@@ -44,6 +44,8 @@ export default {
       type: Number,
       default: 250
     },
+    primaryColor: String,
+    secondaryColor: String,
     cssClasses: {
       default: '',
       type: String
@@ -65,9 +67,9 @@ export default {
       chartData: {
         labels: days,
         datasets: [ { data: clocked,
-          label: "Employees that clocked in", backgroundColor: '#027BE3'},
+          label: "Employees that clocked in", backgroundColor: props.primaryColor},
           {data: workinghours,
-            label: "Employees that should work", backgroundColor: '#f87979'} ]
+            label: "Employees that should work", backgroundColor: props.secondaryColor} ]
       },
       chartOptions: {
         responsive: true

@@ -50,7 +50,7 @@
         <img src="@/assets/poulet.gif" alt="Poulet" width="200" height="200" class="rotating">
         <div class="text-h2 text-primary" style="margin-top:220px;" >Clockorico !</div>
       </div>
-      <q-btn v-else-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
+      <q-btn v-else-if="userId == null" color="secondary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
       
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
         <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @rerender-user-list-event="rerenderUserList" />
@@ -113,7 +113,6 @@
         this.chartManagerRenderCount++;
         this.chartManagerKey = `chart-manager-${this.chartManagerRenderCount}`; 
       },
-
       userChanged(payload){
         this.loading = false;
         this.userId = payload.id;
@@ -121,15 +120,13 @@
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
       },
-
       userLogout(){
         this.userId = null;
         this.selectedUserId = null
         this.rerenderUserList();
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
-      },
-      
+      },    
       setSelectedUserId(payload){
         this.selectedUserId = payload.id;
         console.log(payload.id)

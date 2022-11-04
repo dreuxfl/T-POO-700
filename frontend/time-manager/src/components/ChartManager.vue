@@ -1,7 +1,7 @@
 <template>
-    <line-chart v-if='this.chartId === 2' :line_data=all_line_data />
-    <bar-chart v-if='this.chartId === 3'  :bar_data=all_bar_data />
-    <pie-chart v-if='this.chartId === 1'  :pie_data=all_pie_data />
+    <line-chart v-if='this.chartId === 2' :line_data=all_line_data :primaryColor=this.primaryColor :secondaryColor=this.secondaryColor />
+    <bar-chart v-if='this.chartId === 3'  :bar_data=all_bar_data :primaryColor=this.primaryColor :secondaryColor=this.secondaryColor />
+    <pie-chart v-if='this.chartId === 1'  :pie_data=all_pie_data :primaryColor=this.primaryColor :secondaryColor=this.secondaryColor />
 </template>
 
 <script>
@@ -10,7 +10,6 @@ import LineChart from "@/components/Charts/LineChart";
 import PieChart from "@/components/Charts/PieChart";
 import ChartsManagerService from "@/service/ChartsManagerService";
 import moment from "moment";
-import async from "async";
 
 let bar_days = [];
 let bar_usersclockedin = [];
@@ -98,9 +97,11 @@ setup(props, { emit }) {
  },
   data(){
    return {
-     all_bar_data: [bar_days, bar_users_shouldbe_working, bar_usersclockedin],
-     all_line_data: [line_days, line_users_shouldbe_working, line_usersclockedin],
-     all_pie_data: pie_datas,
+      primaryColor: "#be7744",
+      secondaryColor: "#227C9D",
+      all_bar_data: [bar_days, bar_users_shouldbe_working, bar_usersclockedin],
+      all_line_data: [line_days, line_users_shouldbe_working, line_usersclockedin],
+      all_pie_data: pie_datas,
    }
  }
 }
