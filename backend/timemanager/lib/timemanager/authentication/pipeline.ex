@@ -9,5 +9,4 @@ defmodule Timemanager.Guardian.AuthPipeline do
   plug(Guardian.Plug.VerifyHeader, claims: @claims, realm: "Bearer")
   plug(Guardian.Plug.EnsureAuthenticated)
   plug(Guardian.Plug.LoadResource, ensure: true)
-
 end
