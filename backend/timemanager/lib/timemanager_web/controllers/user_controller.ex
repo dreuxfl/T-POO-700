@@ -40,7 +40,8 @@ defmodule TimemanagerWeb.UserController do
   end
 
   def update(conn, %{"userID" => userID, "user" => user_params}) do
-    if Timemanager.IsAdmin.is_admin(conn) !== true do
+    {parsedUserID, ""} = Integer.parse(userID)
+    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
       render(conn, "error.json", %{error: "You are not allowed to do this action!"})
     else
       user = Employees.get_user!(userID)
