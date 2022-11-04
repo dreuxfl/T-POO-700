@@ -51,8 +51,10 @@
         <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @rerender-user-list-event="rerenderUserList" />
         <clock-work :userId=this.userId />
         <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @rerender-working-times-event="rerenderWorkingTimes"/>
-        <chart-manager v-if="this.selectedUserId != null" :key="this.chartManagerKey + '-if'" :userId=this.selectedUserId :chartId=this.chartId />
-        <chart-manager v-else :key="this.chartManagerKey + '-else'" :chartId=this.ChartType.Pie />
+        <chart-manager v-if="this.selectedUserId != null" :key="this.chartManagerKey + '-if'" 
+          :userId=this.selectedUserId :chartId=this.chartId />
+        <chart-manager v-else                             :key="this.chartManagerKey + '-else'" 
+          :userId=this.userId :chartId=this.ChartType.Pie />
       </div>
 
     </q-page-container>
@@ -104,9 +106,7 @@
         this.userListKey = `user-list-${this.userListRenderCount}`; 
       },
       rerenderWorkingTimes(){ 
-
         this.workingTimesRenderCount++;
-        console.log(this.workingTimesRenderCount);
         this.workingTimesKey = `working-times-${this.workingTimesRenderCount}`; 
       },
       rerenderChartManager(){ 

@@ -1,17 +1,17 @@
 <template>
   <div class="q-pa-md">
     <q-card class="my-card margin" style="padding:2em">
-  <Pie
-      :chart-options="chartOptions"
-      :chart-data="chartData"
-      :chart-id="chartId"
-      :plugins="plugins"
-      :dataset-id-key="datasetIdKey"
-      :css-classes="cssClasses"
-      :styles="styles"
-      :width="width"
-      :height="height"
-  />
+      <Pie
+        :chart-options="chartOptions"
+        :chart-data="chartData"
+        :chart-id="chartId"
+        :plugins="plugins"
+        :dataset-id-key="datasetIdKey"
+        :css-classes="cssClasses"
+        :styles="styles"
+        :width="width"
+        :height="height"
+      />
     </q-card>
   </div>
 </template>
@@ -66,7 +66,9 @@ export default defineComponent({
     }
   },
   setup(props) {
-    let hours_left = {...props.pie_data}[0] - {...props.pie_data}[1];
+    // let hours_left = {...props.pie_data.workingTime} - {...props.pie_data.hoursClocked}
+    // let hours_worked = {...props.pie_data.workingTime}
+    let hours_left = {...props.pie_data}[1] - {...props.pie_data}[0]; //Working times - clocked
     let hours_worked = {...props.pie_data}[1];
     return{
       chartData: {
@@ -85,6 +87,9 @@ export default defineComponent({
       }
     }
 
+  },
+  created(){
+    console.log(this.chartData)
   }
 })
 </script>
