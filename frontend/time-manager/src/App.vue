@@ -9,28 +9,12 @@
           Clockorico !
         </q-toolbar-title>
 
-        <q-btn-dropdown  color="primary" label="Select chart to display">
-          <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label @click="setchartId(1)">Pie Chart</q-item-label>
-              </q-item-section>
-            </q-item>
-
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label @click="setchartId(2)"> Line Chart</q-item-label>
-              </q-item-section>
-            </q-item>
-
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label @click="setchartId(3)">Bar Chart</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-
+        <div v-if="!loading && userId != null" class="q-gutter-x-md" >
+          <q-btn :disabled="this.chartId===1" color="primary" icon-right="pie_chart" label="Pie Chart" @click="setchartId(1)" />
+          <q-btn :disabled="this.chartId===2" color="primary" icon-right="ssid_chart" label="Line Chart" @click="setchartId(2)" />
+          <q-btn :disabled="this.chartId===3" color="primary" icon-right="bar_chart" label="Bar Chart" @click="setchartId(3)" />
+        </div>
+        
         <q-space />
         
         <q-btn color="primary" icon-right="person" label="Profile" @click="toggleProfileDrawer" />
