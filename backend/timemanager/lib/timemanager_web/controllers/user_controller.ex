@@ -3,12 +3,17 @@ defmodule TimemanagerWeb.UserController do
 
   alias Timemanager.Employees
   alias Timemanager.Employees.User
+  alias Timemanager.IsAdmin
 
   action_fallback TimemanagerWeb.FallbackController
 
   def index(conn, _params) do
-    users = Employees.list_users()
-    render(conn, "index.json", users: users)
+    if Timemanager.IsAdmin.is_admin(conn) !== true do
+      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+    else
+      users = Employees.list_users()
+      render(conn, "index.json", users: users)
+    end
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -20,23 +25,39 @@ defmodule TimemanagerWeb.UserController do
     end
   end
 
-  def show(conn, %{"userID" => userID}) do
-    user = Employees.get_user!(userID)
-    render(conn, "show.json", user: user)
+  def profile(conn, _params) do
+    loggedUser = Guardian.Plug.current_resource(conn)
+    render(conn, "show.json", user: loggedUser)
   end
 
-  def update(conn, %{"userID" => userID, "user" => user_params}) do
-    user = Employees.get_user!(userID)
-    with {:ok, %User{} = user} <- Employees.update_user(user, user_params) do
+  def show(conn, %{"userID" => userID}) do
+    if Timemanager.IsAdmin.is_admin(conn) !== true do
+      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+    else
+      user = Employees.get_user!(userID)
       render(conn, "show.json", user: user)
     end
   end
 
-  def delete(conn, %{"userID" => userID}) do
-    user = Employees.get_user!(userID)
+  def update(conn, %{"userID" => userID, "user" => user_params}) do
+    if Timemanager.IsAdmin.is_admin(conn) !== true do
+      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+    else
+      user = Employees.get_user!(userID)
+      with {:ok, %User{} = user} <- Employees.update_user(user, user_params) do
+        render(conn, "show.json", user: user)
+      end
+    end
+  end
 
-    with {:ok, %User{}} <- Employees.delete_user(user) do
-      send_resp(conn, :no_content, "")
+  def delete(conn, %{"userID" => userID}) do
+    if Timemanager.IsAdmin.is_admin(conn) !== true do
+      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+    else
+      user = Employees.get_user!(userID)
+      with {:ok, %User{}} <- Employees.delete_user(user) do
+        send_resp(conn, :no_content, "")
+      end
     end
   end
 end

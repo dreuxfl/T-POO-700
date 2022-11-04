@@ -17,4 +17,8 @@ defmodule TimemanagerWeb.UserView do
       email: user.email
     }
   end
+
+  def render("error.json", %{error: error}) do
+    %{error: error}
+  end
 end

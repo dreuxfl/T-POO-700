@@ -39,6 +39,7 @@ defmodule TimemanagerWeb.Router do
      post "/login/refresh", SessionController, :refresh
      post "/login/delete", SessionController, :delete
 
+     get "/profile", UserController, :profile
      get "/users", UserController, :index
      get "/users/:userID", UserController, :show
      put "/users/:userID", UserController, :update
