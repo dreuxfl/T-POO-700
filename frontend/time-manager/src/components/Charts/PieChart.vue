@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { defineComponent, h, PropType } from 'vue'
+import { defineComponent } from 'vue'
 
 import { Pie } from 'vue-chartjs'
 import {

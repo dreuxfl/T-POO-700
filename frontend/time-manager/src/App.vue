@@ -10,9 +10,19 @@
         </q-toolbar-title>
 
         <div v-if="!loading && userId != null" class="q-gutter-x-md" >
-          <q-btn :disabled="this.chartId===1" color="primary" icon-right="pie_chart" label="Pie Chart" @click="setchartId(1)" />
-          <q-btn :disabled="this.chartId===2" color="primary" icon-right="ssid_chart" label="Line Chart" @click="setchartId(2)" />
-          <q-btn :disabled="this.chartId===3" color="primary" icon-right="bar_chart" label="Bar Chart" @click="setchartId(3)" />
+          <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Pie" 
+            color="primary" icon-right="pie_chart" label="Pie Chart" @click="setchartId(this.ChartType.Pie)" />
+          <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Line" 
+            color="primary" icon-right="ssid_chart" label="Line Chart" @click="setchartId(this.ChartType.Line)" />
+          <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Bar" 
+            color="primary" icon-right="bar_chart" label="Bar Chart" @click="setchartId(this.ChartType.Bar)" />
+
+          <q-tooltip v-if="this.selectedUserId === null" 
+            transition-show="rotate" transition-hide="rotate"
+            class="text-body2 bg-negative" 
+          > 
+            Select user first 
+          </q-tooltip>
         </div>
         
         <q-space />
@@ -28,11 +38,12 @@
       />
     </q-drawer>
 
-    <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
+    <q-page-container class="flex justify-center align-center " style="margin: 3em;">
 
       <div v-if="loading" style="text-align: center">
-        <img src="@/assets/poulet.gif" alt="Poulet" width="200" height="200" class="rotating">
-        <div class="text-h2 text-primary" style="margin-top:220px;" >Clockorico !</div>
+        <div class="text-h2 text-primary" >Clockorico !</div>
+        <div class="text-overline text-secondary">loading...</div>
+        <img src="@/assets/poulet.gif" alt="Poulet" width="200" height="200" class="rotating"  >
       </div>
       <q-btn v-else-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
       
@@ -41,7 +52,7 @@
         <clock-work :userId=this.userId />
         <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @rerender-working-times-event="rerenderWorkingTimes"/>
         <chart-manager v-if="this.selectedUserId != null" :key="this.chartManagerKey + '-if'" :userId=this.selectedUserId :chartId=this.chartId />
-        <chart-manager v-else :key="this.chartManagerKey + '-else'" :userId=this.userId :chartId=this.chartId />
+        <chart-manager v-else :key="this.chartManagerKey + '-else'" :chartId=this.ChartType.Pie />
       </div>
 
     </q-page-container>
@@ -57,6 +68,11 @@
   import ChartManager from "@/components/ChartManager";
   import UsersList from "@/components/UsersList";
 
+    const ChartType = {
+      Pie : 1,
+      Line : 2,
+      Bar : 3,
+    }
   export default {
     name: 'LayoutDefault',
 
@@ -138,6 +154,7 @@
         chartId: 0,
         selectedUserId: null,
         loading: false,
+        ChartType
       }
     }
   }

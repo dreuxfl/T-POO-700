@@ -34,24 +34,24 @@ export default {
 
   },
 
-setup(props, { emit }) {
-  const barchart = async () =>{
+setup(props) {
+  const getBarChartData = async () =>{
     ChartsManagerService.getBarChart().then((response) => {
-          if (response.data.data.length > 0) {
-            bar_days = []
-            bar_usersclockedin = []
-            bar_users_shouldbe_working = []
-            for (let i = 0; i < response.data.data.length; i++) {
-              bar_days.push(moment(response.data.data[i].day).format("ddd"))
-              bar_usersclockedin.push(response.data.data[i].usersthatclockedin)
-              bar_users_shouldbe_working.push(response.data.data[i].userworkingtime)
-            }
+        if (response.data.data.length > 0) {
+          bar_days = []
+          bar_usersclockedin = []
+          bar_users_shouldbe_working = []
+          for (let i = 0; i < response.data.data.length; i++) {
+            bar_days.push(moment(response.data.data[i].day).format("ddd"))
+            bar_usersclockedin.push(response.data.data[i].usersthatclockedin)
+            bar_users_shouldbe_working.push(response.data.data[i].userworkingtime)
           }
         }
+      }
     );
   }
 
-  const linechart = async() =>{
+  const getLineChartData = async() =>{
     ChartsManagerService.getLineChart(props.userId).then((response) => {
           if (response.data.data.length > 0) {
             line_usersclockedin = []
@@ -67,7 +67,7 @@ setup(props, { emit }) {
     );
   }
 
-  const piechart = async() =>{
+  const getPieChartData = async() =>{
     ChartsManagerService.getPieChart(props.userId).then((response) => {
           pie_datas = []
           pie_datas.push(response.data.data.hoursclocked)
@@ -79,13 +79,13 @@ setup(props, { emit }) {
   async function getcharts() {
     switch (props.chartId) {
       case 1:
-        await piechart(props.userId);
+        await getPieChartData(props.userId);
         break;
       case 2:
-        await linechart(props.userId);
+        await getLineChartData(props.userId);
         break;
       case 3:
-        await barchart();
+        await getBarChartData();
         break;
       default:
         break;
