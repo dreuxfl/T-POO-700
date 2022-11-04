@@ -6,7 +6,7 @@ defmodule Timemanager.Guardian.AuthPipeline do
     module: Timemanager.Guardian,
     error_handler: Timemanager.Guardian.AuthErrorHandler
 
-  plug(Guardian.Plug.VerifyHeader, claims: @claims, realm: "Bearer")
+  plug(Guardian.Plug.VerifyHeader, claims: @claim, scheme: "Bearer")
   plug(Guardian.Plug.EnsureAuthenticated)
   plug(Guardian.Plug.LoadResource, ensure: true)
 end
