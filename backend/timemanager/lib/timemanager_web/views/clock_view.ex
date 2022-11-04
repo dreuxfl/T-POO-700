@@ -17,4 +17,8 @@ defmodule TimemanagerWeb.ClockView do
       status: clock.status
     }
   end
+
+  def render("error.json", %{error: error}) do
+    %{error: error}
+  end
 end

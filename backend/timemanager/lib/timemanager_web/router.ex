@@ -53,8 +53,8 @@ defmodule TimemanagerWeb.Router do
      delete "/workingtimes/:id", WorkingtimeController, :delete
 
      get "/clocks/:userID", ClockController, :index
-     post "/clocks/:userID", ClockController, :create
      get "/clocks/:userID/today", ClockController, :fetchCurrentClocks
+     post "/clocks/:userID", ClockController, :create
 
      get "/chartmanager/linechart/:userID", ChartmanagerController, :linechart_workingtime_clockedhours
      get "/chartmanager/piechart/:userID", ChartmanagerController, :piechart_workingtime_clockedhours_user
