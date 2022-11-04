@@ -7,21 +7,21 @@ defmodule TimemanagerWeb.UserController do
 
   action_fallback TimemanagerWeb.FallbackController
 
-  def index(conn, _params) do
-    if Timemanager.IsAdmin.is_admin(conn) !== true do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
-    else
-      users = Employees.list_users()
-      render(conn, "index.json", users: users)
-    end
-  end
-
   def create(conn, %{"user" => user_params}) do
     with {:ok, %User{} = user} <- Employees.create_user(user_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.user_path(conn, :show, user))
       |> render("show.json", user: user)
+    end
+  end
+
+  def index(conn, _params) do
+    if Timemanager.IsAdmin.is_admin(conn) !== true do
+      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+    else
+      users = Employees.list_users()
+      render(conn, "index.json", users: users)
     end
   end
 
