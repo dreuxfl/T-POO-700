@@ -15,6 +15,10 @@ defmodule TimemanagerWeb.Router do
     plug CORSPlug
   end
 
+  pipeline :auth do
+    plug Timemanager.Guardian.AuthPipeline
+  end
+
   scope "/", TimemanagerWeb do
     pipe_through :browser
 
@@ -23,11 +27,18 @@ defmodule TimemanagerWeb.Router do
 
   # Other scopes may use custom stacks.
   scope "/api", TimemanagerWeb do
-     pipe_through :api
+    pipe_through :api
 
-     post "/login", UserController, :login
+    post "/login", SessionController, :login
+    post "/users", UserController, :create
+  end
 
-     post "/users", UserController, :create
+  scope "/api", TimemanagerWeb do
+     pipe_through [:api, :auth]
+
+     post "/login/refresh", SessionController, :refresh
+     post "/login/delete", SessionController, :delete
+
      get "/users", UserController, :index
      get "/users/:userID", UserController, :show
      put "/users/:userID", UserController, :update

@@ -37,6 +37,9 @@ defmodule Timemanager.Employees do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_by_id!(id) do
+    User |> Repo.get!(id)
+  end
   @doc """
   Creates a user.
 
@@ -50,8 +53,16 @@ defmodule Timemanager.Employees do
 
   """
   def login(username, password) do
-    from(u in User, where: u.username == ^username and u.password == ^password)
-    |> Repo.one
+    with {:ok, user} <- get_by_username(username) do
+      case validate_password(password, user.password) do
+        false -> {:error, :unauthorized}
+        true -> {:ok, user}
+      end
+    end
+  end
+
+  defp validate_password(password, encrypted_password) do
+    Bcrypt.verify_pass(password, encrypted_password)
   end
 
   def search_user(username, email) do
@@ -61,8 +72,17 @@ defmodule Timemanager.Employees do
 
   def create_user(attrs \\ %{}) do
     %User{}
-    |> User.changeset(attrs)
+    |> User.registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+  def get_by_username(username) do
+    query = from u in User, where: u.username == ^username
+
+    case Repo.one(query) do
+      nil -> {:error, :not_found}
+      user -> {:ok, user}
+    end
   end
 
   @doc """
