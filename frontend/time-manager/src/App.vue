@@ -48,9 +48,9 @@
       <q-btn v-else-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
       
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
-        <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @rerender-user-list-event="rerenderUserList" />
-        <clock-work :userId=this.userId />
-        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @rerender-working-times-event="rerenderWorkingTimes"/>
+        <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @user-list-changed-event="onUserListChanged" />
+        <clock-work :userId=this.userId @clock-event="onClock"/>
+        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @working-times-changed-event="onWorkingTimesChanged"/>
         <chart-manager v-if="this.selectedUserId != null" :key="this.chartManagerKey + '-if'" 
           :userId=this.selectedUserId :chartId=this.chartId />
         <chart-manager v-else                             :key="this.chartManagerKey + '-else'" 
@@ -89,8 +89,7 @@
     methods:{
       onRequestLoading(){
         this.loading = true;
-        this.rightDrawerOpen = false;
-        
+        this.rightDrawerOpen = false;  
       },
       onRequestFailed(){
         this.loading = false;
@@ -121,7 +120,16 @@
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
       },
-
+      onWorkingTimesChanged(){
+        this.rerenderWorkingTimes();
+        this.rerenderChartManager();
+      },
+      onUserListChanged(){
+        this.rerenderUserList();
+      },
+      onClock(){
+        this.rerenderChartManager();
+      },
       userLogout(){
         this.userId = null;
         this.selectedUserId = null
@@ -129,7 +137,6 @@
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
       },
-      
       setSelectedUserId(payload){
         this.selectedUserId = payload.id;
         console.log(payload.id)

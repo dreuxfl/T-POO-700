@@ -132,7 +132,7 @@ export default {
       UserService.putUser(this.email, this.username, this.id)
       .then(() => {
         this.showNotif(true, "User updated successfully");
-        this.$emit('rerender-user-list-event');
+        this.$emit('user-list-changed-event');
       })
       .catch(e => {
         console.log(e);
@@ -153,7 +153,7 @@ export default {
       .onOk(() => {
         UserService.deleteUser(row.id).then(() => {
           this.showNotif(true, "User deleted successfully!")
-          this.$emit('rerender-user-list-event');
+          this.$emit('user-list-changed-event');
         })
         .catch(e => {
           console.log(e)

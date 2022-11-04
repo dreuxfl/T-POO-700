@@ -248,7 +248,7 @@ export default {
       .then(() => {
         this.showNotif(true, "Working time added successfully!");
         this.showWorkingTimesModal = false;
-        this.$emit('rerender-working-times-event');
+        this.$emit('working-times-changed-event');
 
       })
       .catch(e => {
@@ -260,7 +260,7 @@ export default {
         .then(() => {
           this.showNotif(true, "Working time updated successfully!");
           this.showWorkingTimesModal = false;
-          this.$emit('rerender-working-times-event');
+          this.$emit('working-times-changed-event');
 
         })
         .catch(e => {
@@ -278,7 +278,7 @@ export default {
         WorkingTimesService.deleteWorkingTimes(row.id)
         .then(() => {
           this.showNotif(true, "Working time deleted successfully!")
-          this.$emit('rerender-working-times-event');
+          this.$emit('working-times-changed-event');
         })
         .catch(e => {
           console.log(e)
