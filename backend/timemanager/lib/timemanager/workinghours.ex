@@ -46,7 +46,7 @@ defmodule Timemanager.Workinghours do
     })
 
     query = from w in Workingtime,
-                 where:  (w.start >= ^datenaivetoday and w.start <= ^datenaivetomorrow  and w.user == ^uid),
+                 where:  (w.start >= ^datenaivetoday and w.end <= ^datenaivetomorrow  and w.user == ^uid),
                  order_by: w.start
     Repo.all(query)
   end
