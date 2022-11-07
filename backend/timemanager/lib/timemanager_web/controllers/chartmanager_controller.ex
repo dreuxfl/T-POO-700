@@ -17,7 +17,6 @@ defmodule TimemanagerWeb.ChartmanagerController do
     ended = NaiveDateTime.from_iso8601!(url_params.query_params["end"])
     user_workingtimes = Workinghours.list_workingtimes_by_dates_lineschart(started, ended, parsedUserID)
 
-    x=0
     chartdata = Enum.map(user_workingtimes, fn  user_workingtime ->
         user_clocks = Chrono.list_clocks_by_dateuid(user_workingtime.start, parsedUserID)
         dummy_clock = Enum.reduce(user_clocks, 0,  fn  user_clock, acc ->
@@ -26,11 +25,9 @@ defmodule TimemanagerWeb.ChartmanagerController do
             else
             acc + user_clock.time.hour
           end
-          x= x +1
+
         end)
-        if rem(x, 2) == 1 do
-          dummy_clock = dummy_clock + DateTime.utc_now().hour
-        end
+
         %{
           id: user_workingtime.user,
           day: NaiveDateTime.to_date(user_workingtime.start),
@@ -53,18 +50,14 @@ defmodule TimemanagerWeb.ChartmanagerController do
                                                                     workingtime.user == parsedUserID end)
 
     user_clocks = Chrono.list_clocks_by_dateuid(param_date, parsedUserID)
-    x = 0
+
       dummy_clock = Enum.reduce(user_clocks, 0,  fn  user_clock, acc ->
         if user_clock.status do
           acc - user_clock.time.hour
         else
           acc + user_clock.time.hour
         end
-        x= x +1
       end)
-      if rem(x, 2) == 1 do
-        dummy_clock = dummy_clock + DateTime.utc_now().hour
-      end
     chart_result= %{
       id: user_workingtime.user,
       day: NaiveDateTime.to_date(user_workingtime.start),
