@@ -6,10 +6,10 @@
           <q-avatar>
             <img src=".\assets\Logo_Team.png">
           </q-avatar>
-          Clockorico !
+          Clock'O'Rico !
         </q-toolbar-title>
 
-        <div v-if="!loading && userId != null" class="q-gutter-x-md" >
+        <div v-if="!loading && token != null" class="q-gutter-x-md" >
           <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Pie" 
             color="primary" icon-right="pie_chart" label="Pie Chart" @click="setchartId(this.ChartType.Pie)" />
           <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Line" 
@@ -33,8 +33,8 @@
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
       <User 
-        @user-create-event="userChanged" @user-login-event="userChanged" @user-logout-event="userLogout"
-        @user-request-loading-event="onRequestLoading" @user-request-failed-event="onRequestFailed"
+        @userLoginEvent="userChanged" @userLogoutEvent="userLogout"
+        @userRequestLoadingEvent="onRequestLoading" @userRequestFailedEvent="onRequestFailed"
       />
     </q-drawer>
 
@@ -45,12 +45,12 @@
         <div class="text-overline text-secondary">loading...</div>
         <img src="@/assets/poulet.gif" alt="Poulet" width="200" height="200" class="rotating"  >
       </div>
-      <q-btn v-else-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
+      <q-btn v-else-if="token == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
       
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
-        <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @user-list-changed-event="onUserListChanged" />
+        <users-list :key="this.userListKey" @userSelectEvent="setSelectedUserId" @userListChangedEvent="onUserListChanged" />
         <clock-work :userId=this.userId @clock-event="onClock"/>
-        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @working-times-changed-event="onWorkingTimesChanged"/>
+        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @workingTimesChangedEvent="onWorkingTimesChanged"/>
         <chart-manager v-if="this.selectedUserId != null" :key="this.chartManagerKey + '-if'" 
           :userId=this.selectedUserId :chartId=this.chartId />
         <chart-manager v-else-if="this.userId != null" :key="this.chartManagerKey + '-else'" 
@@ -69,6 +69,7 @@
   import WorkingTimes from "./components/WorkingTimes";
   import ChartManager from "@/components/ChartManager";
   import UsersList from "@/components/UsersList";
+  import jwt_decode from "jwt-decode";
 
     const ChartType = {
       Pie : 1,
@@ -112,10 +113,14 @@
         this.chartManagerRenderCount++;
         this.chartManagerKey = `chart-manager-${this.chartManagerRenderCount}`; 
       },
-
       userChanged(payload){
+        
+        this.token = payload.token;
         this.loading = false;
-        this.userId = payload.id;
+        localStorage.setItem('access_token', this.token);
+        this.userId = parseInt(jwt_decode(this.token).sub);
+        //this.isAdmin = jwt_decode(this.token).quelquechose
+        
         this.rerenderUserList();
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
@@ -131,6 +136,8 @@
         this.rerenderChartManager();
       },
       userLogout(){
+        localStorage.removeItem('token');
+        this.token = null
         this.userId = null;
         this.selectedUserId = null
         this.rerenderUserList();
@@ -139,7 +146,6 @@
       },
       setSelectedUserId(payload){
         this.selectedUserId = payload.id;
-        console.log(payload.id)
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
       },
@@ -150,6 +156,12 @@
     },
     data() {
       return {
+        token: null,
+        userId: null,
+        chartId: 0,
+        selectedUserId: null,
+        loading: false,
+
         userListRenderCount: 0,
         workingTimesRenderCount: 0,
         chartManagerRenderCount: 0,
@@ -157,10 +169,7 @@
         workingTimesKey: "working-times-key-0",
         chartManagerKey: "chart-manager-0",
         rightDrawerOpen : ref(false),
-        userId: null,
-        chartId: 0,
-        selectedUserId: null,
-        loading: false,
+        
         ChartType
       }
     }

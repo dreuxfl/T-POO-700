@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default class ClockService {
-    static postClock(userId, status, time) {
+    static postClock(token, userId, status, time) {
         return axios({
             method: 'post',
             url: `http://localhost:4000/api/clocks/${userId}`,
@@ -9,7 +9,7 @@ export default class ClockService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                // 'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${token}`,
             },
             data: JSON.stringify({ 
                 "clock":
@@ -21,17 +21,23 @@ export default class ClockService {
         });
     }
 
-    static getClocks(userId) {
+    static getClocks(token, userId) {
         return axios({
             method: 'get',
-            url: `http://localhost:4000/api/clocks/${userId}`
+            url: `http://localhost:4000/api/clocks/${userId}`,
+            headers:{
+                'Authorization' : `Bearer ${token}`,
+            },
         });
     }
 
-    static getCurrentClocks(userId) {
+    static getCurrentClocks(token, userId) {
         return axios({
             method: 'get',
-            url: `http://localhost:4000/api/clocks/${userId}/today`
+            url: `http://localhost:4000/api/clocks/${userId}/today`,
+            headers:{
+                'Authorization' : `Bearer ${token}`,
+            },
         });
     }
 }
