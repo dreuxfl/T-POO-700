@@ -1,10 +1,19 @@
 <template>
   <div class="q-pa-md">
-    <q-table title="Working Times" :rows="rows" :columns="columns" row-key="id">
-      <template v-slot:top-right>
-        <q-btn round outline color="primary" @click="addWorkingTime()" :disable="this.selectedUserId === null">
-            <q-icon name="add" />
-        </q-btn>
+    <q-table title="Working Times" :rows="rows" :columns="columns" :filter="filter" row-key="id">
+      <template v-slot:top-right >
+        <q-td  class="q-gutter-x-md flex">
+          <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+          </q-input>
+
+          <q-btn round outline color="secondary" @click="addWorkingTime()" :disable="this.selectedUserId === null">
+              <q-icon name="add" />
+          </q-btn>
+        </q-td>
+        
       </template>
 
       <template v-slot:body-cell-actions="props">
@@ -23,7 +32,7 @@
 
     <q-tooltip v-if="this.selectedUserId === null" 
       transition-show="rotate" transition-hide="rotate"
-      class="text-body2 bg-warning" 
+      class="text-body2 bg-negative" 
     > 
       Select user first 
     </q-tooltip>
@@ -42,11 +51,11 @@
             :rules="[val => val && val.length > 0 || 'Start date required']">
             <template v-slot:append>
               <q-td class="q-gutter-x-xs" >
-                <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.StartDate)">
+                <q-btn round outline color="secondary" @click="showSelectorModal(this.ModalTypes.StartDate)">
                   <q-icon name="event" />
                 </q-btn>
 
-                <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.StartTime)">
+                <q-btn round outline color="secondary" @click="showSelectorModal(this.ModalTypes.StartTime)">
                   <q-icon name="access_time" />
                 </q-btn>
               </q-td>
@@ -57,11 +66,11 @@
             :rules="[val => val && val.length > 0 || 'End date required']">
             <template v-slot:append>
               <q-td class="q-gutter-x-xs" >
-                <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.EndDate)">
+                <q-btn round outline color="secondary" @click="showSelectorModal(this.ModalTypes.EndDate)">
                   <q-icon name="event" />
                 </q-btn>
 
-                <q-btn round outline color="primary" @click="showSelectorModal(this.ModalTypes.EndTime)">
+                <q-btn round outline color="secondary" @click="showSelectorModal(this.ModalTypes.EndTime)">
                   <q-icon name="access_time" />
                 </q-btn>
               </q-td>
@@ -70,7 +79,7 @@
 
           <q-card-actions align="right">
             <q-btn flat padding="xs xs" label="Cancel" color="negative"  v-close-popup />
-            <q-btn flat padding="xs lg" label="OK" type="submit" color="primary"/>
+            <q-btn flat padding="xs lg" label="OK" type="submit" color="secondary"/>
           </q-card-actions>
         </q-card-section>
       </q-form>
@@ -82,7 +91,7 @@
   <q-dialog v-model="showStartDateSelector" >
     <q-date v-model="start" mask="YYYY-MM-DD HH:mm">
       <div class="row items-center justify-end">
-        <q-btn v-close-popup label="Ok" color="primary" flat />
+        <q-btn v-close-popup label="Ok" color="secondary" flat />
       </div>
     </q-date>
   </q-dialog>
@@ -90,7 +99,7 @@
   <q-dialog v-model="showEndDateSelector">
     <q-date  v-model="end" mask="YYYY-MM-DD HH:mm">
       <div class="row items-center justify-end">
-        <q-btn v-close-popup label="Ok" color="primary" flat />
+        <q-btn v-close-popup label="Ok" color="secondary" flat />
       </div>
     </q-date>
   </q-dialog>
@@ -98,7 +107,7 @@
   <q-dialog v-model="showStartTimeSelector">
     <q-time v-model="start" mask="YYYY-MM-DD HH:mm" format24h>
       <div class="row items-center justify-end">
-        <q-btn v-close-popup label="Ok" color="primary" flat />
+        <q-btn v-close-popup label="Ok" color="secondary" flat />
       </div>
     </q-time>
   </q-dialog>
@@ -106,7 +115,7 @@
   <q-dialog v-model="showEndTimeSelector" >
     <q-time v-model="end" mask="YYYY-MM-DD HH:mm" format24h>
       <div class="row items-center justify-end">
-        <q-btn v-close-popup label="Ok" color="primary" flat />
+        <q-btn v-close-popup label="Ok" color="secondary" flat />
       </div>
     </q-time>
   </q-dialog>
@@ -174,7 +183,7 @@ export default {
     return {
       showNotif (positive, message) {
         $q.notify({
-          color: (positive ? "positive" : "warning"),
+          color: (positive ? "positive" : "negative"),
           textColor: 'white',
           icon: (positive ? "cloud_done" : "warning"),
           message: message
@@ -184,6 +193,7 @@ export default {
   },
   data() {
     return {
+      filter: "",
       ModalTypes,
       columns,
       rows: [],
@@ -248,7 +258,7 @@ export default {
       .then(() => {
         this.showNotif(true, "Working time added successfully!");
         this.showWorkingTimesModal = false;
-        this.$emit('rerender-working-times-event');
+        this.$emit('working-times-changed-event');
 
       })
       .catch(e => {
@@ -260,7 +270,7 @@ export default {
         .then(() => {
           this.showNotif(true, "Working time updated successfully!");
           this.showWorkingTimesModal = false;
-          this.$emit('rerender-working-times-event');
+          this.$emit('working-times-changed-event');
 
         })
         .catch(e => {
@@ -278,7 +288,7 @@ export default {
         WorkingTimesService.deleteWorkingTimes(row.id)
         .then(() => {
           this.showNotif(true, "Working time deleted successfully!")
-          this.$emit('rerender-working-times-event');
+          this.$emit('working-times-changed-event');
         })
         .catch(e => {
           console.log(e)

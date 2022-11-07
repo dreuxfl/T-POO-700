@@ -67,6 +67,8 @@ export default defineComponent({
       type: Number,
       default: 250
     },
+    primaryColor: String,
+    secondaryColor: String,
     cssClasses: {
       default: '',
       type: String
@@ -91,16 +93,16 @@ export default defineComponent({
         datasets: [{
           data: workinghours,
           label: "Work Hours",
-          backgroundColor: '#027BE3', lineTension: 0.4,
+          backgroundColor: props.secondaryColor, lineTension: 0.4,
           borderWidth: 2,
-          borderColor: '#027BE3',
+          borderColor: props.secondaryColor,
         },
           {
             data: clocked,
             label: "Hours Clocked",
             borderWidth: 2,
-            borderColor: '#f87979',
-            backgroundColor: '#f87979', lineTension: 0.4
+            borderColor: props.primaryColor,
+            backgroundColor: props.primaryColor, lineTension: 0.4
           }]
       },
 

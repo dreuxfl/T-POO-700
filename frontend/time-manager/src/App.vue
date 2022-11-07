@@ -9,28 +9,22 @@
           Clockorico !
         </q-toolbar-title>
 
-        <q-btn-dropdown  color="primary" label="Select chart to display">
-          <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label @click="setchartId(1)">Pie Chart</q-item-label>
-              </q-item-section>
-            </q-item>
+        <div v-if="!loading && userId != null" class="q-gutter-x-md" >
+          <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Pie" 
+            color="primary" icon-right="pie_chart" label="Pie Chart" @click="setchartId(this.ChartType.Pie)" />
+          <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Line" 
+            color="primary" icon-right="ssid_chart" label="Line Chart" @click="setchartId(this.ChartType.Line)" />
+          <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Bar" 
+            color="primary" icon-right="bar_chart" label="Bar Chart" @click="setchartId(this.ChartType.Bar)" />
 
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label @click="setchartId(2)"> Line Chart</q-item-label>
-              </q-item-section>
-            </q-item>
-
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label @click="setchartId(3)">Bar Chart</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-
+          <q-tooltip v-if="this.selectedUserId === null" 
+            transition-show="rotate" transition-hide="rotate"
+            class="text-body2 bg-negative" 
+          > 
+            Select user first 
+          </q-tooltip>
+        </div>
+        
         <q-space />
         
         <q-btn color="primary" icon-right="person" label="Profile" @click="toggleProfileDrawer" />
@@ -38,19 +32,29 @@
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" behavior="mobile" elevated class="flex justify-center">
-      <User @user-create-event="userChanged"  @user-login-event="userChanged" @user-logout-event="userLogout"/>
+      <User 
+        @user-create-event="userChanged" @user-login-event="userChanged" @user-logout-event="userLogout"
+        @user-request-loading-event="onRequestLoading" @user-request-failed-event="onRequestFailed"
+      />
     </q-drawer>
 
-    <q-page-container class="flex justify-center align-center " style="margin-top: 3em;">
+    <q-page-container class="flex justify-center align-center " style="margin: 3em;">
 
-      <q-btn v-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
-        
+      <div v-if="loading" style="text-align: center">
+        <div class="text-h2 text-primary" >Clockorico !</div>
+        <div class="text-overline text-secondary">loading...</div>
+        <img src="@/assets/poulet.gif" alt="Poulet" width="200" height="200" class="rotating"  >
+      </div>
+      <q-btn v-else-if="userId == null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
+      
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
-        <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @rerender-user-list-event="rerenderUserList" />
-        <clock-work :userId=this.userId />
-        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @rerender-working-times-event="rerenderWorkingTimes"/>
-        <chart-manager v-if="this.selectedUserId != null" :key="this.chartManagerKey + '-if'" :userId=this.selectedUserId :chartId=this.chartId />
-        <chart-manager v-else :key="this.chartManagerKey + '-else'" :userId=this.userId :chartId=this.chartId />
+        <users-list :key="this.userListKey" @user-select-event="setSelectedUserId" @user-list-changed-event="onUserListChanged" />
+        <clock-work :userId=this.userId @clock-event="onClock"/>
+        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @working-times-changed-event="onWorkingTimesChanged"/>
+        <chart-manager v-if="this.selectedUserId != null" :key="this.chartManagerKey + '-if'" 
+          :userId=this.selectedUserId :chartId=this.chartId />
+        <chart-manager v-else-if="this.userId != null" :key="this.chartManagerKey + '-else'" 
+          :userId=this.userId :chartId=this.ChartType.Pie />
       </div>
 
     </q-page-container>
@@ -66,6 +70,11 @@
   import ChartManager from "@/components/ChartManager";
   import UsersList from "@/components/UsersList";
 
+    const ChartType = {
+      Pie : 1,
+      Line : 2,
+      Bar : 3,
+    }
   export default {
     name: 'LayoutDefault',
 
@@ -78,6 +87,14 @@
     },
 
     methods:{
+      onRequestLoading(){
+        this.loading = true;
+        this.rightDrawerOpen = false;  
+      },
+      onRequestFailed(){
+        this.loading = false;
+        this.rightDrawerOpen = true;
+      },
       toggleProfileDrawer() {
         this.rightDrawerOpen = !this.rightDrawerOpen;
       },
@@ -88,9 +105,7 @@
         this.userListKey = `user-list-${this.userListRenderCount}`; 
       },
       rerenderWorkingTimes(){ 
-
         this.workingTimesRenderCount++;
-        console.log(this.workingTimesRenderCount);
         this.workingTimesKey = `working-times-${this.workingTimesRenderCount}`; 
       },
       rerenderChartManager(){ 
@@ -99,12 +114,22 @@
       },
 
       userChanged(payload){
+        this.loading = false;
         this.userId = payload.id;
         this.rerenderUserList();
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
       },
-
+      onWorkingTimesChanged(){
+        this.rerenderWorkingTimes();
+        this.rerenderChartManager();
+      },
+      onUserListChanged(){
+        this.rerenderUserList();
+      },
+      onClock(){
+        this.rerenderChartManager();
+      },
       userLogout(){
         this.userId = null;
         this.selectedUserId = null
@@ -112,7 +137,6 @@
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
       },
-      
       setSelectedUserId(payload){
         this.selectedUserId = payload.id;
         console.log(payload.id)
@@ -136,7 +160,53 @@
         userId: null,
         chartId: 0,
         selectedUserId: null,
+        loading: false,
+        ChartType
       }
     }
   }
 </script>
+
+<style scoped>
+@keyframes rotating
+    {
+    from
+        {
+        transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        }
+    to
+        {
+        transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        }
+    }
+@-webkit-keyframes rotating
+    {
+    from
+        {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        }
+    to
+        {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        }
+    }
+.rotating
+    {
+      transform-origin: bottom center;
+      -webkit-animation: rotating 3s linear infinite;
+      -moz-animation: rotating 3s linear infinite;
+      -ms-animation: rotating 3s linear infinite;
+      -o-animation: rotating 3s linear infinite;
+      animation: rotating 3s linear infinite;
+    }
+</style>

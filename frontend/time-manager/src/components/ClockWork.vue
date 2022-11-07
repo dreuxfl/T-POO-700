@@ -5,7 +5,6 @@
         <div class="text-h6 text-center"> Clock Pointer </div>
       </q-card-section>
       <q-card-section class="row justify-center">
-        
           <q-btn v-if="isClockIn" v-on:click=clock() round color="positive"  label="Clock In" id="isClockInBtn"/>
           <q-btn v-else v-on:click=clock() round color="negative" label="Clock Out" id="isClockInBtn"/>
       </q-card-section>
@@ -85,6 +84,8 @@
 
         ClockService.postClock(this.userId, this.isClockIn, moment(new Date (clockTime)).format("YYYY-MM-DD HH:mm:ss"));
         this.isClockIn = !this.isClockIn;
+
+        this.$emit("clock-event");
       },
       clock(){
         
@@ -113,15 +114,17 @@
       ClockService.getCurrentClocks(this.userId).then((response) => {
         let totalClockDuration = 0;
         let lastClock = null;
-        this.isClockIn = false;
+        this.isClockIn = true;
+        let clocks = response.data.data
+        if(clocks.length > 0){
+          if(!clocks[0].status) clocks.shift();
 
-        if(response.data.data.length > 0){
-          response.data.data.forEach(clock => {
+          clocks.forEach(clock => {
             if(clock.status) totalClockDuration -= new Date(clock.time).getTime();
             else totalClockDuration += new Date(clock.time).getTime();
-          })
+          });
 
-          lastClock= response.data.data.at(-1);
+          lastClock= clocks.at(-1);
         }
         if(lastClock){
           if(lastClock.status) totalClockDuration += (Date.now());

@@ -39,7 +39,7 @@
             :rules="[val => val && val.length > 0 || 'Username is required']" />
           <q-card-actions align="right">
             <q-btn flat padding="xs xs" label="Cancel" color="negative"  v-close-popup />
-            <q-btn flat padding="xs lg" label="OK" type="submit" color="primary"/>
+            <q-btn flat padding="xs lg" label="OK" type="submit" color="secondary"/>
           </q-card-actions>
         </q-card-section>
       </q-form>
@@ -92,7 +92,7 @@ export default {
     return {
       showNotif (positive, message) {
         $q.notify({
-          color: (positive ? "positive" : "warning"),
+          color: (positive ? "positive" : "negative"),
           textColor: 'white',
           icon: (positive ? "cloud_done" : "warning"),
           message: message
@@ -132,7 +132,7 @@ export default {
       UserService.putUser(this.email, this.username, this.id)
       .then(() => {
         this.showNotif(true, "User updated successfully");
-        this.$emit('rerender-user-list-event');
+        this.$emit('user-list-changed-event');
       })
       .catch(e => {
         console.log(e);
@@ -153,7 +153,7 @@ export default {
       .onOk(() => {
         UserService.deleteUser(row.id).then(() => {
           this.showNotif(true, "User deleted successfully!")
-          this.$emit('rerender-user-list-event');
+          this.$emit('user-list-changed-event');
         })
         .catch(e => {
           console.log(e)

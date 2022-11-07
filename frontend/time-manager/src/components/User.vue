@@ -18,9 +18,9 @@
           <q-checkbox v-model="customModel" label="Remember username and password ?" true-value="yes" false-value="no" />
 
           <div class="flex row q-gutter-sm">
-            <q-btn class="col" label="Log in" type="submit" color="primary" />
+            <q-btn class="col" label="Log in" type="submit" color="secondary" />
             <q-btn class="col" label="Erase" type="reset" color="negative" />
-            <q-btn class="col" label="Register" color="primary" flat @click="toggleLogin" />
+            <q-btn class="col" label="Register" color="secondary" flat @click="toggleLogin" />
 
           </div>
         </q-form>
@@ -47,9 +47,9 @@
           <q-toggle v-model="accept" label="I accept the license and terms" />
 
           <div class="flex row q-gutter-sm" >
-            <q-btn class="col" label="Register" type="submit" color="primary" />
+            <q-btn class="col" label="Register" type="submit" color="secondary" />
             <q-btn class="col" label="Reset" type="reset" color="negative" />
-            <q-btn class="col" label="Login" color="primary" flat @click="toggleLogin" />
+            <q-btn class="col" label="Login" color="secondary" flat @click="toggleLogin" />
 
           </div>
         </q-form>
@@ -64,7 +64,7 @@
           <q-input filled v-model="connectedUserData.email" label="Email" lazy-rules
             :rules="[val => val && val.length > 0 || 'Email is required']" >
             <template v-slot:after>
-              <q-btn class="col" label="Edit" color="primary" @click="onUpdate"/>
+              <q-btn class="col" label="Edit" color="secondary" @click="onUpdate"/>
             </template>
           </q-input>
    
@@ -95,7 +95,7 @@ export default {
     return {
       showNotif (positive, message) {
         $q.notify({
-          color: (positive ? "positive" : "warning"),
+          color: (positive ? "positive" : "negative"),
           textColor: 'white',
           icon: (positive ? "cloud_done" : "warning"),
           message: message
@@ -142,6 +142,7 @@ export default {
       if (!this.accept) this.showNotif (false, 'You need to accept the license and terms first')
         
       else {
+        this.$emit('user-request-loading-event');
         UserService.postUser(this.email, this.username1, this.password1).then((response)=>{
           try {
             this.showNotif (true, 'Registration complete. You are now logged in')
@@ -152,22 +153,28 @@ export default {
           } catch (e) {
             console.log(e);
           }
-        }).catch(e => console.log(e));      
+        }).catch(e => {
+          this.$emit('user-request-failed-event');
+          this.showNotif (false, 'Failed to register');
+          console.log(e)
+        });      
       }
     },
     onLogin() {
+      this.$emit('user-request-loading-event');
       UserService.login(this.username, this.password).then((response)=>{
         try {
           this.userId = response.data.data.id
-          this.$emit('user-login-event', {id: response.data.data.id})
+          this.$emit('user-login-event', {id: response.data.data.id});
           this.clearLoginFields();
-          this.updateConnectedUserData()
-          this.showNotif (true, 'You are now logged in')
+          this.updateConnectedUserData();
+          this.showNotif (true, 'You are now logged in');
         } catch (e) {
           console.log(e);
         }
       }).catch(e => {
         console.log(e);
+        this.$emit('user-request-failed-event');
         this.showNotif (false, 'Invalid credentials');
       });
     },

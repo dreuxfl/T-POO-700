@@ -1,23 +1,23 @@
 <template>
   <div class="q-pa-md">
     <q-card class="my-card margin" style="padding:2em">
-  <Pie
-      :chart-options="chartOptions"
-      :chart-data="chartData"
-      :chart-id="chartId"
-      :plugins="plugins"
-      :dataset-id-key="datasetIdKey"
-      :css-classes="cssClasses"
-      :styles="styles"
-      :width="width"
-      :height="height"
-  />
+      <Pie
+        :chart-options="chartOptions"
+        :chart-data="chartData"
+        :chart-id="chartId"
+        :plugins="plugins"
+        :dataset-id-key="datasetIdKey"
+        :css-classes="cssClasses"
+        :styles="styles"
+        :width="width"
+        :height="height"
+      />
     </q-card>
   </div>
 </template>
 
 <script>
-import { defineComponent, h, PropType } from 'vue'
+import { defineComponent } from 'vue'
 
 import { Pie } from 'vue-chartjs'
 import {
@@ -50,6 +50,8 @@ export default defineComponent({
       type: Number,
       default: 400
     },
+    primaryColor: String,
+    secondaryColor: String,
     cssClasses: {
       default: '',
       type: String
@@ -64,14 +66,16 @@ export default defineComponent({
     }
   },
   setup(props) {
-    let hours_left = {...props.pie_data}[0] - {...props.pie_data}[1];
+    // let hours_left = {...props.pie_data.workingTime} - {...props.pie_data.hoursClocked}
+    // let hours_worked = {...props.pie_data.workingTime}
+    let hours_left = {...props.pie_data}[1] - {...props.pie_data}[0]; //Working times - clocked
     let hours_worked = {...props.pie_data}[1];
     return{
       chartData: {
         labels: ['Work Hours Left', 'Hours Clocked'],
         datasets: [
           {
-            backgroundColor: ['#E46651', '#00D8FF'],
+            backgroundColor: [props.primaryColor, props.secondaryColor],
             data: [hours_left, hours_worked]
           }
         ]
@@ -83,6 +87,9 @@ export default defineComponent({
       }
     }
 
+  },
+  created(){
+    console.log(this.chartData)
   }
 })
 </script>
