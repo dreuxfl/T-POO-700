@@ -1,10 +1,19 @@
 <template>
   <div class="q-pa-md">
-    <q-table title="Working Times" :rows="rows" :columns="columns" row-key="id">
-      <template v-slot:top-right>
-        <q-btn round outline color="secondary" @click="addWorkingTime()" :disable="this.selectedUserId === null">
-            <q-icon name="add" />
-        </q-btn>
+    <q-table title="Working Times" :rows="rows" :columns="columns" :filter="filter" row-key="id">
+      <template v-slot:top-right >
+        <q-td  class="q-gutter-x-md flex">
+          <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+          </q-input>
+
+          <q-btn round outline color="secondary" @click="addWorkingTime()" :disable="this.selectedUserId === null">
+              <q-icon name="add" />
+          </q-btn>
+        </q-td>
+        
       </template>
 
       <template v-slot:body-cell-actions="props">
@@ -184,6 +193,7 @@ export default {
   },
   data() {
     return {
+      filter: "",
       ModalTypes,
       columns,
       rows: [],

@@ -53,7 +53,7 @@
         <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @working-times-changed-event="onWorkingTimesChanged"/>
         <chart-manager v-if="this.selectedUserId != null" :key="this.chartManagerKey + '-if'" 
           :userId=this.selectedUserId :chartId=this.chartId />
-        <chart-manager v-else                             :key="this.chartManagerKey + '-else'" 
+        <chart-manager v-else-if="this.userId != null" :key="this.chartManagerKey + '-else'" 
           :userId=this.userId :chartId=this.ChartType.Pie />
       </div>
 

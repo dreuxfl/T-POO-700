@@ -77,20 +77,20 @@ export default {
     async getBarChartData(){
       ChartsManagerService.getBarChart().then((response) => {
         if (response.data.data.length > 0) {
-          this.bar_days = []
-          this.bar_usersclockedin = []
-          this.bar_users_shouldbe_working = []
+          this.bar_days = [];
+          this.bar_usersclockedin = [];
+          this.bar_users_shouldbe_working = [];
           for (let i = 0; i < response.data.data.length; i++) {
-            this.bar_days.push(moment(response.data.data[i].day).format("ddd"))
-            this.bar_usersclockedin.push(response.data.data[i].usersthatclockedin)
-            this.bar_users_shouldbe_working.push(response.data.data[i].userworkingtime)
+            this.bar_days.push(moment(response.data.data[i].day).format("ddd"));
+            this.bar_usersclockedin.push(response.data.data[i].usersthatclockedin);
+            this.bar_users_shouldbe_working.push(response.data.data[i].userworkingtime);
           }
 
           this.all_bar_data = [this.bar_days, this.bar_users_shouldbe_working, this.bar_usersclockedin];
         }
       }).catch(e => {
         console.log(e);
-        this.showNotif(false, 'Bar data fetch failed')
+        this.showNotif(false, 'Bar data fetch failed');
       });
     }
   },
