@@ -9,7 +9,9 @@ defmodule TimemanagerWeb.WorkingtimeController do
 
   def index_with_params(conn, %{"userID" => userID}) do
     if Timemanager.IsAdmin.is_admin(conn) !== true do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       {parsedUserID, ""} = Integer.parse(userID)
       workingtimes = Workinghours.list_workingtimes()
@@ -28,7 +30,9 @@ defmodule TimemanagerWeb.WorkingtimeController do
 
   def create(conn, %{"userID" => userID, "workingtime" => workingtime_params}) do
     if Timemanager.IsAdmin.is_admin(conn) !== true do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       new_working_time = Map.put(workingtime_params, "user", userID)
       with {:ok, %Workingtime{} = workingtime} <- Workinghours.create_workingtime(new_working_time) do
@@ -42,7 +46,9 @@ defmodule TimemanagerWeb.WorkingtimeController do
 
   def index(conn, _params) do
     if Timemanager.IsAdmin.is_admin(conn) !== true do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtimes = Workinghours.list_workingtimes()
       render(conn, "index.json", workingtimes: workingtimes)
@@ -52,7 +58,9 @@ defmodule TimemanagerWeb.WorkingtimeController do
   def all(conn, %{"userID" => userID}) do
     {parsedUserID, ""} = Integer.parse(userID)
     if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtimes = Workinghours.list_workingtimes()
       {parsedUserID, ""} = Integer.parse(userID)
@@ -64,7 +72,9 @@ defmodule TimemanagerWeb.WorkingtimeController do
   def show(conn, %{"userID" => userID, "id" => wtID}) do
     {parsedUserID, ""} = Integer.parse(userID)
     if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtime = Workinghours.get_workingtime!(wtID)
       {parsedUserID, ""} = Integer.parse(userID)
@@ -80,7 +90,9 @@ defmodule TimemanagerWeb.WorkingtimeController do
 
   def update(conn, %{"id" => wtID, "workingtime" => workingtime_params}) do
     if Timemanager.IsAdmin.is_admin(conn) !== true do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtime = Workinghours.get_workingtime!(wtID)
       with {:ok, %Workingtime{} = workingtime} <- Workinghours.update_workingtime(workingtime, workingtime_params) do
@@ -91,7 +103,9 @@ defmodule TimemanagerWeb.WorkingtimeController do
 
   def delete(conn, %{"id" => wtID}) do
     if Timemanager.IsAdmin.is_admin(conn) !== true do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtime = Workinghours.get_workingtime!(wtID)
       with {:ok, %Workingtime{}} <- Workinghours.delete_workingtime(workingtime) do

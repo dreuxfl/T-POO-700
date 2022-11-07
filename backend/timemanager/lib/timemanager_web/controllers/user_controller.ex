@@ -18,7 +18,9 @@ defmodule TimemanagerWeb.UserController do
 
   def index(conn, _params) do
     if Timemanager.IsAdmin.is_admin(conn) !== true do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       users = Employees.list_users()
       render(conn, "index.json", users: users)
@@ -32,7 +34,9 @@ defmodule TimemanagerWeb.UserController do
 
   def show(conn, %{"userID" => userID}) do
     if Timemanager.IsAdmin.is_admin(conn) !== true do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
       render(conn, "show.json", user: user)
@@ -42,7 +46,9 @@ defmodule TimemanagerWeb.UserController do
   def update(conn, %{"userID" => userID, "user" => user_params}) do
     {parsedUserID, ""} = Integer.parse(userID)
     if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
       with {:ok, %User{} = user} <- Employees.update_user(user, user_params) do
@@ -53,7 +59,9 @@ defmodule TimemanagerWeb.UserController do
 
   def delete(conn, %{"userID" => userID}) do
     if Timemanager.IsAdmin.is_admin(conn) !== true do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
       with {:ok, %User{}} <- Employees.delete_user(user) do

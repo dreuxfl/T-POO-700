@@ -12,7 +12,9 @@ defmodule TimemanagerWeb.ClockController do
   def create(conn, %{"userID" => userID, "clock" => clock_params}) do
     {parsedUserID, ""} = Integer.parse(userID)
     if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       new_clock = Map.put(clock_params, "user", userID)
       with {:ok, %Clock{} = clock} <- Chrono.create_clock(new_clock) do
@@ -27,10 +29,12 @@ defmodule TimemanagerWeb.ClockController do
   def index(conn, %{"userID" => userID}) do
     {parsedUserID, ""} = Integer.parse(userID)
     if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       url_params = Plug.Conn.fetch_query_params(conn)
-      if(is_nil(url_params.query_params["date"])) do
+      if (is_nil(url_params.query_params["date"])) do
         clocks = Chrono.list_clocks()
         {parsedUserID, ""} = Integer.parse(userID)
         user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsedUserID end)
@@ -47,7 +51,9 @@ defmodule TimemanagerWeb.ClockController do
   def fetchCurrentClocks(conn, %{"userID" => userID}) do
     {parsedUserID, ""} = Integer.parse(userID)
     if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
-      render(conn, "error.json", %{error: "You are not allowed to do this action!"})
+      conn
+      |> put_status(:forbidden)
+      |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       clocks = Chrono.list_current_clocks
       {parsedUserID, ""} = Integer.parse(userID)
