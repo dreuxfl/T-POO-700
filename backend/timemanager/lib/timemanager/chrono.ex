@@ -47,7 +47,6 @@ defmodule Timemanager.Chrono do
     Repo.all(query)
   end
 
-
   def list_current_clocks do
     today = Date.utc_today()
     todayNaive =  DateTime.to_naive( %DateTime{
@@ -68,6 +67,7 @@ defmodule Timemanager.Chrono do
       distinct: c.user
     Repo.all(query)
   end
+
   @doc """
   Gets a single clock.
 
