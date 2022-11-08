@@ -1,5 +1,5 @@
 //import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+
 import React, { useState } from 'react'
 import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
@@ -12,7 +12,7 @@ import { UsernameValidator } from '../helpers/UsernameValidator'
 import BackButton from "../components/BackButton";
 import Header from "../components/Header";
 import Logo from "../components/Logo";
-
+import Background from "../components/Background";
 export default function Signup({ navigation }) {
     const [email, setEmail] = useState({ value: '', error: '' })
     const [password, setPassword] = useState({ value: '', error: '' })
@@ -36,9 +36,7 @@ export default function Signup({ navigation }) {
         return (
             <Background>
             <Logo />
-            <Header>Sign up Motherfucker !</Header>
-            <View>              
-                <BackButton goBack={navigation.goBack} />
+            <Header>Register</Header>
             <TextInput
                 label="Username"
                 returnKeyType="next"
@@ -46,7 +44,6 @@ export default function Signup({ navigation }) {
                 onChangeText={(text) => setUsername({ value: text, error: '' })}
                 error={!!username.error}
                 errorText={username.error}
-                autoCapitalize="none"
                 autoCompleteType="username-new"
                 textContentType="username"
                 keyboardType="default"
@@ -58,7 +55,6 @@ export default function Signup({ navigation }) {
                 onChangeText={(text) => setEmail({ value: text, error: '' })}
                 error={!!email.error}
                 errorText={email.error}
-                autoCapitalize="none"
                 autoCompleteType="email"
                 textContentType="emailAddress"
                 keyboardType="email-address"
@@ -72,10 +68,27 @@ export default function Signup({ navigation }) {
                 errorText={password.error}
                 secureTextEntry
             />
+
+                <TextInput
+                    label="Confirm Password"
+                    returnKeyType="done"
+                    value={password.value}
+                    onChangeText={(text) => setPassword({ value: text, error: '' })}
+                    error={!!password.error}
+                    errorText={password.error}
+                    secureTextEntry
+                />
+
             <Button style={styles.button} mode="contained" onPress={onSignupPressed}>
                 Sign up
             </Button>
-            </View>
+
+                <View style={styles.row}>
+                    <Text>You already have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                        <Text style={styles.link}>Login</Text>
+                    </TouchableOpacity>
+                </View>
             </Background>
         )
     }

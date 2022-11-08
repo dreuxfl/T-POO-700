@@ -10,8 +10,8 @@ export const theme = {
         error: '#f13a59',
         positive:'#21BA45',
         negative: '#C10015',
-        outlineColor: '#227C9D',
-        hasActiveOutline: '#227C9D',
+        activeOutlineColor: '#227C9D',
+        background: '#227C9D',
         activeColor: '#227C9D'
     },
 }

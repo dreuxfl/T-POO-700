@@ -27,7 +27,7 @@ export default class UserService {
         });
     }
 
-    static putUser(token, email, username, userId) {
+    static putUser(token, userId, email, username, password) {
         return axios({
             method: 'put',
             url: `http://localhost:4000/api/users/${userId}`,
@@ -41,6 +41,7 @@ export default class UserService {
                 {
                     "email": email,
                     "username": username,
+                    "password": password
                 }
             })
         });
