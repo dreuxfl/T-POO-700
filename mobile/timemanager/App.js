@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Login from "./screens/Login";
+import Signup from "./screens/Signup";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function HomeScreen() {
