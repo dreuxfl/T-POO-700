@@ -4,6 +4,8 @@ defmodule TimemanagerWeb.ClockController do
   alias Timemanager.Chrono
   alias Timemanager.Chrono.Clock
   alias Timemanager.IsAdmin
+  alias Timemanager.Employees
+  alias Timemanager.Employees.User
 
   action_fallback TimemanagerWeb.FallbackController
 
@@ -16,12 +18,19 @@ defmodule TimemanagerWeb.ClockController do
       |> put_status(:forbidden)
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
-      new_clock = Map.put(clock_params, "user", userID)
-      with {:ok, %Clock{} = clock} <- Chrono.create_clock(new_clock) do
+      user = Employees.get_user!(userID)
+      if user do
+        new_clock = Map.put(clock_params, "user", userID)
+        with {:ok, %Clock{} = clock} <- Chrono.create_clock(new_clock) do
+          conn
+          |> put_status(:created)
+          |> put_resp_header("location", Routes.clock_path(conn, :create, clock))
+          |> render("show.json", clock: clock)
+        end
+      else
         conn
-        |> put_status(:created)
-        |> put_resp_header("location", Routes.clock_path(conn, :create, clock))
-        |> render("show.json", clock: clock)
+        |> put_status(:not_found)
+        |> render("404.json")
       end
     end
   end
