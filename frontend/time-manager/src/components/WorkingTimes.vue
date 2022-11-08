@@ -43,8 +43,8 @@
       <q-card-section>
         <div v-if="this.isEditMode" class="text-h6">Modify working time {{this.id }}</div>
         <div v-else class="text-h6">Add a working time</div>
-
       </q-card-section>
+
       <q-form @submit="submitWorkingTime">
         <q-card-section class="q-pt-none">
           <q-input filled v-model="start" label="Start time" lazy-rules
@@ -177,6 +177,7 @@ const ModalTypes = {
  
 export default {
   name: 'WorkingTimes',
+  emits: ['workingTimesChangedEvent'],
   setup () {
     const $q = useQuasar()
 
@@ -193,6 +194,8 @@ export default {
   },
   data() {
     return {
+      token: null,
+
       filter: "",
       ModalTypes,
       columns,
@@ -254,11 +257,11 @@ export default {
       }
     },
     saveNewWorkingTime() {
-      WorkingTimesService.addWorkingTime(this.selectedUserId, this.start, this.end)
+      WorkingTimesService.addWorkingTime(this.token, this.selectedUserId, this.start, this.end)
       .then(() => {
         this.showNotif(true, "Working time added successfully!");
         this.showWorkingTimesModal = false;
-        this.$emit('working-times-changed-event');
+        this.$emit('workingTimesChangedEvent');
 
       })
       .catch(e => {
@@ -266,11 +269,11 @@ export default {
       })
     },
     saveEditedWorkingTime () {
-      WorkingTimesService.editWorkingTimes(this.id, this.start, this.end)
+      WorkingTimesService.editWorkingTimes(this.token, this.id, this.start, this.end)
         .then(() => {
           this.showNotif(true, "Working time updated successfully!");
           this.showWorkingTimesModal = false;
-          this.$emit('working-times-changed-event');
+          this.$emit('workingTimesChangedEvent');
 
         })
         .catch(e => {
@@ -285,10 +288,10 @@ export default {
         persistent: true,
       })
       .onOk(() => {
-        WorkingTimesService.deleteWorkingTimes(row.id)
+        WorkingTimesService.deleteWorkingTimes(this.token, row.id)
         .then(() => {
           this.showNotif(true, "Working time deleted successfully!")
-          this.$emit('working-times-changed-event');
+          this.$emit('workingTimesChangedEvent');
         })
         .catch(e => {
           console.log(e)
@@ -300,8 +303,9 @@ export default {
     selectedUserId : Number
   },
   created() {
+    this.token = localStorage.getItem('access_token');
     if (this.selectedUserId) {
-      WorkingTimesService.getWorkingTimesByUser(this.selectedUserId)
+      WorkingTimesService.getWorkingTimesByUser(this.token, this.selectedUserId)
       .then(response => {
         if(response.data.data && response.data.data.length > 0){
           for (let i = 0; i < response.data.data.length; i++) {

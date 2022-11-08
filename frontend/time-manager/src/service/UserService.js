@@ -16,7 +16,6 @@ export default class UserService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                // 'Authorization' : `Bearer ${token}`,
             },
             data: JSON.stringify({"user":
                 {
@@ -28,7 +27,7 @@ export default class UserService {
         });
     }
 
-    static putUser(email, username, userId) {
+    static putUser(token, email, username, userId) {
         return axios({
             method: 'put',
             url: `http://localhost:4000/api/users/${userId}`,
@@ -36,7 +35,7 @@ export default class UserService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                // 'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${token}`,
             },
             data: JSON.stringify({"user":
                 {
@@ -47,7 +46,7 @@ export default class UserService {
         });
     }
 
-    static getUser(userId) {
+    static getUser(token, userId) {
         return axios({
             method: 'get',
             url: `http://localhost:4000/api/users/${userId}`,
@@ -55,12 +54,25 @@ export default class UserService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                // 'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${token}`,
             }
         });
     }
 
-    static deleteUser(userId) {
+    static getProfile(token) {
+        return axios({
+            method: 'get',
+            url: `http://localhost:4000/api/profile/`,
+            responseType: 'json',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization' : `Bearer ${token}`,
+            }
+        });
+    }
+
+    static deleteUser(token, userId) {
         return axios({
             method: 'delete',
             url: `http://localhost:4000/api/users/${userId}`,
@@ -68,15 +80,18 @@ export default class UserService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                // 'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${token}`,
             }
         });
     }
 
-    static getUsers() {
+    static getUsers(token) {
         return axios({
             method: 'get',
-            url: `http://localhost:4000/api/users/`
+            url: `http://localhost:4000/api/users/`,
+            headers:{
+                'Authorization' : `Bearer ${token}`,
+            }
         });
     }
 }

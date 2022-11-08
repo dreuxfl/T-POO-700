@@ -4,9 +4,7 @@
       <option v-for="city in cities" :value="city.name" :key="city.name">
         {{city.name}}
       </option>
-
-    </select>
-    
+    </select>  
   </div>
   <button v-on:click=refresh()>Refresh</button>
   <div class="meteo">

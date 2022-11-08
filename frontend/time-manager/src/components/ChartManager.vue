@@ -20,7 +20,7 @@ import moment from "moment";
 import { useQuasar } from 'quasar';
 
 export default {
-  name: "CharmManager",
+  name: "ChartManager",
   components: {
     PieChart,
     BarChart,
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     async getPieChartData(){
-      ChartsManagerService.getPieChart(this.userId).then((response) => {
+      ChartsManagerService.getPieChart(this.token, this.userId).then((response) => {
           this.pie_datas = [response.data.data.hoursclocked, response.data.data.workingtime]
         }
       ).catch(e => {
@@ -56,7 +56,7 @@ export default {
     }, 
 
     async getLineChartData(){
-      ChartsManagerService.getLineChart(this.userId).then((response) => {
+      ChartsManagerService.getLineChart(this.token, this.userId).then((response) => {
         if (response.data.data.length > 0) {
           this.line_usersclockedin = []
           this.line_days = []
@@ -75,7 +75,7 @@ export default {
     },
 
     async getBarChartData(){
-      ChartsManagerService.getBarChart().then((response) => {
+      ChartsManagerService.getBarChart(this.token).then((response) => {
         if (response.data.data.length > 0) {
           this.bar_days = [];
           this.bar_usersclockedin = [];
@@ -96,6 +96,7 @@ export default {
   },
   data(){
    return {
+      token: null,
       primaryColor: "#be7744",
       secondaryColor: "#227C9D",
       all_bar_data: null,
@@ -110,6 +111,7 @@ export default {
    }
  },
  created(){
+  this.token = localStorage.getItem('access_token');
   switch (this.chartId) {
     case 1:
       this.getPieChartData(this.userId);

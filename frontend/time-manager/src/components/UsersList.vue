@@ -85,7 +85,7 @@ const columns = [
 
 export default {
   name: 'UsersList',
-
+  emits: ['userSelectEvent','userListChangedEvent'],
   setup () {
     const $q = useQuasar()
 
@@ -102,6 +102,7 @@ export default {
   },
   data() {
     return {
+      token: null,
       columns,
       rows: [],
       filter: '',
@@ -120,7 +121,7 @@ export default {
     },
     selectUser(row) {
       this.selectedUserId = row.id;
-      this.$emit('user-select-event', {id: this.selectedUserId});
+      this.$emit('userSelectEvent', {id: this.selectedUserId});
     },
     showEditUserModal(row) {
       this.showUserEdit = true;
@@ -129,10 +130,10 @@ export default {
       this.email = row.email;
     },
     saveEditedUser() {
-      UserService.putUser(this.email, this.username, this.id)
+      UserService.putUser(this.token, this.email, this.username, this.id)
       .then(() => {
         this.showNotif(true, "User updated successfully");
-        this.$emit('user-list-changed-event');
+        this.$emit('userListChangedEvent');
       })
       .catch(e => {
         console.log(e);
@@ -151,9 +152,9 @@ export default {
         persistent: true,
       })
       .onOk(() => {
-        UserService.deleteUser(row.id).then(() => {
+        UserService.deleteUser(this.token, row.id).then(() => {
           this.showNotif(true, "User deleted successfully!")
-          this.$emit('user-list-changed-event');
+          this.$emit('userListChangedEvent');
         })
         .catch(e => {
           console.log(e)
@@ -163,21 +164,22 @@ export default {
     }
   },
   created() {
-    UserService.getUsers()
-      .then(response => {
-          if(response.data.data && response.data.data.length > 0){
-            for (let i = 0; i < response.data.data.length; i++) {
-              this.rows.push({
-                id: response.data.data[i].id,
-                username: response.data.data[i].username,
-                email: response.data.data[i].email
-              })
-            }
+    this.token = localStorage.getItem('access_token');
+    UserService.getUsers(this.token)
+    .then(response => {
+        if(response.data.data && response.data.data.length > 0){
+          for (let i = 0; i < response.data.data.length; i++) {
+            this.rows.push({
+              id: response.data.data[i].id,
+              username: response.data.data[i].username,
+              email: response.data.data[i].email
+            })
           }
-      })
-      .catch(e => {
-        console.log(e);
-      });
+        }
+    })
+    .catch(e => {
+      console.log(e);
+    });
   }
 }
 </script>
