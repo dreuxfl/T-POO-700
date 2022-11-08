@@ -27,8 +27,7 @@ defmodule TimemanagerWeb.SessionController do
   end
 
   def refresh(conn, _param) do
-    refresh_token =
-      Plug.Conn.fetch_cookies(conn) |> Map.from_struct() |> get_in([:cookies, "ruid"])
+    refresh_token = Plug.Conn.fetch_cookies(conn) |> Map.from_struct() |> get_in([:cookies, "ruid"])
 
     case Guardian.exchange(refresh_token, "refresh", "access") do
       {:ok, _old_stuff, {new_access_token, _new_claims}} ->

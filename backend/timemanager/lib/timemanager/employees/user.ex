@@ -26,6 +26,13 @@ defmodule Timemanager.Employees.User do
     |> validate_changeset()
   end
 
+  def update_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:username, :email, :password])
+    |> validate_required([:username, :email])
+    |> validate_changeset()
+  end
+
   defp validate_changeset(struct) do
     struct
     |> validate_length(:email, min: 5, max: 255)
