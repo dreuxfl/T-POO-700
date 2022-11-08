@@ -11,11 +11,11 @@
         </q-toolbar-title>
 
         <div v-if="!loading && token != null" class="q-gutter-x-md" >
-          <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Pie" 
+          <q-btn :disabled="this.selectedUserId === null || this.selectedChartType===this.ChartType.Pie" 
             color="primary" icon-right="pie_chart" label="Pie Chart" @click="onChartSelect(this.ChartType.Pie)" />
-          <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Line" 
+          <q-btn :disabled="this.selectedUserId === null || this.selectedChartType===this.ChartType.Line" 
             color="primary" icon-right="ssid_chart" label="Line Chart" @click="onChartSelect(this.ChartType.Line)" />
-          <q-btn :disabled="this.selectedUserId === null || this.chartId===this.ChartType.Bar" 
+          <q-btn v-if="this.isAdmin" :disabled="this.selectedUserId === null || this.selectedChartType===this.ChartType.Bar" 
             color="primary" icon-right="bar_chart" label="Bar Chart" @click="onChartSelect(this.ChartType.Bar)" />
 
           <q-tooltip v-if="this.selectedUserId === null" 
@@ -50,16 +50,17 @@
       <div v-if="loading" style="text-align: center">
         <div class="text-h2 text-primary" >Clockorico !</div>
         <div class="text-overline text-secondary">loading...</div>
-        <img src="@/assets/poulet.gif" alt="Poulet" width="200" height="200" class="rotating"  >
+        <img src="@/assets/poulet.gif" alt="Poulet" width="200" height="200" class="youSpinMeRightRoundBabyRightRoundLikeARecordBabyRightRoundRoundRound"  >
       </div>
       <q-btn v-else-if="this.userId === null" color="primary" icon-right="person" label="Sign in" @click="toggleProfileDrawer" />
       
       <div v-else class="q-a-md row items-start q-gutter-md justify-center align-center">
-        <users-list :key="this.userListKey" @userSelectEvent="onUserSelect" @userListChangedEvent="onUserListChanged" />
+        <users-list v-if="this.isAdmin" :key="this.userListKey" @userSelectEvent="onUserSelect" @userListChangedEvent="onUserListChanged" />
         <clock-work :userId=this.userId @clock-event="onClock"/>
-        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId @workingTimesChangedEvent="onWorkingTimesChanged"/>
-        <chart-manager v-if="this.selectedUserId != null" :key="this.chartManagerKey + '-if'" 
-          :userId=this.selectedUserId :chartId=this.chartId />
+        <working-times :key="this.workingTimesKey" :selectedUserId=this.selectedUserId :isAdmin="this.isAdmin"
+          @workingTimesChangedEvent="onWorkingTimesChanged"/>
+        <chart-manager v-if="this.selectedUserId && this.selectedChartType" :key="this.chartManagerKey + '-if'" 
+          :userId=this.selectedUserId :chartId=this.selectedChartType />
         <chart-manager v-else-if="this.userId != null" :key="this.chartManagerKey + '-else'" 
           :userId=this.userId :chartId=this.ChartType.Pie />
       </div>
@@ -118,7 +119,7 @@
         this.userId = parseInt(jwt_decode(this.token).sub);
         
         this.fetchProfile()
-        
+
         this.rerenderUserList();
         this.rerenderWorkingTimes();
         this.rerenderChartManager();
@@ -153,7 +154,7 @@
         this.rerenderChartManager();
       },
       onChartSelect(chart){
-        this.chartId = chart;
+        this.selectedChartType = chart;
         this.rerenderChartManager();
       },
       //#endregion
@@ -253,7 +254,7 @@
       -webkit-transform: rotate(360deg);
     }
   }
-  .rotating {
+  .youSpinMeRightRoundBabyRightRoundLikeARecordBabyRightRoundRoundRound {
     transform-origin: bottom center;
     -webkit-animation: rotating 3s linear infinite;
     -moz-animation: rotating 3s linear infinite;

@@ -179,7 +179,10 @@ export default {
     },
   },
   created(){
-    if(this.connectedUserId) this.resetChanges();
+    if(this.connectedUserId) {
+      this.resetChanges();
+      this.token = this.token = localStorage.getItem('access_token');
+    }
   }
 }
 </script>
