@@ -10,7 +10,7 @@ export default class ChartsManagerService {
             headers:{
                 'Authorization' : `Bearer ${token}`,
             },
-        });
+        })
     }
 
     static getLineChart(token, userID) {
