@@ -9,7 +9,6 @@ import { theme } from '../core/Theme'
 import { EmailValidator } from '../helpers/EmailValidator'
 import { PasswordValidator } from '../helpers/PasswordValidator'
 import { UsernameValidator } from '../helpers/PasswordValidator'
-import Background from "../components/Background";
 import BackButton from "../components/BackButton";
 import Header from "../components/Header";
 import Logo from "../components/Logo";

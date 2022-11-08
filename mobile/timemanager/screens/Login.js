@@ -3,23 +3,26 @@ import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
+import {TextInput as ticon} from 'react-native-paper'
 import { theme } from '../core/Theme'
 import { EmailValidator } from '../helpers/EmailValidator'
 import { PasswordValidator } from '../helpers/PasswordValidator'
 import Background from "../components/Background";
-import BackButton from "../components/BackButton";
 import Header from "../components/Header";
 import Logo from "../components/Logo";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {UsernameValidator} from "../helpers/UsernameValidator";
+
 
 export default function Login({ navigation }) {
-    const [email, setEmail] = useState({ value: '', error: '' })
+    const [username, setUsername] = useState({ value: '', error: '' })
     const [password, setPassword] = useState({ value: '', error: '' })
 
     const onLoginPressed = () => {
-        const emailError = EmailValidator(email.value)
+        const usernameError = UsernameValidator(username.value)
         const passwordError = PasswordValidator(password.value)
-        if (emailError || passwordError) {
-            setEmail({ ...email, error: emailError })
+        if (usernameError || passwordError) {
+            setUsername({ ...username, error: usernameError })
             setPassword({ ...password, error: passwordError })
             return
         }
@@ -31,21 +34,19 @@ export default function Login({ navigation }) {
 
     return (
         <Background>
-            <BackButton goBack={navigation.goBack} />
             <Logo />
-            <Header>Welcome back.</Header>
-            <TextInput
-                label="Email"
-                returnKeyType="next"
-                value={email.value}
-                onChangeText={(text) => setEmail({ value: text, error: '' })}
-                error={!!email.error}
-                errorText={email.error}
-                autoCapitalize="none"
-                autoCompleteType="email"
-                textContentType="emailAddress"
-                keyboardType="email-address"
-            />
+            <Header>Clockorico!</Header>
+
+                <TextInput
+                    label= "Username"
+                    returnKeyType="next"
+                    value={username.value}
+                    onChangeText={(text) => setUsername({ value: text, error: '' })}
+                    autoCapitalize="none"
+                    textContentType="username"
+                    keyboardType="text"
+                />
+
             <TextInput
                 label="Password"
                 returnKeyType="done"
@@ -62,12 +63,12 @@ export default function Login({ navigation }) {
                     <Text style={styles.forgot}>Forgot your password?</Text>
                 </TouchableOpacity>
             </View>
-            <Button mode="contained" onPress={onLoginPressed}>
+            <Button style={styles.button} mode="contained" onPress={onLoginPressed}>
                 Login
             </Button>
             <View style={styles.row}>
                 <Text>Don’t have an account? </Text>
-                <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
+                <TouchableOpacity onPress={() => navigation.replace('Signup')}>
                     <Text style={styles.link}>Sign up</Text>
                 </TouchableOpacity>
             </View>
@@ -76,6 +77,25 @@ export default function Login({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    passwordContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    inputIcon: {
+        padding: 10,
+    },
+    input: {
+        flex: 1,
+        paddingTop: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        paddingLeft: 0,
+        backgroundColor: '#fff',
+        color: '#424242',
+    },
     forgotPassword: {
         width: '100%',
         alignItems: 'flex-end',
@@ -91,6 +111,9 @@ const styles = StyleSheet.create({
     },
     link: {
         fontWeight: 'bold',
-        color: theme.colors.primary,
+        color: theme.colors.secondary,
     },
+    button:{
+        backgroundColor: theme.colors.primary
+    }
 })
