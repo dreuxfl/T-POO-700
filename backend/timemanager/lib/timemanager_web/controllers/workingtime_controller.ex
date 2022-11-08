@@ -18,11 +18,11 @@ defmodule TimemanagerWeb.WorkingtimeController do
       url_params = Plug.Conn.fetch_query_params(conn)
       started = NaiveDateTime.from_iso8601!(url_params.query_params["start"])
       ended = NaiveDateTime.from_iso8601!(url_params.query_params["end"])
-      user_workingtimes = Enum.filter(workingtimes, fn(workingtime)
-      -> workingtime.user != nil &&
-           workingtime.user == parsedUserID &&
-           NaiveDateTime.compare(workingtime.start,started) != :lt &&
-           NaiveDateTime.compare(workingtime.end,ended) != :gt
+      user_workingtimes = Enum.filter(workingtimes, fn(workingtime)->
+        workingtime.user != nil &&
+        workingtime.user == parsedUserID &&
+        NaiveDateTime.compare(workingtime.start,started) != :lt &&
+        NaiveDateTime.compare(workingtime.end,ended) != :gt
       end)
       render(conn, "index.json", workingtimes: user_workingtimes)
     end
