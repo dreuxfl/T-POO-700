@@ -11,7 +11,7 @@ export default function TextInput({ errorText, description, ...props }) {
                 style={styles.input}
                 underlineColor="transparent"
                 mode= "outlined"
-                underlineColorAndroid={theme.colors.secondary}
+                activeOutlineColor={theme.colors.secondary}
                 {...props}
             />
             {description && !errorText ? (
@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
     },
     input: {
         backgroundColor: theme.colors.surface,
-
     },
     description: {
         fontSize: 13,

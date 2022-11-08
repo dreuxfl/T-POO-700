@@ -13,7 +13,6 @@ import Logo from "../components/Logo";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {UsernameValidator} from "../helpers/UsernameValidator";
 
-
 export default function Login({ navigation }) {
     const [username, setUsername] = useState({ value: '', error: '' })
     const [password, setPassword] = useState({ value: '', error: '' })
@@ -35,16 +34,18 @@ export default function Login({ navigation }) {
     return (
         <Background>
             <Logo />
-            <Header>Clockorico!</Header>
+            <Header>Login</Header>
 
                 <TextInput
                     label= "Username"
                     returnKeyType="next"
                     value={username.value}
                     onChangeText={(text) => setUsername({ value: text, error: '' })}
-                    autoCapitalize="none"
+                    error={!!username.error}
+                    errorText={username.error}
+                    autoCompleteType="username-new"
                     textContentType="username"
-                    keyboardType="text"
+                    keyboardType="default"
                 />
 
             <TextInput
@@ -56,19 +57,14 @@ export default function Login({ navigation }) {
                 errorText={password.error}
                 secureTextEntry
             />
-            <View style={styles.forgotPassword}>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('ResetPasswordScreen')}
-                >
-                    <Text style={styles.forgot}>Forgot your password?</Text>
-                </TouchableOpacity>
-            </View>
+
             <Button style={styles.button} mode="contained" onPress={onLoginPressed}>
                 Login
             </Button>
             <View style={styles.row}>
                 <Text>Don’t have an account? </Text>
-                <TouchableOpacity onPress={() => navigation.replace('Signup')}>
+
+                <TouchableOpacity onPress={() => navigation.replace('Register')}>
                     <Text style={styles.link}>Sign up</Text>
                 </TouchableOpacity>
             </View>
