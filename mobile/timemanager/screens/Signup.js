@@ -36,8 +36,7 @@ export default function Signup({ navigation }) {
         return (
             <Background>
             <Logo />
-            <Header>Sign up Motherfucker !</Header>
-            <View>              
+            <Header>Sign up Motherfucker !</Header>          
                 <BackButton goBack={navigation.goBack} />
             <TextInput
                 label="Username"
@@ -46,7 +45,6 @@ export default function Signup({ navigation }) {
                 onChangeText={(text) => setUsername({ value: text, error: '' })}
                 error={!!username.error}
                 errorText={username.error}
-                autoCapitalize="none"
                 autoCompleteType="username-new"
                 textContentType="username"
                 keyboardType="default"
@@ -58,7 +56,6 @@ export default function Signup({ navigation }) {
                 onChangeText={(text) => setEmail({ value: text, error: '' })}
                 error={!!email.error}
                 errorText={email.error}
-                autoCapitalize="none"
                 autoCompleteType="email"
                 textContentType="emailAddress"
                 keyboardType="email-address"
@@ -72,6 +69,7 @@ export default function Signup({ navigation }) {
                 errorText={password.error}
                 secureTextEntry
             />
+            <View> 
             <Button style={styles.button} mode="contained" onPress={onSignupPressed}>
                 Sign up
             </Button>
