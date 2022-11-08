@@ -18,9 +18,8 @@ defmodule TimemanagerWeb.SessionController do
         |> put_status(:created)
         |> render("token.json", access_token: access_token)
 
-      {:error, :unauthorized} ->
-        body = Jason.encode!(%{error: "unauthorized"})
-
+      {:error, _reason} ->
+        body = Jason.encode!(%{error: "Invalid credentials"})
         conn
         |> send_resp(401, body)
     end
@@ -36,8 +35,7 @@ defmodule TimemanagerWeb.SessionController do
         |> render("token.json", %{access_token: new_access_token})
 
       {:error, _reason} ->
-        body = Jason.encode!(%{error: "unauthorized"})
-
+        body = Jason.encode!(%{error: "Invalid token"})
         conn
         |> send_resp(401, body)
     end
