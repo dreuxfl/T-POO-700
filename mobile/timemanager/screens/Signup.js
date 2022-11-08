@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+//import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import React, { useState } from 'react'
 import { TouchableOpacity, StyleSheet, View } from 'react-native'
@@ -8,7 +8,7 @@ import TextInput from '../components/TextInput'
 import { theme } from '../core/Theme'
 import { EmailValidator } from '../helpers/EmailValidator'
 import { PasswordValidator } from '../helpers/PasswordValidator'
-import { UsernameValidator } from '../helpers/PasswordValidator'
+import { UsernameValidator } from '../helpers/UsernameValidator'
 import BackButton from "../components/BackButton";
 import Header from "../components/Header";
 import Logo from "../components/Logo";
@@ -34,10 +34,11 @@ export default function Signup({ navigation }) {
         })
     }
         return (
+            <Background>
+            <Logo />
+            <Header>Sign up Motherfucker !</Header>
             <View>              
                 <BackButton goBack={navigation.goBack} />
-            <Logo />
-            <Header>Hello SIGNUP</Header>
             <TextInput
                 label="Username"
                 returnKeyType="next"
@@ -71,10 +72,51 @@ export default function Signup({ navigation }) {
                 errorText={password.error}
                 secureTextEntry
             />
-            <Button mode="contained" onPress={onSignupPressed}>
+            <Button style={styles.button} mode="contained" onPress={onSignupPressed}>
                 Sign up
             </Button>
             </View>
+            </Background>
         )
     }
-
+    const styles = StyleSheet.create({
+        passwordContainer: {
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#fff',
+        },
+        inputIcon: {
+            padding: 10,
+        },
+        input: {
+            flex: 1,
+            paddingTop: 10,
+            paddingRight: 10,
+            paddingBottom: 10,
+            paddingLeft: 0,
+            backgroundColor: '#fff',
+            color: '#424242',
+        },
+        forgotPassword: {
+            width: '100%',
+            alignItems: 'flex-end',
+            marginBottom: 24,
+        },
+        row: {
+            flexDirection: 'row',
+            marginTop: 4,
+        },
+        forgot: {
+            fontSize: 13,
+            color: theme.colors.secondary,
+        },
+        link: {
+            fontWeight: 'bold',
+            color: theme.colors.secondary,
+        },
+        button:{
+            backgroundColor: theme.colors.primary
+        }
+    })
