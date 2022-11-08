@@ -9,14 +9,14 @@
           </template>
           </q-input>
 
-          <q-btn round outline color="secondary" @click="addWorkingTime()" :disable="this.selectedUserId === null">
+          <q-btn v-if="this.isAdmin" round outline color="secondary" @click="addWorkingTime()" :disable="this.selectedUserId === null">
               <q-icon name="add" />
           </q-btn>
         </q-td>
         
       </template>
 
-      <template v-slot:body-cell-actions="props">
+      <template v-if="this.isAdmin" v-slot:body-cell-actions="props">
         <q-td :props="props" class="q-gutter-x-xs">
           <q-btn round outline color="secondary" @click="editWorkingTime(props.row)">
             <q-icon name="mode_edit" />
@@ -300,7 +300,8 @@ export default {
     }
   },
   props: {
-    selectedUserId : Number
+    selectedUserId : Number,
+    isAdmin: Boolean
   },
   created() {
     this.token = localStorage.getItem('access_token');
