@@ -5,12 +5,13 @@ import { theme } from '../core/Theme'
 
 export default function TextInput({ errorText, description, ...props }) {
     return (
+
         <View style={styles.container}>
             <Input
                 style={styles.input}
-                selectionColor={theme.colors.primary}
                 underlineColor="transparent"
-                mode="outlined"
+                mode= "outlined"
+                underlineColorAndroid={theme.colors.secondary}
                 {...props}
             />
             {description && !errorText ? (
@@ -28,6 +29,7 @@ const styles = StyleSheet.create({
     },
     input: {
         backgroundColor: theme.colors.surface,
+
     },
     description: {
         fontSize: 13,
