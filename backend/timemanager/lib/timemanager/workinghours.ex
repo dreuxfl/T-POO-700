@@ -36,7 +36,7 @@ defmodule Timemanager.Workinghours do
       utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"
     })
 
-    tomorrow  = Date.add(datenaivetoday, 1)
+    tomorrow = Date.add(datenaivetoday, 1)
 
     datenaivetomorrow =  DateTime.to_naive( %DateTime{
       year: tomorrow.year, month: tomorrow.month, day: tomorrow.day, zone_abbr: "CET",
@@ -45,14 +45,14 @@ defmodule Timemanager.Workinghours do
     })
 
     query = from w in Workingtime,
-                 where:  (w.start >= ^datenaivetoday and w.end <= ^datenaivetomorrow  and w.user == ^uid),
-                 order_by: w.start
+      where: (w.start >= ^datenaivetoday and w.end <= ^datenaivetomorrow  and w.user == ^uid),
+      order_by: w.start
     Repo.all(query)
   end
 
   def list_workingtimes_distinctUID() do
     query = from w in Workingtime,
-        distinct: w.user
+      distinct: w.user
     Repo.all(query)
   end
 

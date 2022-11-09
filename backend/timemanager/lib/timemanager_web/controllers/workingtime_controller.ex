@@ -42,12 +42,28 @@ defmodule TimemanagerWeb.WorkingtimeController do
         |> put_status(:not_found)
         |> render("404.json")
       else
-        new_working_time = Map.put(workingtime_params, "user", userID)
-        with {:ok, %Workingtime{} = workingtime} <- Workinghours.create_workingtime(new_working_time) do
+        {parsedUserID, ""} = Integer.parse(userID)
+        workingtimes = Workinghours.list_workingtimes()
+        started = NaiveDateTime.to_date(NaiveDateTime.from_iso8601!(workingtime_params["start"]))
+        ended = NaiveDateTime.to_date(NaiveDateTime.from_iso8601!(workingtime_params["end"]))
+        user_workingtimes = Enum.any?(workingtimes, fn(workingtime)->
+          workingtime.user != nil &&
+          workingtime.user == parsedUserID &&
+          NaiveDateTime.to_date(workingtime.start) == started &&
+          NaiveDateTime.to_date(workingtime.end) == ended
+        end)
+        if user_workingtimes do
           conn
-          |> put_status(:created)
-          |> put_resp_header("location", Routes.workingtime_path(conn, :create, workingtime))
-          |> render("show.json", workingtime: workingtime)
+          |> put_status(:conflict)
+          |> render("error.json", %{error: "Workingtime for this day already exists"})
+        else
+          new_working_time = Map.put(workingtime_params, "user", userID)
+          with {:ok, %Workingtime{} = workingtime} <- Workinghours.create_workingtime(new_working_time) do
+            conn
+            |> put_status(:created)
+            |> put_resp_header("location", Routes.workingtime_path(conn, :create, workingtime))
+            |> render("show.json", workingtime: workingtime)
+          end
         end
       end
     end

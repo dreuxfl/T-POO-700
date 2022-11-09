@@ -23,7 +23,7 @@ config :timemanager, TimemanagerWeb.Endpoint,
   http: [ip: {0, 0, 0, 0}, port: 4000],
   check_origin: false,
   code_reloader: true,
-  debug_errors: false,
+  debug_errors: true,
   secret_key_base: "2DjzlE9fOXEpPWK7y6F0b6HQzRkQZT0tP4EMqJ4nhNI4EiZm1YlRLEQnPADrJnkW",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
