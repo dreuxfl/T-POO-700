@@ -2,19 +2,20 @@ import React from 'react'
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {theme} from "../core/Theme";
 import {NavigationContainer} from "@react-navigation/native";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ClockIn from "./ClockIn";
 import WorkingTime from "./WorkingTime";
 import Profile from "./Profile";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
+
 
 export default function Dashboard() {
-
     return (
         <NavigationContainer independent={true}>
             <Tab.Navigator
+                tabBarPosition= 'bottom'
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
@@ -30,14 +31,14 @@ export default function Dashboard() {
                             case 'Profile':
                                 iconName = focused ? 'person-circle' : 'person-circle-outline';
                                 break;
-
                         }
-
-                        // You can return any component that you like here!
-                        return <Ionicons name={iconName} size={size} color={color} />;
+                        return <Ionicons name={iconName} size={24} color={color} />;
                     },
                     tabBarActiveTintColor: theme.colors.primary,
                     tabBarInactiveTintColor: 'gray',
+                    tabBarShowLabel: false,
+                    tabBarShowIcon: true
+
                 })}
             >
                 <Tab.Screen name="Clock In" component={ClockIn} />

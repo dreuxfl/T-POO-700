@@ -4,17 +4,18 @@ import {LineChart} from "react-native-chart-kit";
 import RNSVGRect from "react-native-svg";
 import {theme} from "../core/Theme";
 import {DataTable} from "react-native-paper";
+import Header from '../components/Header'
 
-const days = ['mon','tue', 'wed', 'thu', 'fri'];
-const start = ['09:30', '08:00', '08:30', '09:00', '08:30'];
-const end = ['16:30', '16:00', '17:30', '17:30', '17:30'];
-export default class WorkingTime extends Component {
-    state = {};
-    
-    render() {
+
+export default function WorkingTime () {
+    const days = ['mon','tue', 'wed', 'thu', 'fri'];
+    const start = ['09:30', '08:00', '08:30', '09:00', '08:30'];
+    const end = ['16:30', '16:00', '17:30', '17:30', '17:30'];
+
         return (
             <View style={styles.viewStyle}>
-                <DataTable>
+                <Header>Your weekly schedule</Header>
+                <DataTable style={styles.tableStyle}>
                     <DataTable.Header>
                         <DataTable.Title>Day</DataTable.Title>
                         <DataTable.Title numeric>Start</DataTable.Title>
@@ -51,10 +52,9 @@ export default class WorkingTime extends Component {
                         <DataTable.Cell numeric>16:30</DataTable.Cell>
                     </DataTable.Row>
                 </DataTable>
+                <Header>Your weekly chart</Header>
                 <LineChart
                     bezier
-                    withHorizontalLabels={false}
-                    withVerticalLabels={false}
                     data={{
                         labels: ['jan', 'feb', 'mar', 'apr', 'may', ' jun'],
                         datasets: [
@@ -73,8 +73,6 @@ export default class WorkingTime extends Component {
                         legend: ['Working Hours', 'Clocked Hours'],
                     }}
                     width={Dimensions.get('window').width - 16}
-                    withVerticalLabels = {true}
-                    withHorizontalLabels = {true}
                     height={220}
                     chartConfig={{
                         backgroundColor: '#FBEADE',
@@ -94,11 +92,14 @@ export default class WorkingTime extends Component {
                 />
             </View>
         )
-    }
+
 }
 
 const styles = StyleSheet.create({
     viewStyle: {flex: 1,
         alignItems: 'center',
         },
+    tableStyle: {
+        width: "96%",
+    },
 });
