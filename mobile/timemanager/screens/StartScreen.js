@@ -9,23 +9,24 @@ import { StyleSheet, View, Text} from "react-native";
 export default function StartScreen({ navigation }) {
     var SampleNameArray = 
     [
-        "it's finger clockin' good", 
+        "It's finger clockin' good",
         "Clock me like one of your french girls", 
-        "Los clockos hermanos", "La ferme aux clockodiles", 
+        "Los clockos hermanos",
+        "La ferme aux clockodiles",
         "I'm clockin'it", 
         "Clock it like its hot", 
         "Hit me with your best clock", 
-        "Parce que nous le clockons bien", 
+        "Parce-que nous le clockons bien",
         "Just clock it", 
-        "Des clocks oui, mais des clockorico", 
+        "Des clocks oui, mais des clockoricos",
         "Yves Clocké– Se clocker chaque jour..", 
-        "Clock comme si tu devais démissionner demain.", 
+        "Clock comme si tu devais démissionner demain",
         "Suck my clock", 
         "Travail comme si tu devais clocker toujours", 
         "C'est fort en clockolat", 
-        "C’est moche, mais ça marche.", 
+        "C’est moche, mais ça marche",
         "Clocking people", 
-        "Clockorico en avant les clocks in"
+        "Clockorico en avant les clockin'"
     ];
     const [random, setRandom] = useState(SampleNameArray[Math.floor(Math.random()*SampleNameArray.length)])
     return (
