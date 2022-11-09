@@ -39,12 +39,12 @@ defmodule TimemanagerWeb.UserController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
-      if user do
-        render(conn, "show.json", user: user)
-      else
+      if !user do
         conn
         |> put_status(:not_found)
         |> render("404.json")
+      else
+        render(conn, "show.json", user: user)
       end
     end
   end
@@ -57,14 +57,14 @@ defmodule TimemanagerWeb.UserController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
-      if user do
-        with {:ok, %User{} = user} <- Employees.update_user(user, user_params) do
-          render(conn, "show.json", user: user)
-        end
-      else
+      if !user do
         conn
         |> put_status(:not_found)
         |> render("404.json")
+      else
+        with {:ok, %User{} = user} <- Employees.update_user(user, user_params) do
+          render(conn, "show.json", user: user)
+        end
       end
     end
   end
@@ -76,14 +76,14 @@ defmodule TimemanagerWeb.UserController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
-      if user do
-        with {:ok, %User{}} <- Employees.delete_user(user) do
-          send_resp(conn, :no_content, "")
-        end
-      else
+      if !user do
         conn
         |> put_status(:not_found)
         |> render("404.json")
+      else
+        with {:ok, %User{}} <- Employees.delete_user(user) do
+          send_resp(conn, :no_content, "")
+        end
       end
     end
   end
