@@ -2,12 +2,7 @@ import axios from "axios";
 
 export default class UserService {
 
-    static login(username, password){
-        return axios({
-            method: 'post',
-            url: `http://localhost:4000/api/login?username=${username}&password=${password}`
-        })
-    }
+    
     static postUser(email, username, password) {
         return axios({
             method: 'post',

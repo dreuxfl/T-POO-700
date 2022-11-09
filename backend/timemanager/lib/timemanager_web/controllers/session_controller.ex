@@ -10,7 +10,7 @@ defmodule TimemanagerWeb.SessionController do
     case Employees.login(username, password) do
       {:ok, user} ->
         {:ok, access_token, _claims} =
-          Guardian.encode_and_sign(user, %{}, token_type: "access", ttl: {45, :minutes})
+          Guardian.encode_and_sign(user, %{}, token_type: "access", ttl: {1, :minutes})
         {:ok, refresh_token, _claims} =
           Guardian.encode_and_sign(user, %{}, token_type: "refresh", ttl: {7, :day})
         conn

@@ -2,7 +2,7 @@ import axios from "axios";
 import moment from "moment";
 
 export default class ChartsManagerService {
-
+    
     static getBarChart(token) {
         return axios({
             method: 'get',

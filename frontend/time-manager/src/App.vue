@@ -215,7 +215,6 @@
         
         ChartType,
         selectedChartType: 0,
-
       }
     },
     created(){

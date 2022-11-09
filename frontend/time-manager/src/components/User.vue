@@ -54,6 +54,8 @@
 <script>
 
 import UserService from "../service/UserService";
+import AuthService from "../service/AuthService";
+
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 
@@ -144,7 +146,7 @@ export default {
     },
     login() {
       this.$emit('userRequestLoadingEvent');
-      UserService.login(this.username, this.password).then((response)=>{
+      AuthService.login(this.username, this.password).then((response)=>{
         try {
           this.token = response.data.access_token
           this.$emit('userLoginEvent', {token: this.token});

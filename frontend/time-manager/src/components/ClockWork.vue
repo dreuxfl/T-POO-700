@@ -1,6 +1,6 @@
 <template >
   <div class="q-pa-md">
-    <q-card v-if="token && userId" class="my-card margin" style="padding:1em">
+    <q-card v-if="userId" class="my-card margin" style="padding:1em">
       <q-card-section>
         <div class="text-h6 text-center"> Clock Pointer </div>
       </q-card-section>
@@ -54,7 +54,6 @@
     },
     data() {
       return{
-        token: null,
         lastClock: {
           time : null,
           status : false
@@ -83,7 +82,7 @@
         this.lastClock.time = moment(new Date (clockTime)).format("YYYY-MM-DD HH:mm:ss");
         this.lastClock.status = this.isClockIn;
 
-        ClockService.postClock(this.token, this.userId, this.isClockIn, moment(new Date (clockTime)).format("YYYY-MM-DD HH:mm:ss"));
+        ClockService.postClock(this.userId, this.isClockIn, moment(new Date (clockTime)).format("YYYY-MM-DD HH:mm:ss"));
         this.isClockIn = !this.isClockIn;
 
         this.$emit("clock-event");
@@ -112,8 +111,8 @@
       userId : Number
     },
     created: function () {
-      this.token = localStorage.getItem('access_token');
-      ClockService.getCurrentClocks(this.token, this.userId).then((response) => {
+      
+      ClockService.getCurrentClocks(this.userId).then((response) => {
         let totalClockDuration = 0;
         let lastClock = null;
         this.isClockIn = true;
