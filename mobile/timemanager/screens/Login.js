@@ -3,9 +3,7 @@ import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
-import {TextInput as ticon} from 'react-native-paper'
 import { theme } from '../core/Theme'
-import { EmailValidator } from '../helpers/EmailValidator'
 import { PasswordValidator } from '../helpers/PasswordValidator'
 import Background from "../components/Background";
 import Header from "../components/Header";
