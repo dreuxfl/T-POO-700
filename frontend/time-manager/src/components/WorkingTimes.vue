@@ -247,9 +247,30 @@ export default {
     },
     submitWorkingTime(){
       if(this.end > this.start) {
+
         if(this.isEditMode) this.saveEditedWorkingTime();
 
-        else this.saveNewWorkingTime();
+        else {
+          let startDateTime = new Date(this.start);
+
+          let duplicateRow = this.rows.find(row => 
+            new Date(row.start).getFullYear() == startDateTime.getFullYear() &&
+            new Date(row.start).getMonth() == startDateTime.getMonth() &&
+            new Date(row.start).getDate() == startDateTime.getDate()
+          );
+          
+          if(duplicateRow){
+            this.id = duplicateRow.id;
+            this.$q.dialog({
+              title: `Only one working time allowed`,
+              message: `You can only add one working time per day, per person. 
+              Do you want to overwrite this working time : ${new Date(duplicateRow.start).toLocaleDateString()} from ${new Date(duplicateRow.start).toLocaleTimeString()} to ${new Date(duplicateRow.end).toLocaleTimeString()} ?`,
+              cancel: true,
+              persistent: true,
+            })
+            .onOk(() => this.saveEditedWorkingTime());
+          } else this.saveNewWorkingTime();
+        }
       } else if (this.end == this.start){
         this.showNotif(false, "Working time start and end time cannot be equal")
       } else {

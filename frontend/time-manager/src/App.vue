@@ -1,22 +1,22 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" class="bg-accent">
     <!-- #region Header -->
     <q-header elevated class="bg-primary text-white">
       <q-toolbar class="row justify-between">
         <q-toolbar-title>
           <q-avatar>
-            <img src=".\assets\Logo_Team.png">
+            <img src=".\assets\poulet.gif">
           </q-avatar>
           Clock'O'Rico !
         </q-toolbar-title>
 
         <div v-if="!loading && token != null" class="q-gutter-x-md" >
           <q-btn :disabled="this.selectedUserId === null || this.selectedChartType===this.ChartType.Pie" 
-            color="primary" icon-right="pie_chart" label="Pie Chart" @click="onChartSelect(this.ChartType.Pie)" />
+            color="secondary" icon-right="pie_chart" label="Pie Chart" @click="onChartSelect(this.ChartType.Pie)" />
           <q-btn :disabled="this.selectedUserId === null || this.selectedChartType===this.ChartType.Line" 
-            color="primary" icon-right="ssid_chart" label="Line Chart" @click="onChartSelect(this.ChartType.Line)" />
+            color="secondary" icon-right="ssid_chart" label="Line Chart" @click="onChartSelect(this.ChartType.Line)" />
           <q-btn v-if="this.isAdmin" :disabled="this.selectedUserId === null || this.selectedChartType===this.ChartType.Bar" 
-            color="primary" icon-right="bar_chart" label="Bar Chart" @click="onChartSelect(this.ChartType.Bar)" />
+            color="secondary" icon-right="bar_chart" label="Bar Chart" @click="onChartSelect(this.ChartType.Bar)" />
 
           <q-tooltip v-if="this.selectedUserId === null" 
             transition-show="rotate" transition-hide="rotate"
@@ -28,7 +28,7 @@
         
         <q-space />
         
-        <q-btn color="primary" icon-right="person" label="Profile" @click="toggleProfileDrawer" />
+        <q-btn color="secondary" icon-right="person" label="Profile" @click="toggleProfileDrawer" />
       </q-toolbar>
     </q-header>
     <!-- #endregion -->
