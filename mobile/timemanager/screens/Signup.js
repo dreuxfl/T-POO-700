@@ -1,5 +1,3 @@
-//import React, {Component} from 'react';
-
 import React, { useState } from 'react'
 import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
@@ -13,6 +11,7 @@ import BackButton from "../components/BackButton";
 import Header from "../components/Header";
 import Logo from "../components/Logo";
 import Background from "../components/Background";
+
 export default function Signup({ navigation }) {
     const [email, setEmail] = useState({ value: '', error: '' })
     const [password, setPassword] = useState({ value: '', error: '' })
@@ -33,8 +32,8 @@ export default function Signup({ navigation }) {
             routes: [{ name: 'Dashboard' }],
         })
     }
-        return (
-            <Background>
+    return (
+        <Background>
             <Logo />
             <Header>Register</Header>
             <TextInput
@@ -69,67 +68,67 @@ export default function Signup({ navigation }) {
                 secureTextEntry
             />
 
-                <TextInput
-                    label="Confirm Password"
-                    returnKeyType="done"
-                    value={password.value}
-                    onChangeText={(text) => setPassword({ value: text, error: '' })}
-                    error={!!password.error}
-                    errorText={password.error}
-                    secureTextEntry
-                />
+            <TextInput
+                label="Confirm Password"
+                returnKeyType="done"
+                value={password.value}
+                onChangeText={(text) => setPassword({ value: text, error: '' })}
+                error={!!password.error}
+                errorText={password.error}
+                secureTextEntry
+            />
 
             <Button style={styles.button} mode="contained" onPress={onSignupPressed}>
                 Sign up
             </Button>
 
-                <View style={styles.row}>
-                    <Text>You already have an account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                        <Text style={styles.link}>Login</Text>
-                    </TouchableOpacity>
-                </View>
-            </Background>
-        )
+            <View style={styles.row}>
+                <Text>You already have an account? </Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                    <Text style={styles.link}>Login</Text>
+                </TouchableOpacity>
+            </View>
+        </Background>
+    )
+}
+const styles = StyleSheet.create({
+    passwordContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    inputIcon: {
+        padding: 10,
+    },
+    input: {
+        flex: 1,
+        paddingTop: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        paddingLeft: 0,
+        backgroundColor: '#fff',
+        color: '#424242',
+    },
+    forgotPassword: {
+        width: '100%',
+        alignItems: 'flex-end',
+        marginBottom: 24,
+    },
+    row: {
+        flexDirection: 'row',
+        marginTop: 4,
+    },
+    forgot: {
+        fontSize: 13,
+        color: theme.colors.secondary,
+    },
+    link: {
+        fontWeight: 'bold',
+        color: theme.colors.secondary,
+    },
+    button: {
+        backgroundColor: theme.colors.primary
     }
-    const styles = StyleSheet.create({
-        passwordContainer: {
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#fff',
-        },
-        inputIcon: {
-            padding: 10,
-        },
-        input: {
-            flex: 1,
-            paddingTop: 10,
-            paddingRight: 10,
-            paddingBottom: 10,
-            paddingLeft: 0,
-            backgroundColor: '#fff',
-            color: '#424242',
-        },
-        forgotPassword: {
-            width: '100%',
-            alignItems: 'flex-end',
-            marginBottom: 24,
-        },
-        row: {
-            flexDirection: 'row',
-            marginTop: 4,
-        },
-        forgot: {
-            fontSize: 13,
-            color: theme.colors.secondary,
-        },
-        link: {
-            fontWeight: 'bold',
-            color: theme.colors.secondary,
-        },
-        button:{
-            backgroundColor: theme.colors.primary
-        }
-    })
+})
