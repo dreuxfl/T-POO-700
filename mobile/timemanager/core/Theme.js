@@ -11,7 +11,6 @@ export const theme = {
         positive:'#21BA45',
         negative: '#C10015',
         activeOutlineColor: '#227C9D',
-        background: '#227C9D',
         activeColor: '#227C9D'
     },
 }
