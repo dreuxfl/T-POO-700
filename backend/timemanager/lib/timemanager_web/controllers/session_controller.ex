@@ -10,7 +10,7 @@ defmodule TimemanagerWeb.SessionController do
     case Employees.login(username, password) do
       {:ok, user} ->
         {:ok, access_token, _claims} =
-          Guardian.encode_and_sign(user, %{}, token_type: "access", ttl: {15, :minutes})
+          Guardian.encode_and_sign(user, %{}, token_type: "access", ttl: {45, :minutes})
         {:ok, refresh_token, _claims} =
           Guardian.encode_and_sign(user, %{}, token_type: "refresh", ttl: {7, :day})
         conn
@@ -18,9 +18,8 @@ defmodule TimemanagerWeb.SessionController do
         |> put_status(:created)
         |> render("token.json", access_token: access_token)
 
-      {:error, :unauthorized} ->
-        body = Jason.encode!(%{error: "unauthorized"})
-
+      {:error, _reason} ->
+        body = Jason.encode!(%{error: "Invalid credentials"})
         conn
         |> send_resp(401, body)
     end
@@ -36,8 +35,7 @@ defmodule TimemanagerWeb.SessionController do
         |> render("token.json", %{access_token: new_access_token})
 
       {:error, _reason} ->
-        body = Jason.encode!(%{error: "unauthorized"})
-
+        body = Jason.encode!(%{error: "Invalid token"})
         conn
         |> send_resp(401, body)
     end

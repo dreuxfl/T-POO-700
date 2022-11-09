@@ -21,7 +21,6 @@ defmodule Timemanager.Workinghours do
     Repo.all(Workingtime)
   end
 
-
   def list_workingtimes_by_dates_lineschart(started, ended, uid) do
     query = from w in Workingtime,
       where: (w.start >= (^started) and w.end <= (^ended) and w.user == ^uid),
@@ -50,7 +49,6 @@ defmodule Timemanager.Workinghours do
                  order_by: w.start
     Repo.all(query)
   end
-
 
   def list_workingtimes_distinctUID() do
     query = from w in Workingtime,
@@ -91,8 +89,6 @@ defmodule Timemanager.Workinghours do
     |> Workingtime.changeset(attrs)
     |> Repo.insert()
   end
-
-
 
   @doc """
   Updates a workingtime.
