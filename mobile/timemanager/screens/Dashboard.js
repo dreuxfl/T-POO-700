@@ -37,7 +37,8 @@ export default function Dashboard() {
                     tabBarActiveTintColor: theme.colors.primary,
                     tabBarInactiveTintColor: 'gray',
                     tabBarShowLabel: false,
-                    tabBarShowIcon: true
+                    tabBarShowIcon: true,
+                    tabBarBounces: true
 
                 })}
             >

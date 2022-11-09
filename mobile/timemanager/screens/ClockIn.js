@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Text } from 'react-native-paper'
 import { theme } from '../core/Theme'
-
+import {StatusBar} from "react-native";
 
 
 export default function Clockin() {
@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
         flex: 1,
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        paddingTop:StatusBar.currentHeight
     }
 });

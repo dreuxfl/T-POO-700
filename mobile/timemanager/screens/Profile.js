@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import {TouchableOpacity, StyleSheet, View, StatusBar} from 'react-native'
 import { Text } from 'react-native-paper'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
@@ -29,6 +29,7 @@ export default function Profile() {
     
     }
     return (
+        <View style={styles.viewStyle}>
         <Background>
             <Ionicons name="person-circle" size={100}/>
             <Header>Profile</Header>
@@ -70,6 +71,7 @@ export default function Profile() {
             </Button>
             <Text style= {styles.titletext}/>
         </Background>
+        </View>
     )
     }
 
@@ -80,6 +82,8 @@ export default function Profile() {
         },
         button: {
             backgroundColor: theme.colors.primary
+        },
+        viewStyle: {
+            paddingTop: StatusBar.currentHeight
         }
-    
     })

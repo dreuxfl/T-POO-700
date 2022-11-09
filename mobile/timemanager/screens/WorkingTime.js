@@ -5,6 +5,7 @@ import RNSVGRect from "react-native-svg";
 import {theme} from "../core/Theme";
 import {DataTable} from "react-native-paper";
 import Header from '../components/Header'
+import {StatusBar} from "react-native";
 
 
 export default function WorkingTime () {
@@ -98,6 +99,7 @@ export default function WorkingTime () {
 const styles = StyleSheet.create({
     viewStyle: {flex: 1,
         alignItems: 'center',
+        paddingTop:StatusBar.currentHeight
         },
     tableStyle: {
         width: "96%",

@@ -19,14 +19,19 @@ defmodule TimemanagerWeb.ChartmanagerController do
     user_workingtimes = Workinghours.list_workingtimes_by_dates_lineschart(started, ended, parsedUserID)
 
     chartdata = Enum.map(user_workingtimes, fn  user_workingtime ->
-      user_clocks = Chrono.list_clocks_by_dateuid(user_workingtime.start, parsedUserID)
-      dummy_clock = Enum.reduce(user_clocks, 0,  fn  user_clock, acc ->
-        if user_clock.status do
-          acc - user_clock.time.hour
-        else
-          acc + user_clock.time.hour
-        end
+      user_clocks_true = Chrono.list_clocks_by_dateuid(user_workingtime.start, parsedUserID, true)
+      user_clocks_false = Chrono.list_clocks_by_dateuid(user_workingtime.start, parsedUserID, false)
+
+      dummy_clock_true = Enum.reduce(user_clocks_true, 0,  fn  user_clock, acc ->
+        acc + user_clock.time.hour
       end)
+
+      dummy_clock_false = Enum.reduce(user_clocks_false, 0,  fn  user_clock, acc ->
+        acc + user_clock.time.hour
+      end)
+      if Enum.count(dummy_clock_true) > Enum.count(dummy_clock_false) do
+        dummy_clock_false = dummy_clock_false + NaiveDateTime.utc_now().hour
+      end
       %{
         id: user_workingtime.user,
         day: NaiveDateTime.to_date(user_workingtime.start),
@@ -47,15 +52,20 @@ defmodule TimemanagerWeb.ChartmanagerController do
     workingtimes = Workinghours.list_workingtimes_by_date_piechart(param_date, parsedUserID)
     user_workingtime = Enum.find(workingtimes, fn(workingtime) -> workingtime.user != nil && workingtime.user == parsedUserID end)
 
-    user_clocks = Chrono.list_clocks_by_dateuid(param_date, parsedUserID)
+    user_clocks_true = Chrono.list_clocks_by_dateuid(param_date, parsedUserID, true)
+    user_clocks_false = Chrono.list_clocks_by_dateuid(param_date, parsedUserID, false)
 
-    dummy_clock = Enum.reduce(user_clocks, 0,  fn  user_clock, acc ->
-      if user_clock.status do
-        acc - user_clock.time.hour
-      else
-        acc + user_clock.time.hour
-      end
+    dummy_clock_true = Enum.reduce(user_clocks_true, 0,  fn  user_clock, acc ->
+      acc + user_clock.time.hour
     end)
+
+    dummy_clock_false = Enum.reduce(user_clocks_false, 0,  fn  user_clock, acc ->
+      acc + user_clock.time.hour
+    end)
+    if Enum.count(dummy_clock_true) > Enum.count(dummy_clock_false) do
+      dummy_clock_false = dummy_clock_false + NaiveDateTime.utc_now().hour
+    end
+    dummy_clock = dummy_clock_false - dummy_clock_true
     chart_result= %{
       id: user_workingtime.user,
       day: NaiveDateTime.to_date(user_workingtime.start),
