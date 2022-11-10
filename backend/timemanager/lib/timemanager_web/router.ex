@@ -11,8 +11,14 @@ defmodule TimemanagerWeb.Router do
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
-    plug CORSPlug
+    plug CORSPlug ,
+         origin: ["http://localhost:8080"],
+         accepts: ["json"],
+         max_age: 86400,
+         methods: ["GET", "POST", "PUT", "DELETE"],
+         send_preflight_response?: false,
+         allow_headers: ["accept", "content-type", "authorization"],
+         allow_credentials: true
   end
 
   pipeline :auth do
