@@ -5,8 +5,7 @@ export default class AuthService {
         return axios({
             method: 'post',
             url: `http://localhost:4000/api/login?username=${username}&password=${password}`,
-            // withCredentials: true,
-            
+            withCredentials: true,
         })
     }
     static getToken(){
@@ -16,11 +15,10 @@ export default class AuthService {
         axios({
             method: 'post',
             url: `http://localhost:4000/api/login/refresh`,
-            // withCredentials: true,
+            withCredentials: true,
             headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8',
                 'Authorization' : `Bearer ${this.getToken()}`,
+                'Access-Control-Allow-Origin' : "http://localhost:8080/"
             },
         }).then(response => {
             return response.access_token;
