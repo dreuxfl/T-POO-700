@@ -32,9 +32,11 @@ export default function Profile() {
                 setUsername({...username, error: usernameError})
                 setEmail({...email, error: emailError})
                 setTitleText({...titleText, value: "Error check your data"})
+
             }
+            else setInfunction(false);
             setTitleText({...titleText, value: "Edited !"})
-            setInfunction(false);
+
         }else
             setInfunction(true);
     }
@@ -94,6 +96,22 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     button: {
+
+        width: 200,
+
+        height: 50,
+
+        fontSize: 18,
+
+        borderRadius: 5,
+
+        alignContent: "center",
+
+        justifyContent: 'center',
+
+        alignItems: 'center',
+
         backgroundColor: theme.colors.primary
+
     }
 })
