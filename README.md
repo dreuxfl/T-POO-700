@@ -35,7 +35,7 @@ We are using `Ecto` to interact with the database, so we are protected from SQL 
 
 > NoSQL injection is a type of injection attack in which the goal is execution of arbitrary commands on the host operating system via a vulnerable application. NoSQL injection attacks are possible when an application passes unsafe user supplied data (forms, cookies, HTTP headers etc.) to a NoSQL database. In this attack, the attacker-supplied operating system commands are usually executed with the privileges of the vulnerable application. NoSQL injection attacks are possible largely due to insufficient input validation.
 
-We are using `Postgres` as ou database, so we are not vulnerable to `NoSQL` injections.
+We are using `Postgres` as our database, so we are not vulnerable to `NoSQL` injections.
 
 ### Accessible configuration files
 
