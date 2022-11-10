@@ -16,7 +16,7 @@ defmodule TimemanagerWeb.Router do
          accepts: ["json"],
          max_age: 86400,
          methods: ["GET", "POST", "PUT", "DELETE"],
-         send_preflight_response?: false,
+         send_preflight_response?: true,
          allow_headers: ["accept", "content-type", "authorization"],
          allow_credentials: true
   end
