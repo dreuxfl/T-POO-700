@@ -19,13 +19,23 @@ This document is a security audit of the Timemanager project. It is intended to 
 
 > XSS is a type of injection, in which malicious scripts are injected into otherwise benign and trusted websites. XSS attacks occur when an attacker uses a web application to send malicious code, generally in the form of a browser side script, to a different end user. Flaws that allow these attacks to succeed are quite widespread and occur anywhere a web application uses input from a user within the output it generates without validating or encoding it.
 
+We are using `Phoenix` framework, so we are protected from XSS, Script and HTML injections, because it uses `Plug` which is a specification and conveniences for composable modules between web applications. `Plug` provides a variety of protections against these types of injections.
+
 > Script injection is a type of injection attack in which the goal is execution of arbitrary commands on the host operating system via a vulnerable application. Command injection attacks are possible when an application passes unsafe user supplied data (forms, cookies, HTTP headers etc.) to a system shell. In this attack, the attacker-supplied operating system commands are usually executed with the privileges of the vulnerable application. Command injection attacks are possible largely due to insufficient input validation.
+
+We are using `Phoenix` framework, so we are protected from XSS, Script and HTML injections, because it uses `Plug` which is a specification and conveniences for composable modules between web applications. `Plug` provides a variety of protections against these types of injections.
 
 > HTML injection is a type of injection attack in which the goal is execution of arbitrary HTML and script code in a browser via a vulnerable web application. HTML injection attacks are possible when an application passes unsafe user supplied data (forms, cookies, HTTP headers etc.) to a web browser. In this attack, the attacker-supplied HTML and script code are usually executed with the privileges of the vulnerable application. HTML injection attacks are possible largely due to insufficient input validation.
 
+We are using `Phoenix` framework, so we are protected from XSS, Script and HTML injections, because it uses `Plug` which is a specification and conveniences for composable modules between web applications. `Plug` provides a variety of protections against these types of injections.
+
 > SQL injection is a code injection technique, used to attack data-driven applications, in which nefarious SQL statements are inserted into an entry field for execution (e.g. to dump the database contents to the attacker). SQL injection must exploit a security vulnerability in an application's software, for example, when user input is either incorrectly filtered for string literal escape characters embedded in SQL statements or user input is not strongly typed and unexpectedly executed. SQL injection is mostly known as an attack vector for websites but can be used to attack any type of SQL database.
 
+We are using `Ecto` to interact with the database, so we are protected from SQL injections, because `Ecto` uses prepared statements to prevent SQL injections.
+
 > NoSQL injection is a type of injection attack in which the goal is execution of arbitrary commands on the host operating system via a vulnerable application. NoSQL injection attacks are possible when an application passes unsafe user supplied data (forms, cookies, HTTP headers etc.) to a NoSQL database. In this attack, the attacker-supplied operating system commands are usually executed with the privileges of the vulnerable application. NoSQL injection attacks are possible largely due to insufficient input validation.
+
+We are using `Postgres` as ou database, so we are not vulnerable to `NoSQL` injections.
 
 ### Accessible configuration files
 
