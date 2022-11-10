@@ -47,7 +47,7 @@ Login, register and update on a user are the only routes that require a password
 
 ### Accessible routes and endpoints by authenticated and unauthenticated users
 
-The only routes that are accessible by unauthenticated users are the login and register. All the other routes are accessible only by authenticated users using `Guardian` and `JWT` tokens.
+The only routes that are accessible by unauthenticated users are the login and register. All the other routes are accessible only by authenticated users.
 
 ### JWT tokens (expiration, refresh, denial of service, etc...)
 
