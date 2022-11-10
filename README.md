@@ -33,7 +33,7 @@ Configuration files are ignored by git and are not pushed to the repository. The
 
 ### Password hashing
 
-The password is hashed using the `bcrypt` algorithm. We are using the `bcrypt` algorithm because it is the most secure algorithm available for password hashing. The `bcrypt` algorithm is a one-way function, which means that it is impossible to decrypt the password from the hash.
+The password is hashed using the `bcrypt` algorithm. The `bcrypt` algorithm is a one-way function, which means that it is impossible to decrypt the password from the hash.
 
 Login, register and update on a user are the only routes that require a password. The password is hashed before being stored in the database.
 
