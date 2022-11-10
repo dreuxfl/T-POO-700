@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {TouchableOpacity, StyleSheet, View, StatusBar} from 'react-native'
+import { TouchableOpacity, StyleSheet, View, StatusBar } from 'react-native'
 import { Text } from 'react-native-paper'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
@@ -18,19 +18,28 @@ export default function Profile() {
     const [password, setPassword] = useState({ value: '', error: '' })
     const [titleText, setTitleText] = useState("");
     const [username, setUsername] = useState({ value: '', error: '' })
+    const [infunction, setInfunction] = useState(false)
+    setInfunction({ ...infunction, value: true })
     const onEditpressed = () => {
         const passwordError = PasswordValidator(password.value)
+        const usernameError = UsernameValidator(username.value)
+        const emailError = EmailValidator(email.value)
+
         setPassword({ ...password, error: passwordError })
-        if (passwordError) {
+        setUsername({ ...username, error: usernameError })
+        setEmail({ ...email, error: emailError })
+        if (passwordError || usernameError || emailError) {
             setPassword({ ...password, error: passwordError })
-            setTitleText({...titleText, value: "Error on password !"})
+            setUsername({ ...username, error: usernameError })
+            setEmail({ ...email, error: emailError })
+            setTitleText({ ...titleText, value: "Error check your data" })
         }
-        setTitleText({...titleText, value: "Password edited !"})
-    
+        setTitleText({ ...titleText, value: "Edited !" })
+        
     }
     return (
         <Background>
-            <Ionicons name="person-circle" size={100}/>
+            <Ionicons name="person-circle" size={100} />
             <Header>Profile</Header>
 
             <TextInput
@@ -43,6 +52,7 @@ export default function Profile() {
                 autoCompleteType="username"
                 textContentType="username"
                 keyboardType="default"
+                editable={onEditpressed.infunction ? true : false}
             />
             <TextInput
                 label="Email"
@@ -54,6 +64,7 @@ export default function Profile() {
                 autoCompleteType="email"
                 textContentType="emailAddress"
                 keyboardType="email-address"
+                editable={onEditpressed.infunction ? true : false}
             />
             <TextInput
                 label="Password"
@@ -63,22 +74,23 @@ export default function Profile() {
                 error={!!password.error}
                 errorText={password.error}
                 secureTextEntry
+                editable={onEditpressed.infunction ? true : false}
             />
 
             <Button style={styles.button} mode="contained" onPress={onEditpressed}>
                 Edit
             </Button>
-            <Text style= {styles.titletext}/>
+            <Text style={styles.titletext} {...titleText} />
         </Background>
     )
-    }
+}
 
-    const styles = StyleSheet.create({
-        titletext: {
-            fontSize: 24,
-            fontWeight: 'bold'
-        },
-        button: {
-            backgroundColor: theme.colors.primary
-        }
-    })
+const styles = StyleSheet.create({
+    titletext: {
+        fontSize: 24,
+        fontWeight: 'bold'
+    },
+    button: {
+        backgroundColor: theme.colors.primary
+    }
+})
