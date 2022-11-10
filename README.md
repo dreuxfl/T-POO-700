@@ -57,7 +57,7 @@ We are using `Guardian` and `JWT` tokens to authenticate users.
 
 > `JWT` is a compact, URL-safe means of representing claims to be transferred between two parties. The claims in a JWT are encoded as a JSON object that is used as the payload of a JSON Web Signature (JWS) structure or as the plaintext of a JSON Web Encryption (JWE) structure, enabling the claims to be digitally signed or integrity protected with a Message Authentication Code (MAC) and/or encrypted.
 
-The `JWT` token is valid for 1 minute. After 1 minute, the user will have to log in again to get a new token.
+The `JWT` token is valid for 45 minutes. After 45 minutes, the user will have to log in again to get a new token.
 A refresh token is also stocked in a cookie. The refresh token is valid for 1 week. After 1 week, the user will have to log in again to get a new token.
 The refresh token is refreshed every time the user logs in.
 
