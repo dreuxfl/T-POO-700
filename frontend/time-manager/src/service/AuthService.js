@@ -18,7 +18,6 @@ export default class AuthService {
             withCredentials: true,
             headers:{
                 'Authorization' : `Bearer ${this.getToken()}`,
-                'Access-Control-Allow-Origin' : "http://localhost:8080/"
             },
         }).then(response => {
             return response.access_token;
