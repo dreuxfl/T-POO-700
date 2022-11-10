@@ -39,4 +39,5 @@ jobs:
     - name: Run credo static analysis in strict mode
       run: |
           cd  backend/timemanager/
+          mix deps.get
           mix credo --strict
