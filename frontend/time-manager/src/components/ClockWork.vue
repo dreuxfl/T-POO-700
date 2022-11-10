@@ -84,7 +84,6 @@
 
         ClockService.postClock(this.userId, this.isClockIn, moment(new Date (clockTime)).format("YYYY-MM-DD HH:mm:ss"));
         this.isClockIn = !this.isClockIn;
-
         this.$emit("clock-event");
       },
       clock(){

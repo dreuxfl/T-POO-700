@@ -17,7 +17,11 @@ defmodule TimemanagerWeb.ChartmanagerController do
     started = NaiveDateTime.from_iso8601!(url_params.query_params["start"])
     ended = NaiveDateTime.from_iso8601!(url_params.query_params["end"])
     user_workingtimes = Workinghours.list_workingtimes_by_dates_lineschart(started, ended, parsedUserID)
-
+    if !user_workingtimes do
+      conn
+      |> put_status(:not_found)
+      |> render("404.json")
+    else
     chartdata = Enum.map(user_workingtimes, fn  user_workingtime ->
       user_clocks_true = Chrono.list_clocks_by_dateuid(user_workingtime.start, parsedUserID, true)
       user_clocks_false = Chrono.list_clocks_by_dateuid(user_workingtime.start, parsedUserID, false)
@@ -32,6 +36,7 @@ defmodule TimemanagerWeb.ChartmanagerController do
       if Enum.count(dummy_clock_true) > Enum.count(dummy_clock_false) do
         dummy_clock_false = dummy_clock_false + NaiveDateTime.utc_now().hour
       end
+      dummy_clock = dummy_clock_false - dummy_clock_true
       %{
         id: user_workingtime.user,
         day: NaiveDateTime.to_date(user_workingtime.start),
@@ -43,6 +48,7 @@ defmodule TimemanagerWeb.ChartmanagerController do
     |> put_status(:ok)
     |> render("chart_workingtime_uid.json", chartmanager: chartdata)
   end
+  end
 
 
   def piechart_workingtime_clockedhours_user(conn, %{"userID" => userID}) do
@@ -50,6 +56,11 @@ defmodule TimemanagerWeb.ChartmanagerController do
     url_params = Plug.Conn.fetch_query_params(conn)
     param_date = NaiveDateTime.from_iso8601!(url_params.query_params["date"])
     workingtimes = Workinghours.list_workingtimes_by_date_piechart(param_date, parsedUserID)
+    if !workingtimes do
+      conn
+      |> put_status(:not_found)
+      |> render("404.json")
+    else
     user_workingtime = Enum.find(workingtimes, fn(workingtime) -> workingtime.user != nil && workingtime.user == parsedUserID end)
 
     user_clocks_true = Chrono.list_clocks_by_dateuid(param_date, parsedUserID, true)
@@ -75,6 +86,7 @@ defmodule TimemanagerWeb.ChartmanagerController do
     conn
     |> put_status(:ok)
     |> render("piechart.json", chartmanager: chart_result)
+  end
   end
 
   def barchart_stats(conn, _params) do
