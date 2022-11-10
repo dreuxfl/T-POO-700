@@ -19,23 +19,24 @@ export default function Profile() {
     const [titleText, setTitleText] = useState("");
     const [username, setUsername] = useState({ value: '', error: '' })
     const [infunction, setInfunction] = useState(false)
-    setInfunction({ ...infunction, value: true })
     const onEditpressed = () => {
-        const passwordError = PasswordValidator(password.value)
-        const usernameError = UsernameValidator(username.value)
-        const emailError = EmailValidator(email.value)
-
-        setPassword({ ...password, error: passwordError })
-        setUsername({ ...username, error: usernameError })
-        setEmail({ ...email, error: emailError })
-        if (passwordError || usernameError || emailError) {
-            setPassword({ ...password, error: passwordError })
-            setUsername({ ...username, error: usernameError })
-            setEmail({ ...email, error: emailError })
-            setTitleText({ ...titleText, value: "Error check your data" })
-        }
-        setTitleText({ ...titleText, value: "Edited !" })
-        
+        if(infunction) {
+            const passwordError = PasswordValidator(password.value)
+            const usernameError = UsernameValidator(username.value)
+            const emailError = EmailValidator(email.value)
+            setPassword({...password, error: passwordError})
+            setUsername({...username, error: usernameError})
+            setEmail({...email, error: emailError})
+            if (passwordError || usernameError || emailError) {
+                setPassword({...password, error: passwordError})
+                setUsername({...username, error: usernameError})
+                setEmail({...email, error: emailError})
+                setTitleText({...titleText, value: "Error check your data"})
+            }
+            setTitleText({...titleText, value: "Edited !"})
+            setInfunction(false);
+        }else
+            setInfunction(true);
     }
     return (
         <Background>
@@ -52,7 +53,7 @@ export default function Profile() {
                 autoCompleteType="username"
                 textContentType="username"
                 keyboardType="default"
-                editable={onEditpressed.infunction ? true : false}
+                editable={infunction}
             />
             <TextInput
                 label="Email"
@@ -64,7 +65,7 @@ export default function Profile() {
                 autoCompleteType="email"
                 textContentType="emailAddress"
                 keyboardType="email-address"
-                editable={onEditpressed.infunction ? true : false}
+                editable={infunction}
             />
             <TextInput
                 label="Password"
@@ -74,12 +75,14 @@ export default function Profile() {
                 error={!!password.error}
                 errorText={password.error}
                 secureTextEntry
-                editable={onEditpressed.infunction ? true : false}
+                editable={infunction}
             />
 
-            <Button style={styles.button} mode="contained" onPress={onEditpressed}>
-                Edit
-            </Button>
+
+            <TouchableOpacity style={styles.button} mode="contained" onPress={onEditpressed}>
+                <Text>{infunction? "Save" : "Edit"}</Text>
+            </TouchableOpacity>
+
             <Text style={styles.titletext} {...titleText} />
         </Background>
     )
