@@ -58,6 +58,7 @@ The only routes that are accessible by unauthenticated users are the login and r
 We are using `Guardian` and `JWT` tokens to authenticate users. 
 
 > `Guardian` is a token based authentication library for `Elixir` applications. It is designed to be flexible and allow you to use any token format you want. `Guardian` is not an authentication solution by itself. It is meant to be used with other libraries to provide a full authentication solution.
+
 > `JWT` is a compact, URL-safe means of representing claims to be transferred between two parties. The claims in a JWT are encoded as a JSON object that is used as the payload of a JSON Web Signature (JWS) structure or as the plaintext of a JSON Web Encryption (JWE) structure, enabling the claims to be digitally signed or integrity protected with a Message Authentication Code (MAC) and/or encrypted.
 
 The `JWT` token is valid for 1 minute. After 1 minute, the user will have to log in again to get a new token.
