@@ -14,6 +14,7 @@ This document is a security audit of the Timemanager project. It is intended to 
 4. [Accessible routes and endpoints by authenticated and unauthenticated users](#accessible-routes-and-endpoints-by-authenticated-and-unauthenticated-users)
 5. [JWT tokens (expiration, refresh, denial of service, etc...)](#jwt-tokens-expiration-refresh-denial-of-service-etc)
 6. [Application available in HTTPS](#application-available-in-https)
+7. [Credo (static code analysis)](#credo-static-code-analysis)
 
 ### Injections (XSS, Script, HTML, SQL, NoSQL, etc...)
 
@@ -66,3 +67,9 @@ The refresh token is refreshed every time the user logs in.
 It is only available in HTTP. The application is not available in HTTPS because it is not deployed on a server. It is only available locally on the developer's computer.
 
 We are estimated that is a high risk to deploy this application on a server before we have fixed and tested the security issues, because the application is in work in progress and is not stable yet, and it will open the door to hackers.
+
+### Credo (static code analysis)
+
+We are using `Credo` to analyze the code and find security issues. 
+
+> `Credo` is a static code analysis tool for the Elixir language with a focus on code consistency and teaching.
