@@ -9,7 +9,7 @@ services:
     depends_on:
       - db
     env_file:
-      - timemanager_envi.env
+      - .env
     restart: always
     stdin_open: true
     tty: true
