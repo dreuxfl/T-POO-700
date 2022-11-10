@@ -29,7 +29,6 @@ export default function Profile() {
     
     }
     return (
-        <View style={styles.viewStyle}>
         <Background>
             <Ionicons name="person-circle" size={100}/>
             <Header>Profile</Header>
@@ -71,7 +70,6 @@ export default function Profile() {
             </Button>
             <Text style= {styles.titletext}/>
         </Background>
-        </View>
     )
     }
 
@@ -82,8 +80,5 @@ export default function Profile() {
         },
         button: {
             backgroundColor: theme.colors.primary
-        },
-        viewStyle: {
-            paddingTop: StatusBar.currentHeight
         }
     })

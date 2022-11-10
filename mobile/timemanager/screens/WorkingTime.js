@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {Text, StyleSheet, View, Dimensions} from 'react-native';
 import {LineChart} from "react-native-chart-kit";
 import RNSVGRect from "react-native-svg";
@@ -9,11 +9,23 @@ import {StatusBar} from "react-native";
 
 
 export default function WorkingTime () {
-    const days = ['mon','tue', 'wed', 'thu', 'fri'];
-    const start = ['09:30', '08:00', '08:30', '09:00', '08:30'];
-    const end = ['16:30', '16:00', '17:30', '17:30', '17:30'];
+    const [days, setDays] = useState(['mon','tue', 'wed', 'thu', 'fri'])
+    const [start, setStart] = useState(['09:30', '08:00', '08:30', '09:00', '08:30'])
+    const [end, setEnd] = useState(['16:30', '16:00', '17:30', '17:30', '17:30'])
 
-        return (
+    const [rows, setRows] =useState([])
+
+
+    for(let i = 0; i<days.length; i++){
+        rows.push(
+            <DataTable.Row key={i}>
+                <DataTable.Cell>{days[i]}</DataTable.Cell>
+                <DataTable.Cell numeric>{start[i]}</DataTable.Cell>
+                <DataTable.Cell numeric>{end[i]}</DataTable.Cell>
+            </DataTable.Row>
+        )
+    }
+    return (
             <View style={styles.viewStyle}>
                 <Header>Your weekly schedule</Header>
                 <DataTable style={styles.tableStyle}>
@@ -22,36 +34,7 @@ export default function WorkingTime () {
                         <DataTable.Title numeric>Start</DataTable.Title>
                         <DataTable.Title numeric>End</DataTable.Title>
                     </DataTable.Header>
-
-                    <DataTable.Row>
-                        <DataTable.Cell>Monday</DataTable.Cell>
-                        <DataTable.Cell numeric>09:50</DataTable.Cell>
-                        <DataTable.Cell numeric>17:00</DataTable.Cell>
-                    </DataTable.Row>
-
-                    <DataTable.Row>
-                        <DataTable.Cell>Tuesday</DataTable.Cell>
-                        <DataTable.Cell numeric>09:30</DataTable.Cell>
-                        <DataTable.Cell numeric>16:30</DataTable.Cell>
-                    </DataTable.Row>
-
-                    <DataTable.Row>
-                        <DataTable.Cell>Wednesday</DataTable.Cell>
-                        <DataTable.Cell numeric>08:30</DataTable.Cell>
-                        <DataTable.Cell numeric>16:30</DataTable.Cell>
-                    </DataTable.Row>
-
-                    <DataTable.Row>
-                        <DataTable.Cell>Thursday</DataTable.Cell>
-                        <DataTable.Cell numeric>09:30</DataTable.Cell>
-                        <DataTable.Cell numeric>16:30</DataTable.Cell>
-                    </DataTable.Row>
-
-                    <DataTable.Row>
-                        <DataTable.Cell>Friday</DataTable.Cell>
-                        <DataTable.Cell numeric>09:00</DataTable.Cell>
-                        <DataTable.Cell numeric>16:30</DataTable.Cell>
-                    </DataTable.Row>
+                    {rows}
                 </DataTable>
                 <Header>Your weekly chart</Header>
                 <LineChart
