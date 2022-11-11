@@ -3,33 +3,30 @@ import AuthService from "./AuthService";
 
 export default class ClockService {
     static postClock(userId, status, time) {
-        axios({
-            method: 'post',
-            url: `http://localhost:4000/api/clocks/${userId}`,
-            responseType: 'json',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${AuthService.getToken()}`,
-            },
-            data: JSON.stringify({ 
-                "clock":
-                {
-                    "status": status,
-                    "time": time,
-                }
+        AuthService.refreshAccessToken().then(()=> {
+            return axios({
+                method: 'post',
+                url: `http://localhost:4000/api/clocks/${userId}`,
+                responseType: 'json',
+                headers:{
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Authorization' : `Bearer ${AuthService.getToken()}`,
+                },
+                data: JSON.stringify({ 
+                    "clock":
+                    {
+                        "status": status,
+                        "time": time,
+                    }
+                })
             })
-        }).catch(err => {
-            console.log(err)
-            if(err.response.status === 401){
-                console.log(AuthService.refreshAccessToken())
-            }
-        }).then(response => {
-            return response
-        })
+        });
     }
 
-    static getClocks(userId) {
+    static async getClocks(userId) {
+        await AuthService.refreshAccessToken();
+
         return axios({
             method: 'get',
             url: `http://localhost:4000/api/clocks/${userId}`,
@@ -39,7 +36,8 @@ export default class ClockService {
         });
     }
 
-    static getCurrentClocks(userId) {
+    static async getCurrentClocks(userId) {
+        await AuthService.refreshAccessToken();
         return axios({
             method: 'get',
             url: `http://localhost:4000/api/clocks/${userId}/today`,
