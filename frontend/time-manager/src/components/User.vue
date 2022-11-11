@@ -129,7 +129,7 @@ export default {
       else {
         this.$emit('userRequestLoadingEvent');
         UserService.postUser(this.email, this.username, this.password).then(()=>{
-          UserService.login(this.username, this.password).then((response)=>{
+          AuthService.login(this.username, this.password).then((response)=>{
 
             this.token = response.data.access_token;
             this.$emit('userLoginEvent', {token: this.token});
