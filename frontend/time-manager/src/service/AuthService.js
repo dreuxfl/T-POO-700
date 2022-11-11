@@ -16,11 +16,8 @@ export default class AuthService {
             method: 'post',
             url: `http://localhost:4000/api/login/refresh`,
             withCredentials: true,
-            headers:{
-                'Authorization' : `Bearer ${this.getToken()}`,
-            },
         }).then(response => {
-            return response.access_token;
+            return response.data.access_token;
         }).catch(()=> {
             return false
         });

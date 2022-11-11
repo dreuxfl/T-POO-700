@@ -15,9 +15,9 @@ defmodule TimemanagerWeb.Router do
          origin: ["http://localhost:8080"],
          accepts: ["json"],
          max_age: 86400,
-         methods: ["GET", "POST", "PUT", "DELETE"],
+         methods: ["*"],
          send_preflight_response?: true,
-         allow_headers: ["accept", "content-type", "authorization"],
+         allow_headers: ["*"],
          allow_credentials: true
   end
 
