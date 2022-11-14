@@ -7,7 +7,7 @@ export default class UserService {
     static postUser(email, username, password) {
         return axios({
             method: 'post',
-            url: `http://localhost:4000/api/users/`,
+            url: `https://8e76-163-5-23-136.eu.ngrok.io/api/users/`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
@@ -27,7 +27,7 @@ export default class UserService {
         await AuthService.refreshAccessToken();
         return axios({
             method: 'put',
-            url: `http://localhost:4000/api/users/${userId}`,
+            url: `https://8e76-163-5-23-136.eu.ngrok.io/api/users/${userId}`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
@@ -49,7 +49,7 @@ export default class UserService {
 
         return axios({
             method: 'get',
-            url: `http://localhost:4000/api/users/${userId}`,
+            url: `https://8e76-163-5-23-136.eu.ngrok.io/api/users/${userId}`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
@@ -62,7 +62,7 @@ export default class UserService {
     static getProfile(token) {
         return axios({
             method: 'get',
-            url: `http://localhost:4000/api/profile/`,
+            url: `https://8e76-163-5-23-136.eu.ngrok.io/api/profile/`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',

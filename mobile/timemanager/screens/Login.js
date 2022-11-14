@@ -8,8 +8,8 @@ import { PasswordValidator } from '../helpers/PasswordValidator'
 import Background from "../components/Background";
 import Header from "../components/Header";
 import Logo from "../components/Logo";
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import {UsernameValidator} from "../helpers/UsernameValidator";
+import AuthService from "../services/AuthService";
 
 export default function Login({ navigation }) {
     const [username, setUsername] = useState({ value: '', error: '' })
@@ -23,10 +23,18 @@ export default function Login({ navigation }) {
             setPassword({ ...password, error: passwordError })
             return
         }
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'Dashboard' }],
-        })
+        AuthService.login(username.value, password.value).then((response) => {
+            try {
+                AuthService.setToken(response.data.access_token);
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Dashboard' }],
+                })
+            }catch (e) {
+                console.log(e);
+            }
+        });
+
     }
 
     return (
