@@ -37,10 +37,10 @@ defmodule TimemanagerWeb.WorkingtimeController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
-      if !user do
+      if user === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "User not found"})
       else
         {parsedUserID, ""} = Integer.parse(userID)
         workingtimes = Workinghours.list_workingtimes()
@@ -101,15 +101,15 @@ defmodule TimemanagerWeb.WorkingtimeController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtime = Workinghours.get_workingtime!(wtID)
-      if !workingtime do
+      if workingtime === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "Workingtime not found"})
       else
         if workingtime.user != parsedUserID do
           conn
           |> put_status(:not_found)
-          |> render("404.json")
+          |> render("error.json", %{error: "Workingtime not found"})
         else
           render(conn, "show.json", workingtime: workingtime)
         end
@@ -124,10 +124,10 @@ defmodule TimemanagerWeb.WorkingtimeController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtime = Workinghours.get_workingtime!(wtID)
-      if !workingtime do
+      if workingtime === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "Workingtime not found"})
       else
         with {:ok, %Workingtime{} = workingtime} <- Workinghours.update_workingtime(workingtime, workingtime_params) do
           render(conn, "show.json", workingtime: workingtime)
@@ -143,10 +143,10 @@ defmodule TimemanagerWeb.WorkingtimeController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtime = Workinghours.get_workingtime!(wtID)
-      if !workingtime do
+      if workingtime === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "Workingtime not found"})
       else
         with {:ok, %Workingtime{}} <- Workinghours.delete_workingtime(workingtime) do
           send_resp(conn, :no_content, "")

@@ -17,10 +17,10 @@ defmodule TimemanagerWeb.ChartmanagerController do
     started = NaiveDateTime.from_iso8601!(url_params.query_params["start"])
     ended = NaiveDateTime.from_iso8601!(url_params.query_params["end"])
     user_workingtimes = Workinghours.list_workingtimes_by_dates_lineschart(started, ended, parsedUserID)
-    if !user_workingtimes do
+    if user_workingtimes === nil do
       conn
       |> put_status(:not_found)
-      |> render("404.json")
+      |> render("error.json", %{error: "No workingtimes found"})
     else
     chartdata = Enum.map(user_workingtimes, fn  user_workingtime ->
       user_clocks_true = Chrono.list_clocks_by_dateuid(user_workingtime.start, parsedUserID, true)
@@ -56,10 +56,10 @@ defmodule TimemanagerWeb.ChartmanagerController do
     url_params = Plug.Conn.fetch_query_params(conn)
     param_date = NaiveDateTime.from_iso8601!(url_params.query_params["date"])
     workingtimes = Workinghours.list_workingtimes_by_date_piechart(param_date, parsedUserID)
-    if !workingtimes do
+    if workingtimes === nil do
       conn
       |> put_status(:not_found)
-      |> render("404.json")
+      |> render("error.json", error: "No workingtimes found")
     else
     user_workingtime = Enum.find(workingtimes, fn(workingtime) -> workingtime.user != nil && workingtime.user == parsedUserID end)
 

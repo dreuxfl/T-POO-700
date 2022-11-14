@@ -14,7 +14,7 @@ defmodule TimemanagerWeb.ErrorView do
     Phoenix.Controller.status_message_from_template(template)
   end
 
-  def render("404.json", _assigns) do
-    %{error: "Resource not found"}
+  def render("error.json", %{error: error}) do
+    %{error: error}
   end
 end

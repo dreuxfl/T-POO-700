@@ -4,7 +4,7 @@ defmodule Timemanager.IsAdmin do
 
   def is_admin(conn) do
     loggedUser = Guardian.Plug.current_resource(conn)
-    if !loggedUser.is_admin do
+    if loggedUser.is_admin != true do
       false
     else
       true
