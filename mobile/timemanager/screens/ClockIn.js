@@ -42,6 +42,7 @@ export default function Clockin() {
             <Stopwatch
                 laps
                 start={!isClockIn}
+                reset={false}
                 options={options}
             />
         </View>
