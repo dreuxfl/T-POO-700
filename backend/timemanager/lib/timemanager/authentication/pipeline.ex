@@ -1,4 +1,6 @@
 defmodule Timemanager.Guardian.AuthPipeline do
+  @moduledoc false
+
   @claim_access %{typ: "access"}
   @claim_refresh %{typ: "refresh"}
 

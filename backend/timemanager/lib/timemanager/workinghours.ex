@@ -23,14 +23,13 @@ defmodule Timemanager.Workinghours do
 
   def list_workingtimes_by_dates_lineschart(started, ended, uid) do
     query = from w in Workingtime,
-      where: (w.start >= (^started) and w.end <= (^ended) and w.user == ^uid),
-      order_by: w.start
+                 where: (w.start >= (^started) and w.end <= (^ended) and w.user == ^uid),
+                 order_by: w.start
     Repo.all(query)
-    end
-
+  end
 
   def list_workingtimes_by_date_piechart(date, uid) do
-    datenaivetoday =  DateTime.to_naive( %DateTime{
+    datenaivetoday =  DateTime.to_naive(%DateTime{
       year: date.year, month: date.month, day: date.day, zone_abbr: "CET",
       hour: 0, minute: 0, second: 0, microsecond: {0, 0},
       utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"
@@ -38,21 +37,21 @@ defmodule Timemanager.Workinghours do
 
     tomorrow = Date.add(datenaivetoday, 1)
 
-    datenaivetomorrow =  DateTime.to_naive( %DateTime{
+    datenaivetomorrow =  DateTime.to_naive(%DateTime{
       year: tomorrow.year, month: tomorrow.month, day: tomorrow.day, zone_abbr: "CET",
       hour: 0, minute: 0, second: 0, microsecond: {0, 0},
       utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"
     })
 
     query = from w in Workingtime,
-      where: (w.start >= ^datenaivetoday and w.end <= ^datenaivetomorrow  and w.user == ^uid),
-      order_by: w.start
+                 where: (w.start >= ^datenaivetoday and w.end <= ^datenaivetomorrow  and w.user == ^uid),
+                 order_by: w.start
     Repo.all(query)
   end
 
-  def list_workingtimes_distinctUID() do
+  def list_workingtimes_distinct_uid do
     query = from w in Workingtime,
-      distinct: w.user
+                 distinct: w.user
     Repo.all(query)
   end
 

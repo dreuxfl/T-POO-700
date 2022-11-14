@@ -1,16 +1,16 @@
 defmodule TimemanagerWeb.WorkingtimeController do
   use TimemanagerWeb, :controller
 
-  alias Timemanager.Workinghours
-  alias Timemanager.Workinghours.Workingtime
-  alias Timemanager.IsAdmin
   alias Timemanager.Employees
   alias Timemanager.Employees.User
+  alias Timemanager.IsAdmin
+  alias Timemanager.Workinghours
+  alias Timemanager.Workinghours.Workingtime
 
   action_fallback TimemanagerWeb.FallbackController
 
   def index_with_params(conn, %{"userID" => userID}) do
-    {parsedUserID, ""} = Integer.parse(userID)
+    {parsed_user_id, ""} = Integer.parse(userID)
     if Timemanager.IsAdmin.is_admin(conn) !== true do
       conn
       |> put_status(:forbidden)
@@ -20,9 +20,9 @@ defmodule TimemanagerWeb.WorkingtimeController do
       url_params = Plug.Conn.fetch_query_params(conn)
       started = NaiveDateTime.from_iso8601!(url_params.query_params["start"])
       ended = NaiveDateTime.from_iso8601!(url_params.query_params["end"])
-      user_workingtimes = Enum.filter(workingtimes, fn(workingtime)->
+      user_workingtimes = Enum.filter(workingtimes, fn(workingtime) ->
         workingtime.user != nil &&
-        workingtime.user == parsedUserID &&
+        workingtime.user == parsed_user_id &&
         NaiveDateTime.compare(workingtime.start, started) != :lt &&
         NaiveDateTime.compare(workingtime.end, ended) != :gt
       end)
@@ -37,18 +37,18 @@ defmodule TimemanagerWeb.WorkingtimeController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
-      if !user do
+      if user === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "User not found"})
       else
-        {parsedUserID, ""} = Integer.parse(userID)
+        {parsed_user_id, ""} = Integer.parse(userID)
         workingtimes = Workinghours.list_workingtimes()
         started = NaiveDateTime.to_date(NaiveDateTime.from_iso8601!(workingtime_params["start"]))
         ended = NaiveDateTime.to_date(NaiveDateTime.from_iso8601!(workingtime_params["end"]))
-        user_workingtimes = Enum.any?(workingtimes, fn(workingtime)->
+        user_workingtimes = Enum.any?(workingtimes, fn(workingtime) ->
           workingtime.user != nil &&
-          workingtime.user == parsedUserID &&
+          workingtime.user == parsed_user_id &&
           NaiveDateTime.to_date(workingtime.start) == started &&
           NaiveDateTime.to_date(workingtime.end) == ended
         end)
@@ -81,35 +81,35 @@ defmodule TimemanagerWeb.WorkingtimeController do
   end
 
   def all(conn, %{"userID" => userID}) do
-    {parsedUserID, ""} = Integer.parse(userID)
-    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
+    {parsed_user_id, ""} = Integer.parse(userID)
+    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsed_user_id do
       conn
       |> put_status(:forbidden)
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtimes = Workinghours.list_workingtimes()
-      user_working_times = Enum.filter(workingtimes, fn(wt) -> wt.user != nil && wt.user == parsedUserID end)
+      user_working_times = Enum.filter(workingtimes, fn(wt) -> wt.user != nil && wt.user == parsed_user_id end)
       render(conn, "index.json", workingtimes: user_working_times)
     end
   end
 
   def show(conn, %{"userID" => userID, "id" => wtID}) do
-    {parsedUserID, ""} = Integer.parse(userID)
-    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
+    {parsed_user_id, ""} = Integer.parse(userID)
+    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsed_user_id do
       conn
       |> put_status(:forbidden)
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtime = Workinghours.get_workingtime!(wtID)
-      if !workingtime do
+      if workingtime === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "Workingtime not found"})
       else
-        if workingtime.user != parsedUserID do
+        if workingtime.user != parsed_user_id do
           conn
           |> put_status(:not_found)
-          |> render("404.json")
+          |> render("error.json", %{error: "Workingtime not found"})
         else
           render(conn, "show.json", workingtime: workingtime)
         end
@@ -124,10 +124,10 @@ defmodule TimemanagerWeb.WorkingtimeController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtime = Workinghours.get_workingtime!(wtID)
-      if !workingtime do
+      if workingtime === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "Workingtime not found"})
       else
         with {:ok, %Workingtime{} = workingtime} <- Workinghours.update_workingtime(workingtime, workingtime_params) do
           render(conn, "show.json", workingtime: workingtime)
@@ -143,10 +143,10 @@ defmodule TimemanagerWeb.WorkingtimeController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       workingtime = Workinghours.get_workingtime!(wtID)
-      if !workingtime do
+      if workingtime === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "Workingtime not found"})
       else
         with {:ok, %Workingtime{}} <- Workinghours.delete_workingtime(workingtime) do
           send_resp(conn, :no_content, "")

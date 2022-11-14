@@ -11,26 +11,45 @@ import BackButton from "../components/BackButton";
 import Header from "../components/Header";
 import Logo from "../components/Logo";
 import Background from "../components/Background";
+import UserService from "../services/UserService";
+import AuthService from "../services/AuthService";
 
 export default function Signup({ navigation }) {
     const [email, setEmail] = useState({ value: '', error: '' })
     const [password, setPassword] = useState({ value: '', error: '' })
+    const [repPassword, setRepPassword] = useState({ value: '', error: '' })
     const [username, setUsername] = useState({ value: '', error: '' })
 
     const onSignupPressed = () => {
         const emailError = EmailValidator(email.value)
+        const repPassError = PasswordValidator(repPassword.value)
         const passwordError = PasswordValidator(password.value)
         const usernameError = UsernameValidator(username.value)
         if (emailError || passwordError || usernameError) {
             setEmail({ ...email, error: emailError })
             setPassword({ ...password, error: passwordError })
+            setRepPassword({...repPassword, error: repPassError})
             setUsername({ ...username, error: usernameError })
             return
         }
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'Dashboard' }],
-        })
+        UserService.postUser(email.value, username.value, password.value).then((response) => {
+            try {
+                console.log(response);
+                AuthService.login(username.value, password.value).then((resp) => {
+                    try {
+                        AuthService.setToken(resp.data.access_token);
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Dashboard' }],
+                        })
+                    }catch (e) {
+                        console.log(e);
+                    }
+                });
+            } catch (err){
+                console.log(err);
+            }
+    });
     }
     return (
         <Background>
@@ -71,10 +90,10 @@ export default function Signup({ navigation }) {
             <TextInput
                 label="Confirm Password"
                 returnKeyType="done"
-                value={password.value}
-                onChangeText={(text) => setPassword({ value: text, error: '' })}
-                error={!!password.error}
-                errorText={password.error}
+                value={repPassword.value}
+                onChangeText={(text) => setRepPassword({ value: text, error: '' })}
+                error={!!repPassword.error}
+                errorText={repPassword.error}
                 secureTextEntry
             />
 

@@ -16,28 +16,36 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 export default function Profile() {
     const [email, setEmail] = useState({ value: '', error: '' })
     const [password, setPassword] = useState({ value: '', error: '' })
+    const [oldpassword, setOldPassword] = useState({ value: '', error: '' })
+    const [truepassword, setTruePassword] = useState({ value: '', error: '' })
     const [titleText, setTitleText] = useState("");
     const [username, setUsername] = useState({ value: '', error: '' })
     const [infunction, setInfunction] = useState(false)
     const onEditpressed = () => {
-        if(infunction) {
+        if (infunction) {
             const passwordError = PasswordValidator(password.value)
+            const oldpasswordError = PasswordValidator(oldpassword.value)
+            const truepasswordError = PasswordValidator(truepassword.value)
             const usernameError = UsernameValidator(username.value)
             const emailError = EmailValidator(email.value)
-            setPassword({...password, error: passwordError})
-            setUsername({...username, error: usernameError})
-            setEmail({...email, error: emailError})
+            setPassword({ ...password, error: passwordError })
+            setOldPassword({ ...password, error: oldpasswordError })
+            setTruePassword({ ...password, error: truepasswordError })
+            setUsername({ ...username, error: usernameError })
+            setEmail({ ...email, error: emailError })
             if (passwordError || usernameError || emailError) {
-                setPassword({...password, error: passwordError})
-                setUsername({...username, error: usernameError})
-                setEmail({...email, error: emailError})
-                setTitleText({...titleText, value: "Error check your data"})
+                setPassword({ ...password, error: passwordError })
+                setOldPassword({ ...oldpassword, error: oldpasswordError })
+                setTruePassword({ ...truepassword, error: truepasswordError })
+                setUsername({ ...username, error: usernameError })
+                setEmail({ ...email, error: emailError })
+                setTitleText({ ...titleText, value: "Error check your data" })
 
             }
             else setInfunction(false);
-            setTitleText({...titleText, value: "Edited !"})
+            setTitleText({ ...titleText, value: "Edited !" })
 
-        }else
+        } else
             setInfunction(true);
     }
     return (
@@ -69,6 +77,15 @@ export default function Profile() {
                 keyboardType="email-address"
                 editable={infunction}
             />
+            {infunction &&<TextInput 
+                label="Old Password"
+                returnKeyType="done"
+                value={oldpassword.value}
+                onChangeText={(text) => setPassword({ value: text, error: '' })}
+                error={!!oldpassword.error}
+                errorText={oldpassword.error}
+                secureTextEntry
+            />}
             <TextInput
                 label="Password"
                 returnKeyType="done"
@@ -79,10 +96,18 @@ export default function Profile() {
                 secureTextEntry
                 editable={infunction}
             />
-
+            {infunction && <TextInput 
+                label="Confirm Password"
+                returnKeyType="done"
+                value={truepassword.value}
+                onChangeText={(text) => setPassword({ value: text, error: '' })}
+                error={!!truepassword.error}
+                errorText={truepassword.error}
+                secureTextEntry
+            />}
 
             <TouchableOpacity style={styles.button} mode="contained" onPress={onEditpressed}>
-                <Text>{infunction? "Save" : "Edit"}</Text>
+                <Text>{infunction ? "Save" : "Edit"}</Text>
             </TouchableOpacity>
 
             <Text style={styles.titletext} {...titleText} />

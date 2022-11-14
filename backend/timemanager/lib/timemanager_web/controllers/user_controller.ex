@@ -28,8 +28,8 @@ defmodule TimemanagerWeb.UserController do
   end
 
   def profile(conn, _params) do
-    loggedUser = Guardian.Plug.current_resource(conn)
-    render(conn, "show.json", user: loggedUser)
+    logged_user = Guardian.Plug.current_resource(conn)
+    render(conn, "show.json", user: logged_user)
   end
 
   def show(conn, %{"userID" => userID}) do
@@ -39,10 +39,10 @@ defmodule TimemanagerWeb.UserController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
-      if !user do
+      if user === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "User not found"})
       else
         render(conn, "show.json", user: user)
       end
@@ -50,17 +50,17 @@ defmodule TimemanagerWeb.UserController do
   end
 
   def update(conn, %{"userID" => userID, "user" => user_params}) do
-    {parsedUserID, ""} = Integer.parse(userID)
-    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
+    {parsed_user_id, ""} = Integer.parse(userID)
+    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsed_user_id do
       conn
       |> put_status(:forbidden)
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
-      if !user do
+      if user === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "User not found"})
       else
         with {:ok, %User{} = user} <- Employees.update_user(user, user_params) do
           render(conn, "show.json", user: user)
@@ -76,10 +76,10 @@ defmodule TimemanagerWeb.UserController do
       |> render("error.json", %{error: "You are not authorized to access this resource"})
     else
       user = Employees.get_user!(userID)
-      if !user do
+      if user === nil do
         conn
         |> put_status(:not_found)
-        |> render("404.json")
+        |> render("error.json", %{error: "User not found"})
       else
         with {:ok, %User{}} <- Employees.delete_user(user) do
           send_resp(conn, :no_content, "")

@@ -14,7 +14,7 @@ defmodule TimemanagerWeb.Router do
     plug CORSPlug ,
          origin: ["http://localhost:8080"],
          accepts: ["json"],
-         max_age: 86400,
+         max_age: 86_400,
          methods: ["*"],
          send_preflight_response?: true,
          allow_headers: ["*"],
@@ -59,7 +59,7 @@ defmodule TimemanagerWeb.Router do
      delete "/workingtimes/:id", WorkingtimeController, :delete
 
      get "/clocks/:userID", ClockController, :index
-     get "/clocks/:userID/today", ClockController, :fetchCurrentClocks
+     get "/clocks/:userID/today", ClockController, :fetch_current_clocks
      post "/clocks/:userID", ClockController, :create
 
      get "/chartmanager/linechart/:userID", ChartmanagerController, :linechart_workingtime_clockedhours
