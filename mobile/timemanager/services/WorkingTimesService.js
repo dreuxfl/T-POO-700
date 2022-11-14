@@ -2,7 +2,6 @@ import axios from "axios";
 import AuthService from "./AuthService";
 
 export default class WorkingTimesService {
-
     static async addWorkingTime(token, selectedUserId, start, end) {
         await AuthService.refreshAccessToken();
         return axios({
@@ -63,7 +62,7 @@ export default class WorkingTimesService {
 
         return axios({
             method: 'delete',
-            url: `http://localhost:4000/api/workingtimes/${workingTimeId}`,
+            url: `${AuthService.BaseUrl}/workingtimes/${workingTimeId}`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
