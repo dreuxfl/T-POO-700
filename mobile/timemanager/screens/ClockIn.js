@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import * as SecureStore from "expo-secure-store";
-import {StyleSheet, TouchableOpacity, View, Alert} from 'react-native'
+import {StyleSheet, TouchableOpacity, View, Alert, ToastAndroid} from 'react-native'
 import { Text } from 'react-native-paper'
 import { theme } from '../core/Theme'
 import {StatusBar} from "react-native";
@@ -38,8 +38,14 @@ export default function Clockin() {
                                 parseInt(jwt_decode( await SecureStore.getItemAsync('access_token')).sub),
                                 false, 
                                 moment(lastClockOut).format("YYYY-MM-DD HH:mm:ss")
-                            ).then(response => {
-                                console.log(response.data)
+                            ).then(() => {
+                                ToastAndroid.showWithGravityAndOffset(
+                                    "Successfully clocked out",
+                                    ToastAndroid.SHORT,
+                                    ToastAndroid.BOTTOM,
+                                    25,
+                                    50
+                                );
                             }).catch(error => console.log(error))
                         } 
                     }
@@ -52,8 +58,14 @@ export default function Clockin() {
                 parseInt(jwt_decode( await SecureStore.getItemAsync('access_token')).sub),
                 true, 
                 moment(lastClock).format("YYYY-MM-DD HH:mm:ss")
-            ).then(response => {
-                console.log(response.data)
+            ).then(() => {
+                ToastAndroid.showWithGravityAndOffset(
+                    "Successfully clocked in",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    50
+                );
             }).catch(error => console.log(error))
         }
         
