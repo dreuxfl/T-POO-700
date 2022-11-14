@@ -16,21 +16,21 @@ const Stack = createStackNavigator()
 
 export default function App() {
     return (
-    <Provider theme={theme}>
-        <NavigationContainer>
+        <Provider theme={theme}>
+            <NavigationContainer>
 
-            <Stack.Navigator
-                initialRouteName="StartScreen"
-                screenOptions={{
-                    headerShown: false,
-                }}
-            >
-                <Stack.Screen name="StartScreen" component={StartScreen} />
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="Register" component={Signup} />
-                <Stack.Screen name="Dashboard" component={Dashboard} />
-            </Stack.Navigator>
-        </NavigationContainer>
-    </Provider>
+                <Stack.Navigator
+                    initialRouteName="Dashboard"
+                    screenOptions={{
+                        headerShown: false,
+                    }}
+                >
+                    <Stack.Screen name="StartScreen" component={StartScreen} />
+                    <Stack.Screen name="Login" component={Login} />
+                    <Stack.Screen name="Register" component={Signup} />
+                    <Stack.Screen name="Dashboard" component={Dashboard} />
+                </Stack.Navigator>
+            </NavigationContainer>
+        </Provider>
     )
 }
