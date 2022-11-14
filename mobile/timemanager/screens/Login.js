@@ -31,10 +31,7 @@ export default function Login({ navigation }) {
                     index: 0,
                     routes: [{ name: 'Dashboard' }],
                 })
-                AuthService.setToken(response.data.access_token).then(async r => {
-                    let token = await SecureStore.getItemAsync('access_token');
-                    console.log(token)
-                })
+                AuthService.setToken(response.data.access_token).then(r => {});
             }catch (e) {
                 console.log(e);
             }

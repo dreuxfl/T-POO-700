@@ -5,6 +5,7 @@ import * as SecureStore from "expo-secure-store";
 export default class ClockService {
     static async postClock(userId, status, time) {
         await AuthService.refreshAccessToken();
+
         return axios({
             method: 'post',
             url: `http://localhost:4000/api/clocks/${userId}`,

@@ -25,7 +25,7 @@ export default class AuthService {
     static async refreshAccessToken(){
         return axios({
             method: 'post',
-            url: `https://8e76-163-5-23-136.eu.ngrok.io/api/login/refresh`,
+            url: `https://57e5-163-5-23-136.eu.ngrok.io/api/login/refresh`,
             withCredentials: true,
         }).then(response => {
             console.log(response.data.access_token)

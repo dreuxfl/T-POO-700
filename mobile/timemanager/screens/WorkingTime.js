@@ -5,8 +5,7 @@ import {DataTable} from "react-native-paper";
 import Header from '../components/Header'
 import {StatusBar} from "react-native";
 import ChartsManagerService from "../services/ChartsManagerService";
-import AuthService from "../services/AuthService";
-import jwt_decode from "jwt-decode";
+import moment from "moment";
 
 
 export default function WorkingTime () {
@@ -14,13 +13,20 @@ export default function WorkingTime () {
     const [days, setDays] = useState(['mon','tue', 'wed', 'thu', 'fri'])
     const [start, setStart] = useState(['09:30', '08:00', '08:30', '09:00', '08:30'])
     const [end, setEnd] = useState(['16:30', '16:00', '17:30', '17:30', '17:30'])
+
+    const [labels, setLabels] = useState([])
+    const [hoursWorked, setHoursWorked] = useState([])
+    const [hoursClocked, setHoursClocked] = useState([])
     const [rows, setRows] =useState([])
 
 
     const loadData = async () => {
-        const token = await  AuthService.getToken();
-        const id = parseInt(jwt_decode(token).sub);
-        ChartsManagerService.getLineChart(token, id).then((response) => {
+        ChartsManagerService.getLineChart().then((response) => {
+            if (response.data.data.length > 0) {
+                for (let i = 0; i < response.data.data.length; i++) {
+                    console.log('here')         
+                }
+            }
 
         });
     }
@@ -49,15 +55,15 @@ export default function WorkingTime () {
                 <LineChart
                     bezier
                     data={{
-                        labels: ['jan', 'feb', 'mar', 'apr', 'may', ' jun'],
+                        labels: days,
                         datasets: [
                             {
-                                data: [1, 7, 6, 4, 2, 5],
+                                data: [1,2,3,4,5],
                                 strokeWidth: 2,
                                 color: (opacity = 1) => `rgba(255,0,0,${opacity})`, // optional
                             },
                             {
-                                data: [2, 4, 6, 8, 8, 2],
+                                data: [5,4,3,2,1],
                                 strokeWidth: 2,
                                 color: (opacity = 1) => `rgba(0,0,102, ${opacity})`, // optional
                             },
