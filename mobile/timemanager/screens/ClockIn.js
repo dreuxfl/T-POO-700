@@ -1,18 +1,21 @@
 import React, { useState } from 'react'
+import * as SecureStore from "expo-secure-store";
 import {StyleSheet, TouchableOpacity, View, Alert} from 'react-native'
 import { Text } from 'react-native-paper'
 import { theme } from '../core/Theme'
 import {StatusBar} from "react-native";
 import { Stopwatch } from 'react-native-stopwatch-timer'
 import Header from "../components/Header";
-
+import jwt_decode from "jwt-decode";
+import ClockService from "../services/ClockService";
+import moment from "moment";
 
 export default function Clockin() {
 
     const [lastClock, setLastClock] = useState(new Date());
 
     const [isClockIn, setIsClockIn] = useState(false) //Am i clocked in currently?
-    const [timerDuration, setTimerDuration] = useState(0)
+    var timerDuration = 0;
 
     const clock = () => {
         if(isClockIn) {     //Clocking out
@@ -29,8 +32,19 @@ export default function Clockin() {
                         },
                     },
                     { 
-                        text: "OK", onPress: () => {
+                        text: "OK", onPress: async() => {
                             setLastClock(lastClockOut)
+                            console.log(parseInt(jwt_decode( await SecureStore.getItemAsync('access_token')).sub));
+                            console.log(isClockIn)
+                            console.log(moment(lastClockOut).format("YYYY-MM-DD HH:mm:ss"))
+                            ClockService.postClock(
+                                
+                                parseInt(jwt_decode( await SecureStore.getItemAsync('access_token')).sub),
+                                isClockIn, 
+                                moment(lastClockOut).format("YYYY-MM-DD HH:mm:ss")
+                            ).then(response => {
+                                console.log(response.data)
+                            }).catch(error => console.log(error))
                         } 
                     }
                 ]
@@ -63,7 +77,7 @@ export default function Clockin() {
                 start={isClockIn}
                 options={options}
                 getTime={(time) => {
-                    setTimerDuration(time);
+                    timerDuration = time;
                 }}
             />
         </View>

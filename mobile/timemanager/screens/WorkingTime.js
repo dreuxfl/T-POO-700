@@ -18,7 +18,6 @@ export default function WorkingTime () {
 
 
     const loadData = async () => {
-        const token = await  AuthService.getToken();
         const id = parseInt(jwt_decode(token).sub);
         ChartsManagerService.getLineChart(token, id).then((response) => {
 
