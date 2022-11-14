@@ -3,12 +3,11 @@ import AuthService from "./AuthService";
 import * as SecureStore from "expo-secure-store";
 
 export default class UserService {
-
     
     static postUser(email, username, password) {
         return axios({
             method: 'post',
-            url: `https://8e76-163-5-23-136.eu.ngrok.io/api/users/`,
+            url: `${AuthService.BaseUrl}/api/users/`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
@@ -28,7 +27,7 @@ export default class UserService {
         await AuthService.refreshAccessToken();
         return axios({
             method: 'put',
-            url: `https://8e76-163-5-23-136.eu.ngrok.io/api/users/${userId}`,
+            url: `${AuthService.BaseUrl}/users/${userId}`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
@@ -50,7 +49,7 @@ export default class UserService {
 
         return axios({
             method: 'get',
-            url: `https://8e76-163-5-23-136.eu.ngrok.io/api/users/${userId}`,
+            url: `${AuthService.BaseUrl}/users/${userId}`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
@@ -63,7 +62,7 @@ export default class UserService {
     static async getProfile() {
         return axios({
             method: 'get',
-            url: `https://8e76-163-5-23-136.eu.ngrok.io/api/profile/`,
+            url: `${AuthService.BaseUrl}/profile/`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
