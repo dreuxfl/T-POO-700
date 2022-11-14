@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import * as SecureStore from "expo-secure-store";
-import {StyleSheet, TouchableOpacity, View, Alert} from 'react-native'
+import {StyleSheet, TouchableOpacity, View, Alert, ToastAndroid} from 'react-native'
 import { Text } from 'react-native-paper'
 import { theme } from '../core/Theme'
 import {StatusBar} from "react-native";
@@ -12,12 +12,12 @@ import moment from "moment";
 
 export default function Clockin() {
 
-    const [lastClock, setLastClock] = useState(new Date());
+    const [lastClock, setLastClock] = useState(null);
 
     const [isClockIn, setIsClockIn] = useState(false) //Am i clocked in currently?
     var timerDuration = 0;
 
-    const clock = () => {
+    const clock = async () => {
         if(isClockIn) {     //Clocking out
             let lastClockOut = new Date()
             setIsClockIn(false)
@@ -34,16 +34,18 @@ export default function Clockin() {
                     { 
                         text: "OK", onPress: async() => {
                             setLastClock(lastClockOut)
-                            console.log(parseInt(jwt_decode( await SecureStore.getItemAsync('access_token')).sub));
-                            console.log(isClockIn)
-                            console.log(moment(lastClockOut).format("YYYY-MM-DD HH:mm:ss"))
-                            ClockService.postClock(
-                                
+                            ClockService.postClock(   
                                 parseInt(jwt_decode( await SecureStore.getItemAsync('access_token')).sub),
-                                isClockIn, 
+                                false, 
                                 moment(lastClockOut).format("YYYY-MM-DD HH:mm:ss")
-                            ).then(response => {
-                                console.log(response.data)
+                            ).then(() => {
+                                ToastAndroid.showWithGravityAndOffset(
+                                    "Successfully clocked out",
+                                    ToastAndroid.SHORT,
+                                    ToastAndroid.BOTTOM,
+                                    25,
+                                    50
+                                );
                             }).catch(error => console.log(error))
                         } 
                     }
@@ -51,7 +53,20 @@ export default function Clockin() {
             );
         } else {            //Clocking in
             setIsClockIn(!isClockIn);
-            setLastClock(new Date())
+            setLastClock(new Date());
+            ClockService.postClock(   
+                parseInt(jwt_decode( await SecureStore.getItemAsync('access_token')).sub),
+                true, 
+                moment(lastClock).format("YYYY-MM-DD HH:mm:ss")
+            ).then(() => {
+                ToastAndroid.showWithGravityAndOffset(
+                    "Successfully clocked in",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    50
+                );
+            }).catch(error => console.log(error))
         }
         
     }
@@ -70,7 +85,7 @@ export default function Clockin() {
                 } </Text> 
             </TouchableOpacity>
             <Text style={styles.title}>
-                Last Clock In : {lastClock.toLocaleTimeString()}
+                {lastClock === null ? "Never clocked in today" : `Last Clock In : ${lastClock.toLocaleTimeString()}`}
             </Text>
             <Stopwatch
 
