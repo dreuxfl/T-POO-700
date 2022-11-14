@@ -20,7 +20,7 @@ defmodule TimemanagerWeb.WorkingtimeController do
       url_params = Plug.Conn.fetch_query_params(conn)
       started = NaiveDateTime.from_iso8601!(url_params.query_params["start"])
       ended = NaiveDateTime.from_iso8601!(url_params.query_params["end"])
-      user_workingtimes = Enum.filter(workingtimes, fn(workingtime)->
+      user_workingtimes = Enum.filter(workingtimes, fn(workingtime) ->
         workingtime.user != nil &&
         workingtime.user == parsedUserID &&
         NaiveDateTime.compare(workingtime.start, started) != :lt &&
@@ -46,7 +46,7 @@ defmodule TimemanagerWeb.WorkingtimeController do
         workingtimes = Workinghours.list_workingtimes()
         started = NaiveDateTime.to_date(NaiveDateTime.from_iso8601!(workingtime_params["start"]))
         ended = NaiveDateTime.to_date(NaiveDateTime.from_iso8601!(workingtime_params["end"]))
-        user_workingtimes = Enum.any?(workingtimes, fn(workingtime)->
+        user_workingtimes = Enum.any?(workingtimes, fn(workingtime) ->
           workingtime.user != nil &&
           workingtime.user == parsedUserID &&
           NaiveDateTime.to_date(workingtime.start) == started &&

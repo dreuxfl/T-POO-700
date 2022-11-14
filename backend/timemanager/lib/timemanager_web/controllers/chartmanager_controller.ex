@@ -77,7 +77,7 @@ defmodule TimemanagerWeb.ChartmanagerController do
       dummy_clock_false = dummy_clock_false + NaiveDateTime.utc_now().hour
     end
     dummy_clock = dummy_clock_false - dummy_clock_true
-    chart_result= %{
+    chart_result = %{
       id: user_workingtime.user,
       day: NaiveDateTime.to_date(user_workingtime.start),
       workingtime: NaiveDateTime.diff(user_workingtime.end, user_workingtime.start, :hour),
@@ -98,7 +98,7 @@ defmodule TimemanagerWeb.ChartmanagerController do
       user_clocks = Chrono.list_clocks_distinctUID()
       user_workingtimes = Workinghours.list_workingtimes_distinctUID()
 
-      chart_result= Enum.map(user_clocks, fn  user_clock->
+      chart_result = Enum.map(user_clocks, fn  user_clock ->
         user_clockedIn = Enum.count(user_clocks)
         user_should_be_working = Enum.count(user_workingtimes)
         %{

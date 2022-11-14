@@ -30,7 +30,7 @@ defmodule Timemanager.Workinghours do
 
 
   def list_workingtimes_by_date_piechart(date, uid) do
-    datenaivetoday =  DateTime.to_naive( %DateTime{
+    datenaivetoday =  DateTime.to_naive(%DateTime{
       year: date.year, month: date.month, day: date.day, zone_abbr: "CET",
       hour: 0, minute: 0, second: 0, microsecond: {0, 0},
       utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"
@@ -38,7 +38,7 @@ defmodule Timemanager.Workinghours do
 
     tomorrow = Date.add(datenaivetoday, 1)
 
-    datenaivetomorrow =  DateTime.to_naive( %DateTime{
+    datenaivetomorrow =  DateTime.to_naive(%DateTime{
       year: tomorrow.year, month: tomorrow.month, day: tomorrow.day, zone_abbr: "CET",
       hour: 0, minute: 0, second: 0, microsecond: {0, 0},
       utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"

@@ -28,7 +28,7 @@ defmodule Timemanager.Chrono do
   end
 
   def list_clocks_by_dateuid(date, uid, status) do
-    datenaivetoday =  DateTime.to_naive( %DateTime{
+    datenaivetoday =  DateTime.to_naive(%DateTime{
       year: date.year, month: date.month, day: date.day, zone_abbr: "CET",
       hour: 0, minute: 0, second: 0, microsecond: {0, 0},
       utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"
@@ -36,7 +36,7 @@ defmodule Timemanager.Chrono do
 
     tomorrow  = Date.add(datenaivetoday, 1)
 
-    datenaivetomorrow =  DateTime.to_naive( %DateTime{
+    datenaivetomorrow =  DateTime.to_naive(%DateTime{
       year: tomorrow.year, month: tomorrow.month, day: tomorrow.day, zone_abbr: "CET",
       hour: 0, minute: 0, second: 0, microsecond: {0, 0},
       utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"
@@ -49,7 +49,7 @@ defmodule Timemanager.Chrono do
 
   def list_current_clocks do
     today = Date.utc_today()
-    todayNaive =  DateTime.to_naive( %DateTime{
+    todayNaive =  DateTime.to_naive(%DateTime{
       year: today.year, month: today.month, day: today.day, zone_abbr: "CET",
       hour: 0, minute: 0, second: 0, microsecond: {0, 0},
       utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"
