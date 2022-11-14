@@ -63,7 +63,7 @@ export default class WorkingTimesService {
 
         return axios({
             method: 'delete',
-            url: `http://localhost:4000/api/workingtimes/${workingTimeId}`,
+            url: `${AuthService.BaseUrl}/workingtimes/${workingTimeId}`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
