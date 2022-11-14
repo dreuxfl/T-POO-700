@@ -1,33 +1,31 @@
 import React, { useState } from 'react';
-import {TouchableOpacity, StyleSheet, ToastAndroid} from 'react-native';
-import { Text } from 'react-native-paper';
+import {StyleSheet, ToastAndroid} from 'react-native';
 import TextInput from '../components/TextInput';
 import { theme } from '../core/Theme';
-import { PasswordValidator } from '../helpers/PasswordValidator';
 import Background from "../components/Background";
 import Header from "../components/Header";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Button from '../components/Button'
+import UserService from "../services/UserService";
+import { PasswordValidator } from '../helpers/PasswordValidator';
 import { UsernameValidator } from '../helpers/UsernameValidator';
 import { EmailValidator } from '../helpers/EmailValidator';
-import Ionicons from "react-native-vector-icons/Ionicons";
-import UserService from "../services/UserService";
 
 export default function Profile() {
-    const [username, setUsername] = useState({ value: 'Clocky', error: '' });
-    const [email, setEmail] = useState({ value: 'clocky@gmail.com', error: '' });
-    const [password, setPassword] = useState({ value: 'Password1', error: '' });
+    const [username, setUsername] = useState({ value: '', error: '' });
+    const [email, setEmail] = useState({ value: '', error: '' });
+    const [password, setPassword] = useState({ value: '', error: '' });
     const [oldPassword, setOldPassword] = useState({ value: '', error: '' })
     const [truePassword, setTruePassword] = useState({ value: '', error: '' })
     const [inFunction, setInFunction] = useState(false);
 
-    // UserService.getProfile().then(response => {
-    //     try {
-    //         setUsername({ value: response.data.username, error: '' });
-    //         setEmail({ value: response.data.email, error: '' });
-    //         setPassword({ value: response.data.password, error: '' });
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // });
+    UserService.getProfile().then(response => {
+        setUsername({ value: response.data.username, error: '' });
+        setEmail({ value: response.data.email, error: '' });
+        setPassword({ value: response.data.password, error: '' });
+    }).catch(error => {
+        console.log(error);
+    })
 
     const onEditpressed = () => {
         if (inFunction) {
@@ -58,13 +56,6 @@ export default function Profile() {
                 //     }
                 // })
                 setInFunction(false);
-                ToastAndroid.showWithGravityAndOffset(
-                    "Profile updated successfully",
-                    ToastAndroid.SHORT,
-                    ToastAndroid.BOTTOM,
-                    25,
-                    50
-                );
         } else
             setInFunction(true);
     }
@@ -99,16 +90,6 @@ export default function Profile() {
                 editable={inFunction}
             />
 
-            {inFunction && <TextInput
-                label="Old Password"
-                returnKeyType="done"
-                value={oldPassword.value}
-                onChangeText={(text) => setOldPassword({ value: text, error: '' })}
-                error={!!oldPassword.error}
-                errorText={oldPassword.error}
-                secureTextEntry
-            />}
-
             <TextInput
                 label="Password"
                 returnKeyType="done"
@@ -120,19 +101,33 @@ export default function Profile() {
                 editable={inFunction}
             />
 
-            {inFunction && <TextInput
-                label="Confirm Password"
-                returnKeyType="done"
-                value={truePassword.value}
-                onChangeText={(text) => setTruePassword({ value: text, error: '' })}
-                error={!!truePassword.error}
-                errorText={truePassword.error}
-                secureTextEntry
-            />}
+            {inFunction &&
+                <>
+                    <TextInput
+                        label="Old Password"
+                        returnKeyType="done"
+                        value={oldPassword.value}
+                        onChangeText={(text) => setOldPassword({ value: text, error: '' })}
+                        error={!!oldPassword.error}
+                        errorText={oldPassword.error}
+                        secureTextEntry
+                    />
 
-            <TouchableOpacity style={styles.button} mode="contained" onPress={onEditpressed}>
-                <Text>{inFunction? "Save your profile" : "Edit your profile"}</Text>
-            </TouchableOpacity>
+                    <TextInput
+                        label="Confirm Password"
+                        returnKeyType="done"
+                        value={truePassword.value}
+                        onChangeText={(text) => setTruePassword({ value: text, error: '' })}
+                        error={!!truePassword.error}
+                        errorText={truePassword.error}
+                        secureTextEntry
+                    />
+                </>
+            }
+
+            <Button style={styles.button} mode="contained" onPress={onEditpressed}>
+                {inFunction ? "Save" : "Edit"}
+            </Button>
         </Background>
     )
 }
