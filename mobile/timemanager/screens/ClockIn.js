@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {SafeAreaView, StyleSheet, TouchableHighlight, TouchableOpacity, View} from 'react-native'
+import {StyleSheet, TouchableOpacity, View, Alert} from 'react-native'
 import { Text } from 'react-native-paper'
 import { theme } from '../core/Theme'
 import {StatusBar} from "react-native";
@@ -9,40 +9,62 @@ import Header from "../components/Header";
 
 export default function Clockin() {
 
-    const [isStopwatchStart, setIsStopwatchStart] = useState(false);
-    const [resetStopwatch, setResetStopwatch] = useState(false);
+    const [lastClock, setLastClock] = useState(new Date());
 
-    const [lastClockIn, setLastClockIn] = useState(new Date().toTimeString());
+    const [isClockIn, setIsClockIn] = useState(false) //Am i clocked in currently?
+    const [timerDuration, setTimerDuration] = useState(0)
 
-    const [isClockIn, setisClockin] = useState(false)
-
+    const clock = () => {
+        if(isClockIn) {     //Clocking out
+            let lastClockOut = new Date()
+            setIsClockIn(false)
+            let clockDuration = new Date('2000-10-12T' + timerDuration)
+            Alert.alert(
+                "Confirm clock out",
+                `Are you sure you want to clock out ?\nClock duration is ${clockDuration.getUTCHours()} hours, ${clockDuration.getUTCMinutes()} minutes, ${clockDuration.getUTCSeconds()} seconds`,
+                [
+                    {
+                        text: "Cancel", style: "cancel", onPress: () => {
+                            setIsClockIn(true)
+                        },
+                    },
+                    { 
+                        text: "OK", onPress: () => {
+                            setLastClock(lastClockOut)
+                        } 
+                    }
+                ]
+            );
+        } else {            //Clocking in
+            setIsClockIn(!isClockIn);
+            setLastClock(new Date())
+        }
+        
+    }
     return (
 
-        <View style={styles.DisplayCenter}>
+        <View style={styles.displayCenter}>
             <Header>
-                Clock in
+                Clock manager
             </Header>
-            <Text style={styles.title}>
-
-                {lastClockIn}
-            </Text>
-
             <TouchableOpacity
-                style={isClockIn ? styles.buttonclockin : styles.buttonclockout}
-                onPress={() =>
-                    {setIsStopwatchStart(!isClockIn); setResetStopwatch(false);
-                    setisClockin(!isClockIn);
-                    setLastClockIn(new Date().toTimeString())}}
+                style={isClockIn ? styles.buttonclockout : styles.buttonclockin} 
+                onPress={clock}
             >
-                <Text>{isClockIn ? "Clock in" : "Clock out"}</Text>
+                <Text> {
+                    isClockIn ? "Clock out" : "Clock in" /*Currently clocked in -> show "Clock out"*/ 
+                } </Text> 
             </TouchableOpacity>
             <Text style={styles.title}>
-                Last Clock In
+                Last Clock In : {lastClock.toLocaleTimeString()}
             </Text>
             <Stopwatch
-                laps
-                start={!isClockIn}
+
+                start={isClockIn}
                 options={options}
+                getTime={(time) => {
+                    setTimerDuration(time);
+                }}
             />
         </View>
     )
@@ -76,12 +98,15 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.negative
     },
 
-    DisplayCenter: {
+    displayCenter: {
         flex: 1,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         paddingTop:StatusBar.currentHeight
+    },
+    cancel: {
+        color: theme.colors.negative
     }
 });
 const options = {
@@ -94,7 +119,7 @@ const options = {
     },
     text: {
         fontSize: 25,
-        color: '#FFF',
+        color:  theme.colors.text,
         marginLeft: 7,
     },
 };
