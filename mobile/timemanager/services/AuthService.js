@@ -9,11 +9,18 @@ export default class AuthService {
             withCredentials: true,
         })
     }
-    static getToken(){
-        return SecureStore.getItemAsync('access_token');
+
+    static async getToken(){
+        new Promise(async (resolve, reject) => {
+            try{
+                return SecureStore.getItemAsync('access_token');
+            } catch(e) {
+                reject(e);
+            }
+        });
     }
-    static setToken(token){
-        SecureStore.setItemAsync('access_token', token);
+    static async setToken(token){
+        await SecureStore.setItemAsync('access_token', JSON.stringify(token));
     }
     static async refreshAccessToken(){
         return axios({

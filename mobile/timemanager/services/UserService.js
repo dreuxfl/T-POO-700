@@ -1,5 +1,6 @@
 import axios from "axios";
 import AuthService from "./AuthService";
+import * as SecureStore from "expo-secure-store";
 
 export default class UserService {
 
@@ -32,7 +33,7 @@ export default class UserService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${AuthService.getToken()}`,
+                'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             },
             data: JSON.stringify({"user":
                 {
@@ -54,12 +55,12 @@ export default class UserService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${AuthService.getToken()}`,
+                'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             }
         });
     }
 
-    static getProfile() {
+    static async getProfile() {
         return axios({
             method: 'get',
             url: `https://8e76-163-5-23-136.eu.ngrok.io/api/profile/`,
@@ -67,7 +68,7 @@ export default class UserService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${AuthService.getToken()}`,
+                'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             }
         });
     }
