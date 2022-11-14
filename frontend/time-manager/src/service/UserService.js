@@ -1,4 +1,5 @@
 import axios from "axios";
+import AuthService from "./AuthService";
 
 export default class UserService {
 
@@ -22,7 +23,9 @@ export default class UserService {
         });
     }
 
-    static putUser(token, userId, email, username, password) {
+    static async putUser(token, userId, email, username, password) {
+        await AuthService.refreshAccessToken();
+
         return axios({
             method: 'put',
             url: `http://localhost:4000/api/users/${userId}`,
@@ -42,7 +45,9 @@ export default class UserService {
         });
     }
 
-    static getUser(token, userId) {
+    static async getUser(token, userId) {
+        await AuthService.refreshAccessToken();
+
         return axios({
             method: 'get',
             url: `http://localhost:4000/api/users/${userId}`,
