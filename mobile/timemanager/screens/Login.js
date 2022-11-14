@@ -10,14 +10,12 @@ import Header from "../components/Header";
 import Logo from "../components/Logo";
 import {UsernameValidator} from "../helpers/UsernameValidator";
 import AuthService from "../services/AuthService";
-import * as SecureStore from 'expo-secure-store';
-
 
 export default function Login({ navigation }) {
     const [username, setUsername] = useState({ value: '', error: '' })
     const [password, setPassword] = useState({ value: '', error: '' })
 
-    const  onLoginPressed = () => {
+    const onLoginPressed = () => {
         const usernameError = UsernameValidator(username.value)
         const passwordError = PasswordValidator(password.value)
         if (usernameError || passwordError) {
@@ -31,17 +29,12 @@ export default function Login({ navigation }) {
                     index: 0,
                     routes: [{ name: 'Dashboard' }],
                 })
-                AuthService.setToken(response.data.access_token).then(async r => {
-                    let token = await SecureStore.getItemAsync('access_token');
-                    console.log(token)
-                })
-            }catch (e) {
+                AuthService.setToken(response.data.access_token);
+            } catch (e) {
                 console.log(e);
             }
         });
-
     }
-
     return (
         <Background>
             <Logo />

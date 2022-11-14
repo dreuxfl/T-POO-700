@@ -3,7 +3,6 @@ import AuthService from "./AuthService";
 import * as SecureStore from "expo-secure-store";
 
 export default class UserService {
-    
     static postUser(email, username, password) {
         return axios({
             method: 'post',
@@ -46,7 +45,6 @@ export default class UserService {
 
     static async getUser(userId) {
         await AuthService.refreshAccessToken();
-
         return axios({
             method: 'get',
             url: `${AuthService.BaseUrl}/users/${userId}`,
@@ -71,6 +69,4 @@ export default class UserService {
             }
         });
     }
-
 }
-

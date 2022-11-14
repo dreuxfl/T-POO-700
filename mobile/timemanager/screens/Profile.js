@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, ToastAndroid} from 'react-native';
 import TextInput from '../components/TextInput';
 import { theme } from '../core/Theme';
@@ -12,52 +12,67 @@ import { UsernameValidator } from '../helpers/UsernameValidator';
 import { EmailValidator } from '../helpers/EmailValidator';
 
 export default function Profile() {
+    const [userId, setUserId] = useState({value: '', error: ''});
     const [username, setUsername] = useState({ value: '', error: '' });
     const [email, setEmail] = useState({ value: '', error: '' });
     const [password, setPassword] = useState({ value: '', error: '' });
-    const [oldPassword, setOldPassword] = useState({ value: '', error: '' })
-    const [truePassword, setTruePassword] = useState({ value: '', error: '' })
+    const [confirmPassword, setConfirmPassword] = useState({ value: '', error: '' })
     const [inFunction, setInFunction] = useState(false);
 
-    UserService.getProfile().then(response => {
-        setUsername({ value: response.data.username, error: '' });
-        setEmail({ value: response.data.email, error: '' });
-        setPassword({ value: response.data.password, error: '' });
-    }).catch(error => {
-        console.log(error);
-    })
+    useEffect(() => {
+        UserService.getProfile().then((response) => {
+            setUserId({value: response.data.data.id, error: ''});
+            setUsername({value: response.data.data.username, error: ''});
+            setEmail({value: response.data.data.email, error: ''});
+        }).catch((error) => {
+            console.log(error);
+        });
+    }, []);
 
-    const onEditpressed = () => {
+    const openEditor = () => {
+        setInFunction(true);
+
         if (inFunction) {
             const usernameError = UsernameValidator(username.value);
             const emailError = EmailValidator(email.value);
             const passwordError = PasswordValidator(password.value);
-            const oldPasswordError = PasswordValidator(oldPassword.value)
-            const truePasswordError = PasswordValidator(truePassword.value)
+            const confirmPasswordError = PasswordValidator(confirmPassword.value);
 
-            setPassword({...password, error: passwordError});
-            setOldPassword({...password, error: oldPasswordError})
-            setTruePassword({...password, error: truePasswordError})
-            setUsername({...username, error: usernameError});
-            setEmail({...email, error: emailError});
+            if (usernameError || emailError || passwordError || confirmPasswordError) {
+                setUsername({ ...username, error: usernameError });
+                setEmail({ ...email, error: emailError });
+                setPassword({ ...password, error: passwordError });
+                setConfirmPassword({ ...confirmPassword, error: confirmPasswordError });
+                return;
+            }
 
-            if (usernameError || emailError || passwordError || oldPasswordError || truePasswordError) {
-                setUsername({...username, error: usernameError});
-                setEmail({...email, error: emailError});
-                setPassword({...password, error: passwordError});
-                setOldPassword({...oldPassword, error: oldPasswordError})
-                setTruePassword({...truePassword, error: truePasswordError})
-            } else
-                // UserService.putUser().then(response => {
-                //     try {
-                //         console.log(response);
-                //     } catch (e) {
-                //         console.log(e);
-                //     }
-                // })
+            if (password.value !== confirmPassword.value) {
+                setPassword({ ...password, error: 'Passwords do not match' });
+                setConfirmPassword({ ...confirmPassword, error: 'Passwords do not match' });
+                return;
+            }
+            UserService.putUser(userId.value, email.value, username.value, password.value).then(() => {
                 setInFunction(false);
-        } else
-            setInFunction(true);
+                ToastAndroid.showWithGravityAndOffset(
+                    "User updated",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    50
+                );
+            }).catch(error => {
+                setInFunction(false);
+                console.log(error);
+            })
+        }
+    }
+
+    const cancelEditor = () => {
+        setInFunction(false);
+        setUsername({...username, error: ''});
+        setEmail({...email, error: ''});
+        setPassword({...password, error: ''});
+        setConfirmPassword({...confirmPassword, error: ''});
     }
     return (
         <Background>
@@ -90,44 +105,39 @@ export default function Profile() {
                 editable={inFunction}
             />
 
-            <TextInput
-                label="Password"
-                returnKeyType="done"
-                value={password.value}
-                onChangeText={(text) => setPassword({ value: text, error: '' })}
-                error={!!password.error}
-                errorText={password.error}
-                secureTextEntry
-                editable={inFunction}
-            />
-
             {inFunction &&
                 <>
                     <TextInput
-                        label="Old Password"
+                        label="Password"
                         returnKeyType="done"
-                        value={oldPassword.value}
-                        onChangeText={(text) => setOldPassword({ value: text, error: '' })}
-                        error={!!oldPassword.error}
-                        errorText={oldPassword.error}
+                        value={password.value}
+                        onChangeText={(text) => setPassword({ value: text, error: '' })}
+                        error={!!password.error}
+                        errorText={password.error}
                         secureTextEntry
                     />
 
                     <TextInput
                         label="Confirm Password"
                         returnKeyType="done"
-                        value={truePassword.value}
-                        onChangeText={(text) => setTruePassword({ value: text, error: '' })}
-                        error={!!truePassword.error}
-                        errorText={truePassword.error}
+                        value={confirmPassword.value}
+                        onChangeText={(text) => setConfirmPassword({ value: text, error: '' })}
+                        error={!!confirmPassword.error}
+                        errorText={confirmPassword.error}
                         secureTextEntry
                     />
                 </>
             }
 
-            <Button style={styles.button} mode="contained" onPress={onEditpressed}>
+            <Button style={styles.button} mode="contained" onPress={openEditor}>
                 {inFunction ? "Save" : "Edit"}
             </Button>
+
+            {inFunction &&
+                <Button style={styles.button} mode="contained" onPress={cancelEditor}>
+                    Cancel
+                </Button>
+            }
         </Background>
     )
 }

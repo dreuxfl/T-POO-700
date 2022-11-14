@@ -7,7 +7,6 @@ import { theme } from '../core/Theme'
 import { EmailValidator } from '../helpers/EmailValidator'
 import { PasswordValidator } from '../helpers/PasswordValidator'
 import { UsernameValidator } from '../helpers/UsernameValidator'
-import BackButton from "../components/BackButton";
 import Header from "../components/Header";
 import Logo from "../components/Logo";
 import Background from "../components/Background";
@@ -41,7 +40,7 @@ export default function Signup({ navigation }) {
                             index: 0,
                             routes: [{ name: 'Dashboard' }],
                         })
-                    }catch (e) {
+                    } catch (e) {
                         console.log(e);
                     }
                 });
