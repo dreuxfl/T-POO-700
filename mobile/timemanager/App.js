@@ -18,8 +18,9 @@ export default function App() {
     return (
     <Provider theme={theme}>
         <NavigationContainer>
+
             <Stack.Navigator
-                initialRouteName="Dashboard"
+                initialRouteName="StartScreen"
                 screenOptions={{
                     headerShown: false,
                 }}
