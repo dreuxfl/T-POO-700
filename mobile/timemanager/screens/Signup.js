@@ -34,7 +34,6 @@ export default function Signup({ navigation }) {
         }
         UserService.postUser(email.value, username.value, password.value).then((response) => {
             try {
-                console.log(response);
                 AuthService.login(username.value, password.value).then((resp) => {
                     try {
                         AuthService.setToken(resp.data.access_token);
