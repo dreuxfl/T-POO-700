@@ -23,7 +23,7 @@ export default class UserService {
         });
     }
 
-    static async putUser(token, userId, email, username, password) {
+    static async putUser(userId, email, username, password) {
         await AuthService.refreshAccessToken();
         return axios({
             method: 'put',
@@ -32,7 +32,7 @@ export default class UserService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${AuthService.getToken()}`,
             },
             data: JSON.stringify({"user":
                 {
@@ -44,7 +44,7 @@ export default class UserService {
         });
     }
 
-    static async getUser(token, userId) {
+    static async getUser(userId) {
         await AuthService.refreshAccessToken();
 
         return axios({
@@ -54,12 +54,12 @@ export default class UserService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${AuthService.getToken()}`,
             }
         });
     }
 
-    static getProfile(token) {
+    static getProfile() {
         return axios({
             method: 'get',
             url: `https://8e76-163-5-23-136.eu.ngrok.io/api/profile/`,
@@ -67,7 +67,7 @@ export default class UserService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${AuthService.getToken()}`,
             }
         });
     }

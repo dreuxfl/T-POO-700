@@ -87,9 +87,6 @@ export default defineComponent({
       }
     }
 
-  },
-  created(){
-    console.log(this.chartData)
   }
 })
 </script>
