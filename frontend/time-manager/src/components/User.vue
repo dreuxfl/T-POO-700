@@ -162,7 +162,7 @@ export default {
       });
     },
     updateProfile(){
-      UserService.putUser(this.token, this.connectedUserId, this.email, this.username, this.password).then(()=>{
+      UserService.putUser(this.connectedUserId, this.email, this.username, this.password).then(()=>{
         try {
           this.showNotif (true, `Profile updated successfully`);
         } catch (e) {
@@ -183,7 +183,7 @@ export default {
   created(){
     if(this.connectedUserId) {
       this.resetChanges();
-      this.token = this.token = localStorage.getItem('access_token');
+      this.token = AuthService.getToken();
     }
   }
 }

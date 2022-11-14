@@ -19,12 +19,11 @@ export default function StartScreen({ navigation }) {
         "Parce-que nous le clockons bien",
         "Just clock it", 
         "Des clocks oui, mais des clockoricos",
-        "Yves Clocké– Se clocker chaque jour..", 
-        "Clock comme si tu devais démissionner demain",
-        "Suck my clock", 
-        "Travail comme si tu devais clocker toujours", 
+        "Yves Clocké – Se clocker chaque jour", 
+        "Clock comme si tu devais démissionner demain, travaille comme si tu devais clocker toujours",
+        "Suck my clock",
         "C'est fort en clockolat", 
-        "C’est moche, mais ça marche",
+        "C’est moche, mais ça clock",
         "Clocking people", 
         "Clockorico en avant les clockin'"
     ];
