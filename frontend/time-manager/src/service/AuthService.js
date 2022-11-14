@@ -5,27 +5,25 @@ export default class AuthService {
         return axios({
             method: 'post',
             url: `http://localhost:4000/api/login?username=${username}&password=${password}`,
-            // withCredentials: true,
-            
+            withCredentials: true,
         })
     }
     static getToken(){
+        console.log(localStorage.getItem('access_token'))
         return localStorage.getItem('access_token');
     }
-    static refreshAccessToken(){
-        axios({
+    static setToken(token){
+        localStorage.setItem('access_token', token);
+        console.log(token)
+    }
+    static async refreshAccessToken(){
+        return axios({
             method: 'post',
             url: `http://localhost:4000/api/login/refresh`,
-            // withCredentials: true,
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${this.getToken()}`,
-            },
+            withCredentials: true,
         }).then(response => {
-            return response.access_token;
-        }).catch(()=> {
-            return false
-        });
+            console.log(response.data.access_token)
+            this.setToken(response.data.access_token);
+        })
     }
 }

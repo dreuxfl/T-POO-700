@@ -1,7 +1,10 @@
 import axios from "axios";
+import AuthService from "./AuthService";
 
 export default class WorkingTimesService {
-    static addWorkingTime(token, selectedUserId, start, end) {
+    static async addWorkingTime(token, selectedUserId, start, end) {
+        await AuthService.refreshAccessToken();
+
         return axios({
             method: 'post',
             url: `http://localhost:4000/api/workingtimes/${selectedUserId}`,
@@ -21,7 +24,9 @@ export default class WorkingTimesService {
         });
     }
 
-    static getWorkingTimesByUser(token, selectedUserId) {
+    static async getWorkingTimesByUser(token, selectedUserId) {
+        await AuthService.refreshAccessToken();
+
         return axios({
             method: 'get',
             url: `http://localhost:4000/api/workingtimes/${selectedUserId}`,
@@ -31,7 +36,9 @@ export default class WorkingTimesService {
         });
     }
 
-    static editWorkingTimes(token, workingTimeId, start, end) {
+    static async editWorkingTimes(token, workingTimeId, start, end) {
+        await AuthService.refreshAccessToken();
+
         return axios({
             method: 'put',
             url: `http://localhost:4000/api/workingtimes/${workingTimeId}`,
@@ -51,7 +58,9 @@ export default class WorkingTimesService {
         });
     }
 
-    static deleteWorkingTimes(token, workingTimeId) {
+    static async deleteWorkingTimes(token, workingTimeId) {
+        await AuthService.refreshAccessToken();
+
         return axios({
             method: 'delete',
             url: `http://localhost:4000/api/workingtimes/${workingTimeId}`,
