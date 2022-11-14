@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {Text, StyleSheet, View, Dimensions} from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
 import {LineChart} from "react-native-chart-kit";
-import RNSVGRect from "react-native-svg";
-import {theme} from "../core/Theme";
 import {DataTable} from "react-native-paper";
 import Header from '../components/Header'
 import {StatusBar} from "react-native";
+import ChartsManagerService from "../services/ChartsManagerService";
+import AuthService from "../services/AuthService";
+import jwt_decode from "jwt-decode";
 
 
 export default function WorkingTime () {
@@ -13,9 +14,16 @@ export default function WorkingTime () {
     const [days, setDays] = useState(['mon','tue', 'wed', 'thu', 'fri'])
     const [start, setStart] = useState(['09:30', '08:00', '08:30', '09:00', '08:30'])
     const [end, setEnd] = useState(['16:30', '16:00', '17:30', '17:30', '17:30'])
-
     const [rows, setRows] =useState([])
 
+
+    const loadData = async () => {
+        const token = await  AuthService.getToken();
+        const id = parseInt(jwt_decode(token).sub);
+        ChartsManagerService.getLineChart(token, id).then((response) => {
+
+        });
+    }
 
     for(let i = 0; i<days.length; i++){
         rows.push(
