@@ -3,17 +3,17 @@ defmodule TimemanagerWeb.ClockController do
 
   alias Timemanager.Chrono
   alias Timemanager.Chrono.Clock
-  alias Timemanager.IsAdmin
   alias Timemanager.Employees
   alias Timemanager.Employees.User
+  alias Timemanager.IsAdmin
 
   action_fallback TimemanagerWeb.FallbackController
 
   user_clocks = []
 
   def create(conn, %{"userID" => userID, "clock" => clock_params}) do
-    {parsedUserID, ""} = Integer.parse(userID)
-    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
+    {parsed_user_id, ""} = Integer.parse(userID)
+    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsed_user_id do
       conn
       |> put_status(:forbidden)
       |> render("error.json", %{error: "You are not authorized to access this resource"})
@@ -36,8 +36,8 @@ defmodule TimemanagerWeb.ClockController do
   end
 
   def index(conn, %{"userID" => userID}) do
-    {parsedUserID, ""} = Integer.parse(userID)
-    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
+    {parsed_user_id, ""} = Integer.parse(userID)
+    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsed_user_id do
       conn
       |> put_status(:forbidden)
       |> render("error.json", %{error: "You are not authorized to access this resource"})
@@ -49,23 +49,22 @@ defmodule TimemanagerWeb.ClockController do
         |> render("error.json", %{error: "User not found"})
       else
         url_params = Plug.Conn.fetch_query_params(conn)
-        if (is_nil(url_params.query_params["date"])) do
+        if is_nil(url_params.query_params["date"]) do
           clocks = Chrono.list_clocks()
-          user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsedUserID end)
+          user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsed_user_id end)
           render(conn, "index.json", clocks: user_clocks)
         else
           clocks = Chrono.list_clocks_by_date(url_params.query_params["date"])
-          {parsedUserID, ""} = Integer.parse(userID)
-          user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsedUserID end)
+          user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsed_user_id end)
           render(conn, "index.json", clocks: user_clocks)
         end
       end
     end
   end
 
-  def fetchCurrentClocks(conn, %{"userID" => userID}) do
-    {parsedUserID, ""} = Integer.parse(userID)
-    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
+  def fetch_current_clocks(conn, %{"userID" => userID}) do
+    {parsed_user_id, ""} = Integer.parse(userID)
+    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsed_user_id do
       conn
       |> put_status(:forbidden)
       |> render("error.json", %{error: "You are not authorized to access this resource"})
@@ -77,7 +76,7 @@ defmodule TimemanagerWeb.ClockController do
         |> render("error.json", %{error: "User not found"})
       else
         clocks = Chrono.list_current_clocks
-        user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsedUserID end)
+        user_clocks = Enum.filter(clocks, fn(clock) -> clock.user != nil && clock.user == parsed_user_id end)
         render(conn, "index.json", clocks: user_clocks)
       end
     end

@@ -1,4 +1,6 @@
 defmodule Timemanager.Workinghours.Workingtime do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
 

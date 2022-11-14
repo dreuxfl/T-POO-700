@@ -30,5 +30,4 @@ defmodule TimemanagerWeb.ChartmanagerView do
       workingtime: chart.workingtime
     }
   end
-
 end

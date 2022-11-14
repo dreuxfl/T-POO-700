@@ -1,4 +1,6 @@
 defmodule Timemanager.Chrono.Clock do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
 

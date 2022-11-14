@@ -28,8 +28,8 @@ defmodule TimemanagerWeb.UserController do
   end
 
   def profile(conn, _params) do
-    loggedUser = Guardian.Plug.current_resource(conn)
-    render(conn, "show.json", user: loggedUser)
+    logged_user = Guardian.Plug.current_resource(conn)
+    render(conn, "show.json", user: logged_user)
   end
 
   def show(conn, %{"userID" => userID}) do
@@ -50,8 +50,8 @@ defmodule TimemanagerWeb.UserController do
   end
 
   def update(conn, %{"userID" => userID, "user" => user_params}) do
-    {parsedUserID, ""} = Integer.parse(userID)
-    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsedUserID do
+    {parsed_user_id, ""} = Integer.parse(userID)
+    if Timemanager.IsAdmin.is_admin(conn) !== true and Guardian.Plug.current_resource(conn).id !== parsed_user_id do
       conn
       |> put_status(:forbidden)
       |> render("error.json", %{error: "You are not authorized to access this resource"})
