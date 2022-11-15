@@ -1,9 +1,10 @@
 import axios from "axios";
 import moment from "moment";
 import AuthService from "./AuthService";
+import * as SecureStore from "expo-secure-store";
 
 export default class ChartsManagerService {
-    static async getLineChart(token, userID) {
+    static async getLineChart(userID) {
         await AuthService.refreshAccessToken();
         const now = new Date();
         const end = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss");
@@ -12,7 +13,7 @@ export default class ChartsManagerService {
             method: 'get',
             url: `${AuthService.BaseUrl}/chartmanager/linechart/${userID}?start=${start}&end=${end}`,
             headers:{
-                'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             },
         });
     }

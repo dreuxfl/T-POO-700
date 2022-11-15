@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Dimensions} from 'react-native';
 import {LineChart} from "react-native-chart-kit";
 import {DataTable} from "react-native-paper";
@@ -6,24 +6,28 @@ import Header from '../components/Header'
 import {StatusBar} from "react-native";
 import ChartsManagerService from "../services/ChartsManagerService";
 import jwt_decode from "jwt-decode";
-
+import * as SecureStore from "expo-secure-store";
 
 export default function WorkingTime () {
-
     const [days, setDays] = useState(['mon','tue', 'wed', 'thu', 'fri'])
     const [start, setStart] = useState(['09:30', '08:00', '08:30', '09:00', '08:30'])
     const [end, setEnd] = useState(['16:30', '16:00', '17:30', '17:30', '17:30'])
-    const [rows, setRows] =useState([])
+    const [rows] = useState([])
 
+    useEffect(() => {
+      loadData().then(r => {})
+    }, [])
 
     const loadData = async () => {
-        const id = parseInt(jwt_decode(token).sub);
-        ChartsManagerService.getLineChart(token, id).then((response) => {
-
+        const userId = parseInt(jwt_decode(await SecureStore.getItemAsync('access_token')).sub);
+        ChartsManagerService.getLineChart(userId).then((response) => {
+            if (response.data.data.length > 0) {
+                console.log("Datas!!!");
+            }
         });
     }
 
-    for(let i = 0; i<days.length; i++){
+    for (let i = 0; i < days.length; i++){
         rows.push(
             <DataTable.Row key={i}>
                 <DataTable.Cell>{days[i]}</DataTable.Cell>
@@ -86,9 +90,10 @@ export default function WorkingTime () {
 }
 
 const styles = StyleSheet.create({
-    viewStyle: {flex: 1,
+    viewStyle: {
+        flex: 1,
         alignItems: 'center',
-        paddingTop:StatusBar.currentHeight
+        paddingTop: StatusBar.currentHeight
     },
     tableStyle: {
         width: "96%",
