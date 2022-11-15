@@ -22,6 +22,9 @@ export default function WorkingTime() {
     const [hoursClocked, setHoursClocked] = useState([])
     const [rows, setRows] = useState([])
 
+    useEffect(() => {
+      loadData().then(r => {})
+    }, [])
 
 
 
