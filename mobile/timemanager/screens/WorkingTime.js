@@ -1,3 +1,4 @@
+
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { LineChart } from "react-native-chart-kit";
@@ -40,6 +41,7 @@ export default function WorkingTime() {
                 setHoursWorked(dummy_workingTimes);
                 setHoursClocked(dummy_clocks);
             }
+
         });
 
         const dummy_days = []
@@ -47,10 +49,8 @@ export default function WorkingTime() {
         const dummy_end = []
     }, []);
 
+    for(let i = 0; i<days.length; i++){
 
-    console.log(labels)
-
-    for (let i = 0; i < days.length; i++) {
         rows.push(
             <DataTable.Row key={i}>
                 <DataTable.Cell>{days[i]}</DataTable.Cell>

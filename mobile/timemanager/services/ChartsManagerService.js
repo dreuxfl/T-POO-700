@@ -16,6 +16,7 @@ export default class ChartsManagerService {
             url: `${AuthService.BaseUrl}/chartmanager/linechart/${id}?start=${start}&end=${end}`,
             headers: {
                 'Authorization': `Bearer ${await SecureStore.getItemAsync('access_token')}`,
+
             },
         });
     }

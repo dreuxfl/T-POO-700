@@ -2,6 +2,7 @@ import axios from "axios";
 import * as SecureStore from 'expo-secure-store';
 
 //const BaseUrl = "https://57e5-163-5-23-136.eu.ngrok.io/api";
+
 const BaseUrl = "http://10.136.78.168:4000/api";
 
 export default class AuthService {
