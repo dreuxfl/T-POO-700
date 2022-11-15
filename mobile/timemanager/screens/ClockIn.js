@@ -14,7 +14,7 @@ export default function Clockin() {
 
     const [lastClock, setLastClock] = useState(null);
     const [isClockIn, setIsClockIn] = useState(false); //Am i currently clocked in ?
-    const [clockOffset, setClockOffset] = useState(0);
+    const [clockOffset, setClockOffset] = useState(null);
 
     let timerDuration = 0;
 
@@ -51,10 +51,9 @@ export default function Clockin() {
                 
               setIsClockIn(lastClock.status); //Current status is the the same as the last one sent (if the last thing you sent is "i'm clocking out", then you should currently be clocked ou -> show green button, 'clock in')
               setLastClock(customDateParser(lastClock.time));
-              setClockOffset(totalClockDuration);
-              timerDuration += totalClockDuration
-                console.log(totalClockDuration)
             }
+
+            setClockOffset(totalClockDuration);
         })
 
         getClocks();
@@ -118,7 +117,7 @@ export default function Clockin() {
                 style={isClockIn ? styles.buttonclockout : styles.buttonclockin} 
                 onPress={clock}
             >
-                <Text> {
+                <Text style={{fontSize:30}}> {
                     isClockIn ? "Clock out" : "Clock in" /*Currently clocked in -> show "Clock out"*/ 
                 } </Text> 
             </TouchableOpacity>
@@ -127,14 +126,14 @@ export default function Clockin() {
                 ? "Never clocked in today" 
                 : `Last Clock ${isClockIn ? "in" : "out"} : ${lastClock.toLocaleTimeString()}`}
             </Text>
-            <Stopwatch
-                
+            {clockOffset !== null && <Stopwatch
+                startTime={clockOffset}
                 start={isClockIn}
                 options={options}
                 getTime={(time) => {
                     timerDuration = time;
                 }}
-            />
+            />}
         </View>
     )
 }
@@ -143,7 +142,6 @@ const styles = StyleSheet.create({
     buttonclockin: {
         width: 200,
         height: 200,
-        fontSize: 24,
         alignContent: "center",
         justifyContent: 'center',
         alignItems: 'center',
@@ -160,7 +158,6 @@ const styles = StyleSheet.create({
         width: 200,
         height: 200,
         alignContent: "center",
-        fontSize: 24,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 100,
