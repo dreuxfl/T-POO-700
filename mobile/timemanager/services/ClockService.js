@@ -17,10 +17,10 @@ export default class ClockService {
             },
             data: JSON.stringify({
                 "clock":
-                    {
-                        "status": status,
-                        "time": time,
-                    }
+                {
+                    "status": status,
+                    "time": time,
+                }
             })
         })
     }
@@ -30,8 +30,8 @@ export default class ClockService {
         return axios({
             method: 'get',
             url: `${AuthService.BaseUrl}/clocks/${userId}`,
-            headers:{
-                'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
+            headers: {
+                'Authorization': `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             },
         });
     }
@@ -43,8 +43,8 @@ export default class ClockService {
         return axios({
             method: 'get',
             url: `${AuthService.BaseUrl}/clocks/${userId}/today`,
-            headers:{
-                'Authorization' : `Bearer ${token}`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
             },
         });
     }

@@ -1,7 +1,10 @@
 import axios from "axios";
 import AuthService from "./AuthService";
+import * as SecureStore from "expo-secure-store";
+import jwt_decode from "jwt-decode";
 
 export default class WorkingTimesService {
+
     static async addWorkingTime(token, selectedUserId, start, end) {
         await AuthService.refreshAccessToken();
         return axios({
@@ -11,7 +14,7 @@ export default class WorkingTimesService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             },
             data: JSON.stringify({
                 "workingtime":
@@ -23,29 +26,30 @@ export default class WorkingTimesService {
         });
     }
 
-    static async getWorkingTimesByUser(token, selectedUserId) {
+    static async getWorkingTimesByUser() {
         await AuthService.refreshAccessToken();
+        const id = parseInt(jwt_decode(await SecureStore.getItemAsync('access_token')).sub)
 
         return axios({
             method: 'get',
-            url: `http://localhost:4000/api/workingtimes/${selectedUserId}`,
+            url: `${AuthService.BaseUrl}/workingtimes/${id}`,
             headers:{
-                'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             },
         });
     }
 
-    static async editWorkingTimes(token, workingTimeId, start, end) {
+    static async editWorkingTimes(workingTimeId, start, end) {
         await AuthService.refreshAccessToken();
 
         return axios({
             method: 'put',
-            url: `http://localhost:4000/api/workingtimes/${workingTimeId}`,
+            url: `${AuthService.BaseUrl}/workingtimes/${workingTimeId}`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             },
             data: JSON.stringify({
                 "workingtime":
@@ -57,7 +61,7 @@ export default class WorkingTimesService {
         });
     }
 
-    static async deleteWorkingTimes(token, workingTimeId) {
+    static async deleteWorkingTimes(workingTimeId) {
         await AuthService.refreshAccessToken();
 
         return axios({
@@ -67,7 +71,7 @@ export default class WorkingTimesService {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization' : `Bearer ${token}`,
+                'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             },
         });
     }

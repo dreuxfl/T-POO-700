@@ -8,7 +8,7 @@ import { PasswordValidator } from '../helpers/PasswordValidator'
 import Background from "../components/Background";
 import Header from "../components/Header";
 import Logo from "../components/Logo";
-import {UsernameValidator} from "../helpers/UsernameValidator";
+import { UsernameValidator } from "../helpers/UsernameValidator";
 import AuthService from "../services/AuthService";
 
 export default function Login({ navigation }) {
@@ -40,17 +40,17 @@ export default function Login({ navigation }) {
             <Logo />
             <Header>Login</Header>
 
-                <TextInput
-                    label= "Username"
-                    returnKeyType="next"
-                    value={username.value}
-                    onChangeText={(text) => setUsername({ value: text, error: '' })}
-                    error={!!username.error}
-                    errorText={username.error}
-                    autoCompleteType="username-new"
-                    textContentType="username"
-                    keyboardType="default"
-                />
+            <TextInput
+                label="Username"
+                returnKeyType="next"
+                value={username.value}
+                onChangeText={(text) => setUsername({ value: text, error: '' })}
+                error={!!username.error}
+                errorText={username.error}
+                autoCompleteType="username-new"
+                textContentType="username"
+                keyboardType="default"
+            />
 
             <TextInput
                 label="Password"
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: theme.colors.secondary,
     },
-    button:{
+    button: {
         backgroundColor: theme.colors.primary
     }
 })
