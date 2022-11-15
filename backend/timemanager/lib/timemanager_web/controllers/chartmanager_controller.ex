@@ -33,13 +33,6 @@ defmodule TimemanagerWeb.ChartmanagerController do
         dummy_clock_false = Enum.reduce(user_clocks_false, 0,  fn  user_clock, acc ->
           acc + user_clock.time.hour
         end)
-<<<<<<< Updated upstream
-
-        if Enum.count(user_clocks_true) > Enum.count(user_clocks_false) do
-          dummy_clock_false = dummy_clock_false + NaiveDateTime.utc_now().hour
-        end
-=======
->>>>>>> Stashed changes
         dummy_clock = dummy_clock_false - dummy_clock_true
         %{
           id: user_workingtime.user,
@@ -76,13 +69,8 @@ defmodule TimemanagerWeb.ChartmanagerController do
       dummy_clock_false = Enum.reduce(user_clocks_false, 0,  fn  user_clock, acc ->
         acc + user_clock.time.hour
       end)
-<<<<<<< Updated upstream
-      if Enum.count(user_clocks_true) > Enum.count(user_clocks_false) do
-        dummy_clock_false = dummy_clock_false + NaiveDateTime.utc_now().hour
-=======
       dummy_clock_false = if Enum.count(user_clocks_true) > Enum.count(user_clocks_false) do
         dummy_clock_false + NaiveDateTime.utc_now().hour
->>>>>>> Stashed changes
       end
       IO.puts(dummy_clock_false)
       dummy_clock = dummy_clock_false - dummy_clock_true
