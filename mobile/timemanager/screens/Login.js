@@ -29,8 +29,8 @@ export default function Login({ navigation }) {
                     index: 0,
                     routes: [{ name: 'Dashboard' }],
                 })
-                AuthService.setToken(response.data.access_token);
-            } catch (e) {
+                AuthService.setToken(response.data.access_token)
+            }catch (e) {
                 console.log(e);
             }
         });

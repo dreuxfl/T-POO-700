@@ -27,6 +27,7 @@
     "react-native-status-bar-height": "^2.6.0",
     "react-native-stopwatch-timer": "^0.0.21",
     "react-native-svg": "12.3.0",
+    "react-native-timer-hooks": "^2.0.0",
     "react-native-vector-icons": "^9.2.0"
   },
   "devDependencies": {
