@@ -17,23 +17,24 @@ defmodule TimemanagerWeb.ChartmanagerController do
     started = NaiveDateTime.from_iso8601!(url_params.query_params["start"])
     ended = NaiveDateTime.from_iso8601!(url_params.query_params["end"])
     user_workingtimes = Workinghours.list_workingtimes_by_dates_lineschart(started, ended, parsed_user_id)
-    if user_workingtimes === nil do
+    if user_workingtimes == nil do
       conn
       |> put_status(:not_found)
       |> render("error.json", %{error: "No workingtimes found"})
     else
       chart_data = Enum.map(user_workingtimes, fn  user_workingtime ->
+
         user_clocks_true = Chrono.list_clocks_by_dateuid(user_workingtime.start, parsed_user_id, true)
         user_clocks_false = Chrono.list_clocks_by_dateuid(user_workingtime.start, parsed_user_id, false)
-
-        dummy_clock_true = Enum.reduce(user_clocks_true, 0,  fn  user_clock, acc ->
-          acc + user_clock.time.hour
-        end)
+          dummy_clock_true = Enum.reduce(user_clocks_true, 0,  fn  user_clock, acc ->
+            acc + user_clock.time.hour
+          end)
 
         dummy_clock_false = Enum.reduce(user_clocks_false, 0,  fn  user_clock, acc ->
           acc + user_clock.time.hour
         end)
-        if Enum.count(dummy_clock_true) > Enum.count(dummy_clock_false) do
+
+        if Enum.count(user_clocks_true) > Enum.count(user_clocks_false) do
           dummy_clock_false = dummy_clock_false + NaiveDateTime.utc_now().hour
         end
         dummy_clock = dummy_clock_false - dummy_clock_true

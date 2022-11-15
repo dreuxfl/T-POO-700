@@ -8,6 +8,7 @@ import ChartsManagerService from "../services/ChartsManagerService";
 import moment from "moment";
 
 
+
 export default function WorkingTime() {
 
     const [days, setDays] = useState(['mon', 'tue', 'wed', 'thu', 'fri'])
@@ -19,16 +20,17 @@ export default function WorkingTime() {
     const [hoursClocked, setHoursClocked] = useState([])
     const [rows, setRows] = useState([])
 
-
-    const loadData = async () => {
+    const loadData= () =>{
         ChartsManagerService.getLineChart().then((response) => {
             if (response.data.data.length > 0) {
                 for (let i = 0; i < response.data.data.length; i++) {
-                    console.log('here')
+                    console.log(response.data)
                 }
             }
         });
+
     }
+
 
     for (let i = 0; i < days.length; i++) {
         rows.push(
@@ -57,12 +59,12 @@ export default function WorkingTime() {
                     labels: days,
                     datasets: [
                         {
-                            data: [1, 2, 3, 4, 5],
+                            data: start,
                             strokeWidth: 2,
                             color: (opacity = 1) => `rgba(255,0,0,${opacity})`, // optional
                         },
                         {
-                            data: [5, 4, 3, 2, 1],
+                            data: end,
                             strokeWidth: 2,
                             color: (opacity = 1) => `rgba(0,0,102, ${opacity})`, // optional
                         },
