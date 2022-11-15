@@ -17,14 +17,15 @@ const Stack = createStackNavigator()
 export default function App() {
     const [token, setToken] = useState(null)
     useEffect(()=>{
-        const fetchToken = async() => {
-            return(await SecureStore.getItemAsync('access_token'))
-        }
+        // const fetchToken = async() => {
+        //     return(await SecureStore.getItemAsync('access_token'))
+        // }
 
-        fetchToken().then(token => {
-            if(token) setToken(token)
-            else setToken(false)
-        });
+        // fetchToken().then(token => {
+        //     if(token) setToken(token)
+        //     else 
+            setToken(false)
+        // });
     },[]);
 
     useEffect(()=>{console.log(token)},[token])
