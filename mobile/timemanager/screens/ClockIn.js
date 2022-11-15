@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as SecureStore from "expo-secure-store";
 import {StyleSheet, TouchableOpacity, View, Alert, ToastAndroid} from 'react-native'
 import { Text } from 'react-native-paper'
@@ -13,10 +13,74 @@ import moment from "moment";
 export default function Clockin() {
 
     const [lastClock, setLastClock] = useState(null);
+    const [isClockIn, setIsClockIn] = useState(false); //Am i currently clocked in ?
+    const [clockOffset, setClockOffset] = useState(0);
 
-    const [isClockIn, setIsClockIn] = useState(false) //Am i clocked in currently?
-    var timerDuration = 0;
+    let timerDuration = 0;
 
+    const customDateParser = (dateTimeString) => {
+        let dateArray = dateTimeString.split('T')[0].split('-');
+        let timeArray = dateTimeString.split('T')[1].split(':');
+        return new Date(
+            parseInt(dateArray[0]),
+            parseInt(dateArray[1]-1), //months are 0 indexed (fuck js)
+            parseInt(dateArray[2]),
+            parseInt(timeArray[0]),
+            parseInt(timeArray[1]),
+            Math.trunc(parseFloat(timeArray[2])))
+    }
+    useEffect(()=>{
+        const getClocks = async() => ClockService.getCurrentClocks(await getUserId()).then(response=>{
+            let totalClockDuration = 0;
+            let lastClock = null;
+            setIsClockIn (false);
+            let clocks = response.data.data
+            if(clocks.length > 0){
+              if(!clocks[0].status) clocks.shift(); //If the day starts with a clockout, ignore
+    
+              clocks.forEach(clock => {
+                if(clock.status) totalClockDuration -= customDateParser(clock.time).getTime();
+                else totalClockDuration += customDateParser(clock.time).getTime();
+              });
+    
+              lastClock= clocks[clocks.length-1];
+
+            }
+            if(lastClock){
+              if(lastClock.status) totalClockDuration += (new Date().getTime());
+                
+              setIsClockIn(lastClock.status); //Current status is the the same as the last one sent (if the last thing you sent is "i'm clocking out", then you should currently be clocked ou -> show green button, 'clock in')
+              setLastClock(customDateParser(lastClock.time));
+              setClockOffset(totalClockDuration);
+              timerDuration += totalClockDuration
+                console.log(totalClockDuration)
+            }
+        })
+
+        getClocks();
+    },[])
+
+    const getUserId = async() => { return parseInt(jwt_decode( await SecureStore.getItemAsync('access_token')).sub)}
+
+    const saveClock = async(clockStatus, clockDateTime) => {
+        ClockService.postClock(   
+            await getUserId(),
+            clockStatus, 
+            moment(clockDateTime).format("YYYY-MM-DD HH:mm:ss")
+        ).then(() => {
+            ToastAndroid.showWithGravityAndOffset(
+                `Successfully clocked ${isClockIn? 'in' : 'out'}`,
+                ToastAndroid.SHORT,
+                ToastAndroid.BOTTOM,
+                25,
+                50
+            );
+            setIsClockIn(clockStatus);
+            setLastClock(clockDateTime);
+        }).catch(error => {
+            console.log(error);
+        })
+    }
     const clock = async () => {
         if(isClockIn) {     //Clocking out
             let lastClockOut = new Date()
@@ -33,43 +97,17 @@ export default function Clockin() {
                     },
                     { 
                         text: "OK", onPress: async() => {
-                            setLastClock(lastClockOut)
-                            ClockService.postClock(   
-                                parseInt(jwt_decode( await SecureStore.getItemAsync('access_token')).sub),
-                                false, 
-                                moment(lastClockOut).format("YYYY-MM-DD HH:mm:ss")
-                            ).then(() => {
-                                ToastAndroid.showWithGravityAndOffset(
-                                    "Successfully clocked out",
-                                    ToastAndroid.SHORT,
-                                    ToastAndroid.BOTTOM,
-                                    25,
-                                    50
-                                );
-                            }).catch(error => console.log(error))
+                            saveClock(false, lastClockOut)
                         } 
                     }
                 ]
             );
         } else {            //Clocking in
-            setIsClockIn(!isClockIn);
-            setLastClock(new Date());
-            ClockService.postClock(   
-                parseInt(jwt_decode( await SecureStore.getItemAsync('access_token')).sub),
-                true, 
-                moment(lastClock).format("YYYY-MM-DD HH:mm:ss")
-            ).then(() => {
-                ToastAndroid.showWithGravityAndOffset(
-                    "Successfully clocked in",
-                    ToastAndroid.SHORT,
-                    ToastAndroid.BOTTOM,
-                    25,
-                    50
-                );
-            }).catch(error => console.log(error))
+            saveClock(true, new Date())
         }
         
     }
+
     return (
 
         <View style={styles.displayCenter}>
@@ -85,10 +123,12 @@ export default function Clockin() {
                 } </Text> 
             </TouchableOpacity>
             <Text style={styles.title}>
-                {lastClock === null ? "Never clocked in today" : `Last Clock In : ${lastClock.toLocaleTimeString()}`}
+                {lastClock === null 
+                ? "Never clocked in today" 
+                : `Last Clock ${isClockIn ? "in" : "out"} : ${lastClock.toLocaleTimeString()}`}
             </Text>
             <Stopwatch
-
+                
                 start={isClockIn}
                 options={options}
                 getTime={(time) => {

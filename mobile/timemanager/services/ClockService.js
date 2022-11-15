@@ -6,7 +6,6 @@ export default class ClockService {
     static async postClock(userId, status, time) {
         await AuthService.refreshAccessToken();
         let token = await SecureStore.getItemAsync('access_token');
-        
         return axios({
             method: 'post',
             url: `${AuthService.BaseUrl}/clocks/${userId}`,
