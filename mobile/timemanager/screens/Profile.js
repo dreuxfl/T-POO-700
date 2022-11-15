@@ -145,11 +145,6 @@ export default function Profile() {
 const styles = StyleSheet.create({
     button: {
         marginTop: 20,
-        width: 200,
-        height: 50,
-        borderRadius: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: theme.colors.primary
     }
 })
