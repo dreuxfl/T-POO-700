@@ -1,4 +1,5 @@
 
+
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { LineChart } from "react-native-chart-kit";
@@ -8,7 +9,6 @@ import { StatusBar } from "react-native";
 import ChartsManagerService from "../services/ChartsManagerService";
 import moment from "moment";
 import jwt_decode from "jwt-decode";
-import UserService from "../services/UserService";
 
 
 
@@ -18,15 +18,13 @@ export default function WorkingTime() {
     const [start, setStart] = useState(['09:30', '08:00', '08:30', '09:00', '08:30'])
     const [end, setEnd] = useState(['16:30', '16:00', '17:30', '17:30', '17:30'])
 
-    const [labels, setLabels] = useState([])
+    const [label, setLabel] = useState([])
     const [hoursWorked, setHoursWorked] = useState([])
     const [hoursClocked, setHoursClocked] = useState([])
     const [rows, setRows] = useState([])
 
-
-
-
     useEffect(() => {
+
         const dummy_labels = []
         const dummy_clocks = []
         const dummy_workingTimes = []
@@ -37,20 +35,17 @@ export default function WorkingTime() {
                     dummy_workingTimes.push(response.data.data[i].workingtime);
                     dummy_clocks.push(response.data.data[i].hoursclocked)
                 }
-                setLabels(dummy_labels);
+                setLabel(dummy_labels);
+                console.log(dummy_labels);
+                console.log(labels);
                 setHoursWorked(dummy_workingTimes);
                 setHoursClocked(dummy_clocks);
             }
-
         });
-
-        const dummy_days = []
-        const dummy_start = []
-        const dummy_end = []
     }, []);
 
-    for(let i = 0; i<days.length; i++){
 
+    for (let i = 0; i < days.length; i++) {
         rows.push(
             <DataTable.Row key={i}>
                 <DataTable.Cell>{days[i]}</DataTable.Cell>

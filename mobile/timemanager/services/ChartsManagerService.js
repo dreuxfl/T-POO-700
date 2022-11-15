@@ -10,7 +10,7 @@ export default class ChartsManagerService {
         const id = parseInt(jwt_decode(await SecureStore.getItemAsync('access_token')).sub)
         const now = new Date();
         const end = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss");
-        const start = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)).format("YYYY-MM-DD HH:mm:ss");
+        const start = moment(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 5)).format("YYYY-MM-DD HH:mm:ss");
         return axios({
             method: 'get',
             url: `${AuthService.BaseUrl}/chartmanager/linechart/${id}?start=${start}&end=${end}`,

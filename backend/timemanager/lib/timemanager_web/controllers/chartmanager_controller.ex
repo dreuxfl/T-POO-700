@@ -73,7 +73,7 @@ defmodule TimemanagerWeb.ChartmanagerController do
       dummy_clock_false = Enum.reduce(user_clocks_false, 0,  fn  user_clock, acc ->
         acc + user_clock.time.hour
       end)
-      if Enum.count(dummy_clock_true) > Enum.count(dummy_clock_false) do
+      if Enum.count(user_clocks_true) > Enum.count(user_clocks_false) do
         dummy_clock_false = dummy_clock_false + NaiveDateTime.utc_now().hour
       end
       dummy_clock = dummy_clock_false - dummy_clock_true
