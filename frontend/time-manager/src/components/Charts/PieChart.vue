@@ -6,7 +6,6 @@
         :chart-data="chartData"
         :chart-id="chartId"
         :plugins="plugins"
-        :dataset-id-key="datasetIdKey"
         :css-classes="cssClasses"
         :styles="styles"
         :width="width"
