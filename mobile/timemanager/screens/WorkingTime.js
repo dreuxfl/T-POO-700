@@ -44,28 +44,41 @@ export default function WorkingTime() {
             }
         });
 
-        const dummy_days = []
-        const dummy_start = []
-        const dummy_end = []
-
-        
     }, []);
 
 
     useEffect(()=>{
-        console.log(hoursClocked);
-    }, [hoursClocked]);
+        const dummy_days = []
+        const dummy_start = []
+        const dummy_end = []
+
+        WorkingTimesService.getWorkingTimesByUser().then((response) =>{
+            if(response.data.data && response.data.data.length > 0) {
+                for (let i = 0; i < response.data.data.length; i++) {
+                    dummy_days.push(moment(response.data.data[i].start).format('ddd'));
+                    dummy_start.push(moment(response.data.data[i].start).format('HH:mm'));
+                    dummy_end.push(moment(response.data.data[i].end).format('HH:mm'))
+                }
+                setDays(dummy_days);
+                setStart(dummy_start);
+                setEnd(dummy_end)
+                const dummy_rows = []
+                for (let i = 0; i < days.length; i++) {
+                    dummy_rows.push(
+                        <DataTable.Row key={i}>
+                            <DataTable.Cell>{days[i]}</DataTable.Cell>
+                            <DataTable.Cell numeric>{start[i]}</DataTable.Cell>
+                            <DataTable.Cell numeric>{end[i]}</DataTable.Cell>
+                        </DataTable.Row>
+                    )
+                }
+                setRows(dummy_rows);
+            }
+        })
+    }, []);
 
 
-    for (let i = 0; i < days.length; i++) {
-        rows.push(
-            <DataTable.Row key={i}>
-                <DataTable.Cell>{days[i]}</DataTable.Cell>
-                <DataTable.Cell numeric>{start[i]}</DataTable.Cell>
-                <DataTable.Cell numeric>{end[i]}</DataTable.Cell>
-            </DataTable.Row>
-        )
-    }
+
     return (
         <View style={styles.viewStyle}>
             <Header>Your weekly schedule</Header>
@@ -75,6 +88,7 @@ export default function WorkingTime() {
                     <DataTable.Title numeric>Start</DataTable.Title>
                     <DataTable.Title numeric>End</DataTable.Title>
                 </DataTable.Header>
+
                 {rows}
             </DataTable>
             <Header>Your weekly chart</Header>

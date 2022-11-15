@@ -32,7 +32,7 @@ export default class WorkingTimesService {
 
         return axios({
             method: 'get',
-            url: `http://localhost:4000/api/workingtimes/${id}`,
+            url: `${AuthService.BaseUrl}/workingtimes/${id}`,
             headers:{
                 'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             },
@@ -44,7 +44,7 @@ export default class WorkingTimesService {
 
         return axios({
             method: 'put',
-            url: `http://localhost:4000/api/workingtimes/${workingTimeId}`,
+            url: `${AuthService.BaseUrl}/workingtimes/${workingTimeId}`,
             responseType: 'json',
             headers:{
                 'Accept': 'application/json',
