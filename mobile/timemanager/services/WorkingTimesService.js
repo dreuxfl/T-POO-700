@@ -1,8 +1,10 @@
 import axios from "axios";
 import AuthService from "./AuthService";
 import * as SecureStore from "expo-secure-store";
+import jwt_decode from "jwt-decode";
 
 export default class WorkingTimesService {
+
     static async addWorkingTime(token, selectedUserId, start, end) {
         await AuthService.refreshAccessToken();
         return axios({
@@ -24,12 +26,13 @@ export default class WorkingTimesService {
         });
     }
 
-    static async getWorkingTimesByUser(selectedUserId) {
+    static async getWorkingTimesByUser() {
         await AuthService.refreshAccessToken();
+        const id = parseInt(jwt_decode(await SecureStore.getItemAsync('access_token')).sub)
 
         return axios({
             method: 'get',
-            url: `http://localhost:4000/api/workingtimes/${selectedUserId}`,
+            url: `http://localhost:4000/api/workingtimes/${id}`,
             headers:{
                 'Authorization' : `Bearer ${await SecureStore.getItemAsync('access_token')}`,
             },

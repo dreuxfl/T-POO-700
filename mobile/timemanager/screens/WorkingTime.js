@@ -8,15 +8,15 @@ import Header from '../components/Header'
 import { StatusBar } from "react-native";
 import ChartsManagerService from "../services/ChartsManagerService";
 import moment from "moment";
-import jwt_decode from "jwt-decode";
+import WorkingTimesService from "../services/WorkingTimesService";
 
 
 
 export default function WorkingTime() {
 
-    const [days, setDays] = useState(['mon', 'tue', 'wed', 'thu', 'fri'])
-    const [start, setStart] = useState(['09:30', '08:00', '08:30', '09:00', '08:30'])
-    const [end, setEnd] = useState(['16:30', '16:00', '17:30', '17:30', '17:30'])
+    const [days, setDays] = useState([])
+    const [start, setStart] = useState([])
+    const [end, setEnd] = useState([])
 
     const [label, setLabel] = useState([])
     const [hoursWorked, setHoursWorked] = useState([])
@@ -28,6 +28,7 @@ export default function WorkingTime() {
         const dummy_labels = []
         const dummy_clocks = []
         const dummy_workingTimes = []
+
         ChartsManagerService.getLineChart().then((response) => {
             if (response.data.data.length > 0) {
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -36,13 +37,24 @@ export default function WorkingTime() {
                     dummy_clocks.push(response.data.data[i].hoursclocked)
                 }
                 setLabel(dummy_labels);
-                console.log(dummy_labels);
-                console.log(labels);
                 setHoursWorked(dummy_workingTimes);
                 setHoursClocked(dummy_clocks);
+                console.log(dummy_clocks);
+
             }
         });
+
+        const dummy_days = []
+        const dummy_start = []
+        const dummy_end = []
+
+        
     }, []);
+
+
+    useEffect(()=>{
+        console.log(hoursClocked);
+    }, [hoursClocked]);
 
 
     for (let i = 0; i < days.length; i++) {
@@ -66,43 +78,47 @@ export default function WorkingTime() {
                 {rows}
             </DataTable>
             <Header>Your weekly chart</Header>
-            <LineChart
-                bezier
-                data={{
-                    labels: labels,
-                    datasets: [
-                        {
-                            data: hoursWorked,
-                            strokeWidth: 2,
-                            color: (opacity = 1) => `rgba(255,0,0,${opacity})`, // optional
-                        },
-                        {
-                            data: hoursClocked,
-                            strokeWidth: 2,
-                            color: (opacity = 1) => `rgba(0,0,102, ${opacity})`, // optional
-                        },
+            {
+                hoursWorked.length > 2 && hoursClocked.length > 2 &&
+                <LineChart
+                    bezier
+                    data={{
+                        labels: label,
+                        datasets: [
+                            {
+                                data: hoursWorked,
+                                strokeWidth: 2,
+                                color: (opacity = 1) => `rgba(255,0,0,${opacity})`, // optional
+                            },
+                            {
+                                data: hoursClocked,
+                                strokeWidth: 2,
+                                color: (opacity = 1) => `rgba(0,0,102, ${opacity})`, // optional
+                            },
 
-                    ],
-                    legend: ['Working Hours', 'Clocked Hours'],
-                }}
-                width={Dimensions.get('window').width - 16}
-                height={220}
-                chartConfig={{
-                    backgroundColor: '#FBEADE',
-                    useShadowColorFromDataset: true,
-                    backgroundGradientFrom: '#F7C9A9',
-                    backgroundGradientTo: '#FDE9DA',
-                    decimalPlaces: 2,
-                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                    style: {
+                        ],
+                        legend: ['Working Hours', 'Clocked Hours'],
+                    }}
+                    width={Dimensions.get('window').width - 16}
+                    height={220}
+                    chartConfig={{
+                        backgroundColor: '#FBEADE',
+                        useShadowColorFromDataset: true,
+                        backgroundGradientFrom: '#F7C9A9',
+                        backgroundGradientTo: '#FDE9DA',
+                        decimalPlaces: 2,
+                        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                        style: {
+                            borderRadius: 16,
+                        },
+                    }}
+                    style={{
+                        marginVertical: 8,
                         borderRadius: 16,
-                    },
-                }}
-                style={{
-                    marginVertical: 8,
-                    borderRadius: 16,
-                }}
-            />
+                    }}
+                />
+            }
+
         </View>
     )
 
