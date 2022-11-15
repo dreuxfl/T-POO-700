@@ -3,7 +3,6 @@ import moment from "moment";
 import AuthService from "./AuthService";
 
 export default class ChartsManagerService {
-
     static async getLineChart(token, userID) {
         await AuthService.refreshAccessToken();
         const now = new Date();
@@ -17,6 +16,4 @@ export default class ChartsManagerService {
             },
         });
     }
-
-
 }

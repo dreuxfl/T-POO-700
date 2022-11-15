@@ -2,7 +2,6 @@ import axios from "axios";
 import AuthService from "./AuthService";
 
 export default class WorkingTimesService {
-
     static async addWorkingTime(token, selectedUserId, start, end) {
         await AuthService.refreshAccessToken();
         return axios({

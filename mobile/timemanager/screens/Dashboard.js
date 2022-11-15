@@ -7,9 +7,7 @@ import WorkingTime from "./WorkingTime";
 import Profile from "./Profile";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-
 const Tab = createMaterialTopTabNavigator();
-
 
 export default function Dashboard() {
     return (
@@ -17,13 +15,11 @@ export default function Dashboard() {
             <Tab.Navigator
                 tabBarPosition= 'bottom'
                 screenOptions={({ route }) => ({
-                    tabBarIcon: ({ focused, color, size }) => {
+                    tabBarIcon: ({ focused, color}) => {
                         let iconName;
                         switch (route.name){
                             case 'Clock In':
-                                iconName = focused
-                                    ? 'ios-time'
-                                    : 'ios-time-outline';
+                                iconName = focused ? 'ios-time' : 'ios-time-outline';
                                 break;
                             case 'WorkingTime':
                                 iconName = focused ? 'ios-list' : 'ios-list-outline';
