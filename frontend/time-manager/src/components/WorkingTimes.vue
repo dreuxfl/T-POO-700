@@ -89,7 +89,7 @@
   
   <!-- #region Selector modals-->
   <q-dialog v-model="showStartDateSelector" >
-    <q-date v-model="start" mask="YYYY-MM-DD HH:mm">
+    <q-date v-model="start" mask="YYYY-MM-DD HH:mm:00">
       <div class="row items-center justify-end">
         <q-btn v-close-popup label="Ok" color="secondary" flat />
       </div>
@@ -97,7 +97,7 @@
   </q-dialog>
 
   <q-dialog v-model="showEndDateSelector">
-    <q-date  v-model="end" mask="YYYY-MM-DD HH:mm">
+    <q-date  v-model="end" mask="YYYY-MM-DD HH:mm:00">
       <div class="row items-center justify-end">
         <q-btn v-close-popup label="Ok" color="secondary" flat />
       </div>
@@ -105,7 +105,7 @@
   </q-dialog>
 
   <q-dialog v-model="showStartTimeSelector">
-    <q-time v-model="start" mask="YYYY-MM-DD HH:mm" format24h>
+    <q-time v-model="start" mask="YYYY-MM-DD HH:mm:00" format24h>
       <div class="row items-center justify-end">
         <q-btn v-close-popup label="Ok" color="secondary" flat />
       </div>
@@ -113,7 +113,7 @@
   </q-dialog>
   
   <q-dialog v-model="showEndTimeSelector" >
-    <q-time v-model="end" mask="YYYY-MM-DD HH:mm" format24h>
+    <q-time v-model="end" mask="YYYY-MM-DD HH:mm:00" format24h>
       <div class="row items-center justify-end">
         <q-btn v-close-popup label="Ok" color="secondary" flat />
       </div>
@@ -235,8 +235,8 @@ export default {
       this.isEditMode = false;
       this.showWorkingTimesModal = true;
       this.id = null;
-      this.start = moment(Date.now()).format("YYYY-MM-DD HH:00"),
-      this.end = moment(Date.now()).format("YYYY-MM-DD HH:00")
+      this.start = moment(Date.now()).format("YYYY-MM-DD HH:00:00"),
+      this.end = moment(Date.now()).format("YYYY-MM-DD HH:00:00")
     },
     editWorkingTime(row) {
       this.isEditMode = true;
@@ -333,8 +333,8 @@ export default {
           for (let i = 0; i < response.data.data.length; i++) {
             this.rows.push({
               id: response.data.data[i].id,
-              start: moment(response.data.data[i].start).format('YYYY-MM-DD HH:mm'),
-              end: moment(response.data.data[i].end).format('YYYY-MM-DD HH:mm'),
+              start: moment(response.data.data[i].start).format('YYYY-MM-DD HH:mm:00'),
+              end: moment(response.data.data[i].end).format('YYYY-MM-DD HH:mm:00'),
               duration: moment.duration(new Date(response.data.data[i].end) - new Date(response.data.data[i].start)).humanize()
             })
           }
