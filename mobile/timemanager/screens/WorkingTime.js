@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { LineChart } from "react-native-chart-kit";
 import { DataTable } from "react-native-paper";
@@ -7,6 +7,7 @@ import { StatusBar } from "react-native";
 import ChartsManagerService from "../services/ChartsManagerService";
 import moment from "moment";
 import jwt_decode from "jwt-decode";
+import UserService from "../services/UserService";
 
 
 
@@ -21,17 +22,33 @@ export default function WorkingTime() {
     const [hoursClocked, setHoursClocked] = useState([])
     const [rows, setRows] = useState([])
 
-    const loadData = () => {
+
+
+
+    useEffect(() => {
+        const dummy_labels = []
+        const dummy_clocks = []
+        const dummy_workingTimes = []
         ChartsManagerService.getLineChart().then((response) => {
             if (response.data.data.length > 0) {
                 for (let i = 0; i < response.data.data.length; i++) {
-                    console.log(response.data)
+                    dummy_labels.push(moment(response.data.data[i].day).format("ddd"));
+                    dummy_workingTimes.push(response.data.data[i].workingtime);
+                    dummy_clocks.push(response.data.data[i].hoursclocked)
                 }
+                setLabels(dummy_labels);
+                setHoursWorked(dummy_workingTimes);
+                setHoursClocked(dummy_clocks);
             }
         });
 
-    }
+        const dummy_days = []
+        const dummy_start = []
+        const dummy_end = []
+    }, []);
 
+
+    console.log(labels)
 
     for (let i = 0; i < days.length; i++) {
         rows.push(
@@ -57,15 +74,15 @@ export default function WorkingTime() {
             <LineChart
                 bezier
                 data={{
-                    labels: days,
+                    labels: labels,
                     datasets: [
                         {
-                            data: start,
+                            data: hoursWorked,
                             strokeWidth: 2,
                             color: (opacity = 1) => `rgba(255,0,0,${opacity})`, // optional
                         },
                         {
-                            data: end,
+                            data: hoursClocked,
                             strokeWidth: 2,
                             color: (opacity = 1) => `rgba(0,0,102, ${opacity})`, // optional
                         },
@@ -94,7 +111,7 @@ export default function WorkingTime() {
         </View>
     )
 
-
+}
 
     const styles = StyleSheet.create({
         viewStyle: {
@@ -106,4 +123,3 @@ export default function WorkingTime() {
             width: "96%",
         },
     });
-}
