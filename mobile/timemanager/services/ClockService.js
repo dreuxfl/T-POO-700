@@ -37,6 +37,7 @@ export default class ClockService {
     }
 
     static async getCurrentClocks(userId) {
+        console.log(`${AuthService.BaseUrl}/clocks/${userId}/today`)
         await AuthService.refreshAccessToken();
         let token = await SecureStore.getItemAsync('access_token');
         return axios({
