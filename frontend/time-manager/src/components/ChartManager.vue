@@ -97,8 +97,8 @@ export default {
   data(){
    return {
       token: null,
-      primaryColor: "#be7744",
-      secondaryColor: "#227C9D",
+      primaryColor: "#21BA45",
+      secondaryColor: "#7862A8",
       all_bar_data: null,
       all_line_data: null,
       bar_days : null,

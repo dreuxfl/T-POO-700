@@ -69,14 +69,14 @@ export default defineComponent({
     // let hours_left = {...props.pie_data.workingTime} - {...props.pie_data.hoursClocked}
     // let hours_worked = {...props.pie_data.workingTime}
     let hours_left = {...props.pie_data}[1] - {...props.pie_data}[0]; //Working times - clocked
-    let hours_worked = {...props.pie_data}[1];
+    let hours_worked = {...props.pie_data}[0];
     return{
       chartData: {
-        labels: ['Work Hours Left', 'Hours Clocked'],
+        labels: ['Hours Clocked', 'Work Hours Left'],
         datasets: [
           {
             backgroundColor: [props.primaryColor, props.secondaryColor],
-            data: [hours_left, hours_worked]
+            data: [hours_worked, hours_left]
           }
         ]
       },
