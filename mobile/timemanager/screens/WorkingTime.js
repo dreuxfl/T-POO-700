@@ -6,6 +6,7 @@ import Header from '../components/Header'
 import { StatusBar } from "react-native";
 import ChartsManagerService from "../services/ChartsManagerService";
 import moment from "moment";
+import jwt_decode from "jwt-decode";
 
 
 
@@ -20,7 +21,7 @@ export default function WorkingTime() {
     const [hoursClocked, setHoursClocked] = useState([])
     const [rows, setRows] = useState([])
 
-    const loadData= () =>{
+    const loadData = () => {
         ChartsManagerService.getLineChart().then((response) => {
             if (response.data.data.length > 0) {
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -93,15 +94,16 @@ export default function WorkingTime() {
         </View>
     )
 
-}
 
-const styles = StyleSheet.create({
-    viewStyle: {
-        flex: 1,
-        alignItems: 'center',
-        paddingTop: StatusBar.currentHeight
-    },
-    tableStyle: {
-        width: "96%",
-    },
-});
+
+    const styles = StyleSheet.create({
+        viewStyle: {
+            flex: 1,
+            alignItems: 'center',
+            paddingTop: StatusBar.currentHeight
+        },
+        tableStyle: {
+            width: "96%",
+        },
+    });
+}

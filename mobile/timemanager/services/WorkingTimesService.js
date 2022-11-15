@@ -3,8 +3,7 @@ import AuthService from "./AuthService";
 import * as SecureStore from "expo-secure-store";
 
 export default class WorkingTimesService {
-
-    static async addWorkingTime(selectedUserId, start, end) {
+    static async addWorkingTime(token, selectedUserId, start, end) {
         await AuthService.refreshAccessToken();
         return axios({
             method: 'post',

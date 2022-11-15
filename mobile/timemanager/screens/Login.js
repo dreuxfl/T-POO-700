@@ -8,16 +8,14 @@ import { PasswordValidator } from '../helpers/PasswordValidator'
 import Background from "../components/Background";
 import Header from "../components/Header";
 import Logo from "../components/Logo";
-import {UsernameValidator} from "../helpers/UsernameValidator";
+import { UsernameValidator } from "../helpers/UsernameValidator";
 import AuthService from "../services/AuthService";
-import * as SecureStore from 'expo-secure-store';
-
 
 export default function Login({ navigation }) {
     const [username, setUsername] = useState({ value: '', error: '' })
     const [password, setPassword] = useState({ value: '', error: '' })
 
-    const  onLoginPressed = () => {
+    const onLoginPressed = () => {
         const usernameError = UsernameValidator(username.value)
         const passwordError = PasswordValidator(password.value)
         if (usernameError || passwordError) {
@@ -31,30 +29,29 @@ export default function Login({ navigation }) {
                     index: 0,
                     routes: [{ name: 'Dashboard' }],
                 })
-                AuthService.setToken(response.data.access_token).then(r => {});
-            }catch (e) {
+
+                AuthService.setToken(response.data.access_token);
+            } catch (e) {
                 console.log(e);
             }
         });
-
     }
-
     return (
         <Background>
             <Logo />
             <Header>Login</Header>
 
-                <TextInput
-                    label= "Username"
-                    returnKeyType="next"
-                    value={username.value}
-                    onChangeText={(text) => setUsername({ value: text, error: '' })}
-                    error={!!username.error}
-                    errorText={username.error}
-                    autoCompleteType="username-new"
-                    textContentType="username"
-                    keyboardType="default"
-                />
+            <TextInput
+                label="Username"
+                returnKeyType="next"
+                value={username.value}
+                onChangeText={(text) => setUsername({ value: text, error: '' })}
+                error={!!username.error}
+                errorText={username.error}
+                autoCompleteType="username-new"
+                textContentType="username"
+                keyboardType="default"
+            />
 
             <TextInput
                 label="Password"
@@ -117,7 +114,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: theme.colors.secondary,
     },
-    button:{
+    button: {
         backgroundColor: theme.colors.primary
     }
 })

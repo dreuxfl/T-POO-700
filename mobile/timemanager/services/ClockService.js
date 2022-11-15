@@ -23,12 +23,10 @@ export default class ClockService {
                 }
             })
         })
-
     }
 
     static async getClocks(userId) {
         await AuthService.refreshAccessToken();
-
         return axios({
             method: 'get',
             url: `${AuthService.BaseUrl}/clocks/${userId}`,
